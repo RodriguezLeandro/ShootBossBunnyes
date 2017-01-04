@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import Scenes.Hud;
 import Sprites.Megaman;
 import Tools.WorldContactListener;
 import Tools.WorldCreator;
@@ -48,6 +49,12 @@ public class MainGameScreen implements Screen{
 
     //Megaman es el personaje principal.
     private Megaman megaman;
+
+    //Creamos el hud de nuestro juego(pantalla principal).
+    private Hud hud;
+
+    //Para verificar si el personaje murio.
+    private boolean personajeEstaMuerto;
 
     public MainGameScreen(MegamanMainClass game) {
 
@@ -92,6 +99,12 @@ public class MainGameScreen implements Screen{
             music.setLooping(true);
             music.play();
       */
+
+        //Creamos el Hud de nuestro juego.
+        hud = new Hud(game.batch);
+
+        //Porque claramente, nuestro personaje aun vive.
+        personajeEstaMuerto = false;
     }
 
     public MainGameScreen(boolean bool){
@@ -136,6 +149,28 @@ public class MainGameScreen implements Screen{
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
             megaman.setState(Megaman.State.GETTINGHIT);
         }
+        //Si presionamos P, el personaje pierde vida.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            //Dañamos al personaje y verificamos si murio.
+            personajeEstaMuerto = hud.dañarPersonaje(10);
+            //Si esta muerto, ponemos estado Dying(deberia ser Dead).
+            if(personajeEstaMuerto){
+                megaman.setState(Megaman.State.DYING);
+            }
+            //Si esta vivo, no hacemos nada mas aqui..
+        }
+        //Si presionamos O, el personaje pierde mana.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
+            hud.gastarMana(30);
+        }
+        //Si presionamos L, el personaje gana vida.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.L)){
+            hud.curarPersonaje(30);
+        }
+        //Si presionamos K, el personaje gana mana.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
+            hud.recuperarMana(30);
+        }
 
         //Le decimos al mundo que avanze, que efectue cambios en las fisicas.
         world.step(1/60f,6,2);
@@ -143,15 +178,32 @@ public class MainGameScreen implements Screen{
         //Updateamos la posicion del sprite de nuestro personaje y luego la animacion.
         megaman.update(delta);
 
-        //Hacemos que la camara tenga en el centro a nuestro personaje principal.
-        mainCamera.position.x = megaman.body.getPosition().x;
+        //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
+        if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters )&&(megaman.body.getPosition().x <= 6000 / MegamanMainClass.PixelsPerMeters)) {
+            //Hacemos que la camara tenga en el centro a nuestro personaje principal.
+            mainCamera.position.x = megaman.body.getPosition().x;
+        }
+        else {
+            //Dejo comentada la primera parte de la manera "estructurada de hacerlo".
+          /*  if (megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters)){
+                mainCamera.position.x = (399 / MegamanMainClass.PixelsPerMeters);
+            }
+          */
+            //Logica: Si el cuerpo del personaje sale de los limites x del mundo, la camara queda fija.
+            mainCamera.position.x = megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters) ? (399 / MegamanMainClass.PixelsPerMeters) : (6001 / MegamanMainClass.PixelsPerMeters);
+        }
+
+        //De la misma manera deberiamos comprobar si el personaje sale del limite inferior del mapa...
+        //y de esa manera eliminarlo(setToDead).
+        if (megaman.body.getPosition().y <= 0){
+            megaman.setState(Megaman.State.DYING);
+        }
 
         //Por cada renderizado de la pantalla, la camara se actualiza.
         mainCamera.update();
 
         //Queremos que solo se dibuje por pantalla lo que se puede ver en camara.
         mapRenderer.setView(mainCamera);
-
     }
 
 
@@ -170,6 +222,12 @@ public class MainGameScreen implements Screen{
 
         //Dibujamos el debuger para los objetos que colisionan.
         box2DDebugRenderer.render(world,mainCamera.combined);
+
+        //Se puede establecer multiples proyecciones de la matriz de camaras?
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+
+        //Le decimos al hud que se dibuje.
+        hud.stage.draw();
 
         //Establecemos la proyeccion de la matriz de la camara principal.
         game.batch.setProjectionMatrix(mainCamera.combined);

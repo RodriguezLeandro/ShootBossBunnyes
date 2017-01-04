@@ -147,17 +147,29 @@ public class Megaman extends Sprite {
         //Vemos en que estado estamos, y que haremos a partir de esta informacion.
         switch (currentState){
             case JUMPING:
+                //Si no estaba saltando, reiniciamos el stateTimer.
+                if (previousState != State.JUMPING) {
+                    stateTimer = 0;
+                }
                 //Si esta saltando, prendemos la animacion de salto.
                 textureRegion = megamanJumping.getKeyFrame(stateTimer);
                 //Si termina la animacion de salto
                 break;
             case WALKING:
+                //Si no estaba caminando, reiniciamos el stateTimer.
+                if (previousState != State.WALKING) {
+                    stateTimer = 0;
+                }
                 //Si esta caminando, prendemos la animacion de caminar.
                 //Notese que en el segundo parametro del metodo getkeyframe, decimos...
                 //que cuando finalize la animacion, comienze de nuevo en un bucle.
                 textureRegion = megamanWalking.getKeyFrame(stateTimer,true);
                 break;
             case FALLING:
+                //Si no estaba cayendo, reiniciamos el stateTimer.
+                if (previousState != State.FALLING) {
+                    stateTimer = 0;
+                }
                 //Si esta callendo, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
                 break;
@@ -167,6 +179,10 @@ public class Megaman extends Sprite {
                 break;
             case GETTINGHIT:
 
+                //Si no estaba siendo golpeado, reiniciamos el stateTimer.
+                if (previousState != State.GETTINGHIT) {
+                    stateTimer = 0;
+                }
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = megamanGettingHit.getKeyFrame(stateTimer);
                 //Si la animacion de ser golpeado finaliza...
@@ -179,6 +195,10 @@ public class Megaman extends Sprite {
             //En el caso de Dying, luego vemos que hacemos(porque debe finalizar el juego);
             case DYING:
 
+                //Si no estaba muriendo, reiniciamos el stateTimer.
+                if (previousState != State.DYING) {
+                    stateTimer = 0;
+                }
                 textureRegion = megamanDying.getKeyFrame(stateTimer);
                 if (megamanDying.isAnimationFinished(stateTimer)){
                     //End of the game.
@@ -186,6 +206,10 @@ public class Megaman extends Sprite {
                 break;
             //Realizamos lo mismo con cada uno de los estados.
             case HITTING:
+                //Si no estaba pegando, reiniciamos el stateTimer.
+                if (previousState != State.HITTING) {
+                    stateTimer = 0;
+                }
                 textureRegion = megamanHitting.getKeyFrame(stateTimer);
                 if (megamanHitting.isAnimationFinished(stateTimer)){
                     shouldBeJumping = false;
@@ -193,6 +217,10 @@ public class Megaman extends Sprite {
                 }
                 break;
             case CROUCHING:
+                //Si no estaba agachandose, reiniciamos el stateTimer.
+                if (previousState != State.CROUCHING) {
+                    stateTimer = 0;
+                }
                 textureRegion = megamanCrouching.getKeyFrame(stateTimer);
                 if (megamanCrouching.isAnimationFinished(stateTimer)){
                     shouldBeJumping = false;
@@ -273,7 +301,7 @@ public class Megaman extends Sprite {
         BodyDef bodyDef = new BodyDef();
 
         //Establecemos la posicion que tendra nuestro personaje.
-        bodyDef.position.set(32 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(400 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
         //Decidimos si es StaticBody, DynamicBody o KinematicBody.
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
