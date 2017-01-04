@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import Sprites.Megaman;
+import Tools.WorldContactListener;
 import Tools.WorldCreator;
 
 /**
@@ -84,6 +85,13 @@ public class MainGameScreen implements Screen{
         //Creamos a nuestro personaje principal.
         megaman = new Megaman(world , this);
 
+        //Creamos el Listener de nuestro mundo.
+        world.setContactListener(new WorldContactListener());
+
+    }
+
+    public MainGameScreen(boolean bool){
+        //No hago nada, solo lo uso para conectar con interactiveTiles.
     }
 
     public  TextureAtlas getTextureAtlas(){
@@ -170,6 +178,10 @@ public class MainGameScreen implements Screen{
 
         //Finalizamos nuestro batch.
         game.batch.end();
+    }
+
+    public TiledMap getTiledMap(){
+        return tiledMap;
     }
 
     @Override

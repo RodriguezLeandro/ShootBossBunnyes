@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
@@ -38,11 +39,6 @@ public class Megaman extends Sprite {
 
     private float stateTimer;
     private boolean runningRight;
-    public boolean isCrouching;
-    public boolean isGettingHit;
-    public boolean isHitting;
-    public boolean isDying;
-
 
     public Megaman(World world, MainGameScreen mainGameScreen){
 
@@ -64,18 +60,6 @@ public class Megaman extends Sprite {
         //Decimos que cuando arranca el juego el personaje mira a la derecha.
         runningRight = true;
 
-        //Cuando arranca el juego el personaje no esta sentado.
-        isCrouching = false;
-
-        //Cuando arranca el juego el personaje no esta siendo lastimado.
-        isGettingHit = false;
-
-        //Cuando arranca el juego el personaje no esta pegando.
-        isHitting = false;
-
-        //Cuando arranca el juego el personaje no esta muriendo.
-        isDying = false;
-
         //Creamos las animaciones de nuestro personaje y las tenemos en memoria.
         crearAnimaciones();
 
@@ -91,6 +75,7 @@ public class Megaman extends Sprite {
 
         //Con el metodo setRegion se dibujara nuestro personaje.
         setRegion(megamanStand);
+
     }
 
     public void crearAnimaciones(){
@@ -122,7 +107,7 @@ public class Megaman extends Sprite {
         megamanGettingHit = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
-        for (int i = 16; i < 20; i++){
+        for (int i = 17; i < 20; i++){
             textureRegionFrames.add(new TextureRegion(getTexture(),i * 32, 65, 32, 64));
         }
         megamanJumping = new Animation(0.1f,textureRegionFrames);
@@ -163,6 +148,7 @@ public class Megaman extends Sprite {
             case JUMPING:
                 //Si esta saltando, prendemos la animacion de salto.
                 textureRegion = megamanJumping.getKeyFrame(stateTimer);
+                //Si termina la animacion de salto
                 break;
             case WALKING:
                 //Si esta caminando, prendemos la animacion de caminar.
@@ -174,25 +160,23 @@ public class Megaman extends Sprite {
                 //Si esta callendo, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
                 break;
-            //Si esta en standing, mostramos la animacion de Standing.
             case STANDING:
+                //Si esta en standing, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
                 break;
             case GETTINGHIT:
+
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = megamanGettingHit.getKeyFrame(stateTimer);
                 //Si la animacion de ser golpeado finaliza...
                 if (megamanGettingHit.isAnimationFinished(stateTimer)){
-                    //Decimos que ya no esta siendo golpeado nuestro personaje.
-                    isGettingHit = false;
-                    //Establecemos el estado anterior como siendo golpeado.
-                    previousState = State.GETTINGHIT;
                     //Y volvemos a parar a nuestro personaje con State.Standing.
                     currentState = State.STANDING;
                 }
                 break;
             //En el caso de Dying, luego vemos que hacemos(porque debe finalizar el juego);
             case DYING:
+
                 textureRegion = megamanDying.getKeyFrame(stateTimer);
                 if (megamanDying.isAnimationFinished(stateTimer)){
                     //End of the game.
@@ -202,23 +186,18 @@ public class Megaman extends Sprite {
             case HITTING:
                 textureRegion = megamanHitting.getKeyFrame(stateTimer);
                 if (megamanHitting.isAnimationFinished(stateTimer)){
-                    isHitting = false;
-                    previousState = State.HITTING;
                     currentState = State.STANDING;
                 }
                 break;
             case CROUCHING:
                 textureRegion = megamanCrouching.getKeyFrame(stateTimer);
                 if (megamanCrouching.isAnimationFinished(stateTimer)){
-                    isCrouching = false;
-                    previousState = State.CROUCHING;
                     currentState = State.STANDING;
                 }
                 break;
             default:
                 textureRegion = megamanStand;
                 break;
-
         }
 
         //Verificamos para que lado esta mirando el personaje y si nuestra imagen ve para el mismo lado...
@@ -264,9 +243,8 @@ public class Megaman extends Sprite {
         else if (currentState == State.DYING){
             return State.DYING;
         }
-
         //Si el jugador estaba saltando, aunque luego caiga devolvemos el State.Jumping.
-        if ((body.getLinearVelocity().y > 0) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
+        else if ((body.getLinearVelocity().y > 0) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
             return State.JUMPING;
         }
         //Si el jugador cae, devolvemos State.Falling.
@@ -312,6 +290,12 @@ public class Megaman extends Sprite {
         //Agregamos el shape al fixturedef.
         fixtureDef.shape = circleShape;
 
+        //Agregamos el filtro de categoria(quien es nuestro personaje) de box2d.
+        fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
+
+        //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
+        fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT;
+
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
 
@@ -321,6 +305,39 @@ public class Megaman extends Sprite {
 
         //Creamos otro fixture asi nuestro body contiene dos circulos y es mas grande la colision.
         body.createFixture(fixtureDef);
+
+        //Creamos una caja para utilizarla como sensor al chocar enemigos.
+        PolygonShape polygonShape = new PolygonShape();
+
+        //Creamos una caja del tamaño de los dos circulos(body del personaje).
+        //Al final no lo hacemos, preferimos crear un rectangulo customizado.
+        //Igualmente dejamos comentado la manera de hacer la caja.
+        //polygonShape.setAsBox(20 / MegamanMainClass.PixelsPerMeters,40 / MegamanMainClass.PixelsPerMeters);
+
+        //Creamos un array de vector2 para crear un poligono con forma rectangular.
+
+        Vector2[] vertices = new Vector2[4];
+
+        //Creamos cada vector del array y les asignamos las correspondientes posiciones.
+        vertices[0] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[1] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[2] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+        vertices[3] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+
+        //Ponemos los vertices del array que conforman la forma poligonal.
+        polygonShape.set(vertices);
+
+        //Liberamos la memoria utilizada por el array.
+        vertices = null;
+
+        //Ponemos el shape en el fixturedef.
+        fixtureDef.shape = polygonShape;
+
+        //Decimos que nuestro shape es un sensor.
+        fixtureDef.isSensor = true;
+
+        //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
+        body.createFixture(fixtureDef).setUserData("mainNinja");
 
     }
 
