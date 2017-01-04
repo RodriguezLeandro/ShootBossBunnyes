@@ -1,6 +1,8 @@
 package com.mygdx.megamangame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import Screen.MainGameScreen;
@@ -8,6 +10,9 @@ import Screen.MainGameScreen;
 public class MegamanMainClass extends Game {
 
 	public SpriteBatch batch;
+
+	//Declaramos el assetmanager.
+	public static AssetManager assetManager;
 
 	//Declaramos el ancho y el alto de la resolucion del mundo virtual.
 	public final static int Virtual_Width = 800;
@@ -27,11 +32,17 @@ public class MegamanMainClass extends Game {
 	@Override
 	public void create () {
 
+		//Declaramos el spritebatch que utilizaremos para dibujar en pantalla.
+		batch = new SpriteBatch();
+
+		//Creamos el assetManager.
+		assetManager = new AssetManager();
+		assetManager.load("audio/introsong.mp3", Sound.class);
+
+		assetManager.finishLoading();
 		//Ponemos la pantalla principal del juego.
 		setScreen(new MainGameScreen(this));
 
-		//Declaramos el spritebatch que utilizaremos para dibujar en pantalla.
-		batch = new SpriteBatch();
 
 	}
 

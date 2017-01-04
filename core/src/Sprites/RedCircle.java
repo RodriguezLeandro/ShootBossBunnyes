@@ -1,5 +1,6 @@
 package Sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Circle;
@@ -44,5 +45,8 @@ public class RedCircle extends InteractiveTileCircleObject {
 
         //Liberamos la memoria que ocupaba el array.
         tiledMapTileLayersCell = null;
+
+        //Suena la cancion 1, no se escucha bien, pongo la 2.
+        MegamanMainClass.assetManager.get("audio/introsong.mp3", Sound.class).play();
     }
 }

@@ -39,6 +39,7 @@ public class Megaman extends Sprite {
 
     private float stateTimer;
     private boolean runningRight;
+    private boolean shouldBeJumping;
 
     public Megaman(World world, MainGameScreen mainGameScreen){
 
@@ -170,6 +171,7 @@ public class Megaman extends Sprite {
                 textureRegion = megamanGettingHit.getKeyFrame(stateTimer);
                 //Si la animacion de ser golpeado finaliza...
                 if (megamanGettingHit.isAnimationFinished(stateTimer)){
+                    shouldBeJumping = false;
                     //Y volvemos a parar a nuestro personaje con State.Standing.
                     currentState = State.STANDING;
                 }
@@ -186,12 +188,14 @@ public class Megaman extends Sprite {
             case HITTING:
                 textureRegion = megamanHitting.getKeyFrame(stateTimer);
                 if (megamanHitting.isAnimationFinished(stateTimer)){
+                    shouldBeJumping = false;
                     currentState = State.STANDING;
                 }
                 break;
             case CROUCHING:
                 textureRegion = megamanCrouching.getKeyFrame(stateTimer);
                 if (megamanCrouching.isAnimationFinished(stateTimer)){
+                    shouldBeJumping = false;
                     currentState = State.STANDING;
                 }
                 break;
@@ -244,11 +248,12 @@ public class Megaman extends Sprite {
             return State.DYING;
         }
         //Si el jugador estaba saltando, aunque luego caiga devolvemos el State.Jumping.
-        else if ((body.getLinearVelocity().y > 0) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
+        else if ((body.getLinearVelocity().y > 0 && shouldBeJumping) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
             return State.JUMPING;
         }
         //Si el jugador cae, devolvemos State.Falling.
         else if (body.getLinearVelocity().y < 0){
+            shouldBeJumping = true;
             return State.FALLING;
         }
         //Si el jugador camina, devolvemos State.Walking

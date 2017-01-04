@@ -49,8 +49,7 @@ public class MainGameScreen implements Screen{
     //Megaman es el personaje principal.
     private Megaman megaman;
 
-
-    public MainGameScreen(MegamanMainClass game){
+    public MainGameScreen(MegamanMainClass game) {
 
         //Le asignamos el juego a nuestro MegamanMainClass.
         this.game = game;
@@ -61,20 +60,20 @@ public class MainGameScreen implements Screen{
         mainCamera = new OrthographicCamera();
 
         //Con el FitViewport nos aseguramos que la app cuente con multiples resoluciones.
-        mainViewport = new FitViewport(game.Virtual_Width / game.PixelsPerMeters,game.Virtual_Height / game.PixelsPerMeters,mainCamera);
+        mainViewport = new FitViewport(game.Virtual_Width / game.PixelsPerMeters, game.Virtual_Height / game.PixelsPerMeters, mainCamera);
 
         //Cargamos el archivo tmx de tiles map.
         tmxMapLoader = new TmxMapLoader();
         tiledMap = tmxMapLoader.load("tiled1.tmx");
 
         //OrthogonalTiledMapRenderer se encarga del renderizado del mapa.
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap , 1 / game.PixelsPerMeters);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / game.PixelsPerMeters);
 
         //Ponemos como posicion inicial de la camara el medio de la pantalla virtual(inicial).
-        mainCamera.position.set((game.Virtual_Width/2) / game.PixelsPerMeters,(game.Virtual_Height/2) / game.PixelsPerMeters,0);
+        mainCamera.position.set((game.Virtual_Width / 2) / game.PixelsPerMeters, (game.Virtual_Height / 2) / game.PixelsPerMeters, 0);
 
         //Creamos el mundo de nuestro juego.
-        world = new World(new Vector2(0,-10),true);
+        world = new World(new Vector2(0, -10), true);
 
         //Creamos nuestro debugrenderer.
         box2DDebugRenderer = new Box2DDebugRenderer();
@@ -83,11 +82,16 @@ public class MainGameScreen implements Screen{
         new WorldCreator(world, tiledMap);
 
         //Creamos a nuestro personaje principal.
-        megaman = new Megaman(world , this);
+        megaman = new Megaman(world, this);
 
         //Creamos el Listener de nuestro mundo.
         world.setContactListener(new WorldContactListener());
 
+      /*  //Creamos la musica, lo dejo comentado como un ejemplo para crear backgroundmusic.
+            music = MegamanMainClass.assetManager.get("audio/background.mp3",Music.class);
+            music.setLooping(true);
+            music.play();
+      */
     }
 
     public MainGameScreen(boolean bool){
