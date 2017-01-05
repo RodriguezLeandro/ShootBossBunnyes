@@ -43,6 +43,7 @@ public class Zero extends Sprite {
     private float stateTimer;
     private boolean runningRight;
     private boolean shouldBeJumping;
+    private boolean zeroIsDead;
 
 
     public Zero(MainGameScreen mainGameScreen){
@@ -62,6 +63,9 @@ public class Zero extends Sprite {
 
         //Inicializamos el timer del estado de las animaciones.
         stateTimer = 0;
+
+        //Decimos que zero no esta muerto al iniciar el juego.
+        zeroIsDead = false;
 
         //Decimos que cuando arranca el juego el personaje mira a la izquierda.
         //Nota: como es el enemigo, debe estar mirando siempre hacia donde esta nuestro mc(main character).
@@ -347,8 +351,17 @@ public class Zero extends Sprite {
         return textureRegion;
     }
 
+    public Boolean isDead(){
+        if (zeroIsDead){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     //Funcion que devuelve el estado de nuestro personaje.
-    public State getState(){
+    private State getState(){
 
         if (currentState == State.CROUCHING){
             return State.CROUCHING;

@@ -1,12 +1,16 @@
 package Scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,6 +23,8 @@ import com.mygdx.megamangame.MegamanMainClass;
  * Created by Leandro on 04/01/2017.
  */
 
+//Nota, creo que no necesito hacer resize, pero considerarlo en un futuro.
+
 public class Hud {
 
     public Stage stage;
@@ -26,32 +32,78 @@ public class Hud {
 
     private Integer score;
 
-    Label healthLabel;
-    Label manaLabel;
-    Label scoreLabel;
-    Label scoreNumberLabel;
+    private Label healthLabel;
+    private Label manaLabel;
+    private Label scoreLabel;
+    private Label scoreNumberLabel;
 
-    Label.LabelStyle labelStyle;
+    private Label.LabelStyle labelStyle;
 
-    ProgressBar healthBar;
-    ProgressBar manaBar;
-    ProgressBar.ProgressBarStyle progressBarStyleRed;
-    ProgressBar.ProgressBarStyle progressBarStyleBlue;
+    private ProgressBar healthBar;
+    private ProgressBar manaBar;
+    private ProgressBar.ProgressBarStyle progressBarStyleRed;
+    private ProgressBar.ProgressBarStyle progressBarStyleBlue;
+
+    private boolean upArrowPressed;
+    private boolean downArrowPressed;
+    private boolean leftArrowPressed;
+    private boolean rightArrowPressed;
+
+    private boolean upButtonPressed;
+    private boolean downButtonPressed;
+    private boolean leftButtonPressed;
+    private boolean rightButtonPressed;
+
+    private boolean upArrowReleased;
+
 
     //Nota: primero me quedo la impresion de que las barras estan medio jarcodeadas(si,hardcodeadas).
     //Pero luego me convenci de que no estan taaan mal, sin embargo, una revision luego no vendria mal.
 
-    public Hud(SpriteBatch spriteBatch){
+    public Hud(SpriteBatch spriteBatch, boolean dispositivoEsAndroid){
 
-        //Anadimos el score del juego.
-        score = 0;
+        //Cuando creamos el hud, nadie toca la flecha up.
+        upArrowReleased = true;
 
-        //Creamos un viewport distinto al principal con una camara nueva. Para que quede fija.
-        viewport = new FitViewport(MegamanMainClass.Virtual_Width, MegamanMainClass.Virtual_Height , new OrthographicCamera());
+        //Si el dispositivo es android, creamos todo lo del hud.
+        if (dispositivoEsAndroid) {
+            //Anadimos el score del juego.
+            score = 0;
 
-        //Creamos un nuevo stage, le pasamos el viewport y el spritebatch.
-        stage = new Stage(viewport,spriteBatch);
+            //Creamos un viewport distinto al principal con una camara nueva. Para que quede fija.
+            viewport = new FitViewport(MegamanMainClass.Virtual_Width, MegamanMainClass.Virtual_Height, new OrthographicCamera());
 
+            //Creamos un nuevo stage, le pasamos el viewport y el spritebatch.
+            stage = new Stage(viewport, spriteBatch);
+
+            //Decimos que nuestro stage es un inputproccesor.
+            Gdx.input.setInputProcessor(stage);
+
+            crearHudTop();
+
+            crearHudBotIzq();
+
+            crearHudBotDer();
+        }
+        //Si el dispositivo no es android, solo creamos y mostramos el topHud.
+        else{
+            //Anadimos el score del juego.
+            score = 0;
+
+            //Creamos un viewport distinto al principal con una camara nueva. Para que quede fija.
+            viewport = new FitViewport(MegamanMainClass.Virtual_Width, MegamanMainClass.Virtual_Height, new OrthographicCamera());
+
+            //Creamos un nuevo stage, le pasamos el viewport y el spritebatch.
+            stage = new Stage(viewport, spriteBatch);
+
+            //Decimos que nuestro stage es un inputproccesor.
+            Gdx.input.setInputProcessor(stage);
+
+            crearHudTop();
+        }
+    }
+
+    public void crearHudTop(){
         //Creamos una nuva tabla.
         Table table = new Table();
         //Decimos que la tabla este en la parte superior de la camara??.
@@ -130,6 +182,189 @@ public class Hud {
         stage.addActor(table);
     }
 
+    public void crearHudBotIzq() {
+
+        Table table = new Table();
+        table.left().bottom();
+
+        Image upImage = new Image(new Texture("arrow/upArrow.png"));
+        upImage.setSize(50, 50);
+        upImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                upArrowPressed = true;
+                upArrowReleased = false;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                upArrowPressed = false;
+                upArrowReleased = true;
+            }
+        });
+
+        Image downImage = new Image(new Texture("arrow/downArrow.png"));
+        downImage.setSize(50, 50);
+        downImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                downArrowPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                downArrowPressed = false;
+            }
+        });
+
+        Image leftImage = new Image(new Texture("arrow/leftArrow.png"));
+        leftImage.setSize(50, 50);
+        leftImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                leftArrowPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                leftArrowPressed = false;
+            }
+        });
+
+        Image rightImage = new Image(new Texture("arrow/rightArrow.png"));
+        rightImage.setSize(50, 50);
+        rightImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                rightArrowPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                rightArrowPressed = false;
+            }
+        });
+
+        table.pad(0,20,20,0);
+        table.add();
+        table.add(upImage).size(upImage.getWidth(),upImage.getHeight());
+        table.add();
+
+        table.row().pad(5,5,5,5);
+
+        table.add(leftImage).size(leftImage.getWidth(),leftImage.getHeight());
+        table.add();
+        table.add(rightImage).size(rightImage.getWidth(),rightImage.getHeight());
+
+        table.row().padTop(5);
+
+        table.add();
+        table.add(downImage).size(downImage.getWidth(),downImage.getHeight());
+        table.add();
+
+        stage.addActor(table);
+    }
+
+    public void crearHudBotDer(){
+
+        Table table = new Table();
+        table.right().bottom();
+        table.setFillParent(true);
+
+        Image upImage = new Image(new Texture("button/triangleButton.png"));
+        upImage.setSize(50, 50);
+        upImage.addListener(new InputListener() {
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                upButtonPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                upButtonPressed = false;
+            }
+        });
+
+
+        Image downImage = new Image(new Texture("button/xButton.png"));
+        downImage.setSize(50, 50);
+        downImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                downButtonPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                downButtonPressed = false;
+            }
+        });
+
+        Image leftImage = new Image(new Texture("button/squareButton.png"));
+        leftImage.setSize(50, 50);
+        leftImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                leftButtonPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                leftButtonPressed = false;
+            }
+        });
+
+        Image rightImage = new Image(new Texture("button/circleButton.png"));
+        rightImage.setSize(50, 50);
+        rightImage.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                rightButtonPressed = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                rightButtonPressed = false;
+            }
+        });
+
+        table.pad(0,0,20,20);
+        table.add();
+        table.add(upImage).size(upImage.getWidth(),upImage.getHeight());
+        table.add();
+
+        table.row().pad(5,5,5,5);
+
+        table.add(leftImage).size(leftImage.getWidth(),leftImage.getHeight());
+        table.add();
+        table.add(rightImage).size(rightImage.getWidth(),rightImage.getHeight());
+
+        table.row().padTop(5);
+
+        table.add();
+        table.add(downImage).size(downImage.getWidth(),downImage.getHeight());
+        table.add();
+
+        stage.addActor(table);
+    }
+
     public boolean dañarPersonaje(float health){
 
         //Vemos cuanta vida tiene el personaje.
@@ -193,4 +428,39 @@ public class Hud {
         }
     }
 
+    public boolean isUpArrowPressed() {
+        return upArrowPressed;
+    }
+
+    public boolean isDownArrowPressed() {
+        return downArrowPressed;
+    }
+
+    public boolean isLeftArrowPressed() {
+        return leftArrowPressed;
+    }
+
+    public boolean isRightArrowPressed() {
+        return rightArrowPressed;
+    }
+
+    public boolean isLeftButtonPressed() {
+        return leftButtonPressed;
+    }
+
+    public boolean isDownButtonPressed() {
+        return downButtonPressed;
+    }
+
+    public boolean isUpButtonPressed() {
+        return upButtonPressed;
+    }
+
+    public boolean isRightButtonPressed() {
+        return rightButtonPressed;
+    }
+
+    public boolean isUpArrowReleased(){
+        return upArrowReleased;
+    }
 }

@@ -1,5 +1,6 @@
 package Sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -40,6 +41,8 @@ public class Megaman extends Sprite {
     private float stateTimer;
     private boolean runningRight;
     private boolean shouldBeJumping;
+    private boolean megamanIsDead;
+    private boolean megamanWasDead;
 
     public Megaman(MainGameScreen mainGameScreen){
 
@@ -62,6 +65,12 @@ public class Megaman extends Sprite {
         //Decimos que cuando arranca el juego el personaje mira a la derecha.
         runningRight = true;
 
+        //Decimos que megaman esta vivo al comienzo del juego.
+        megamanIsDead = false;
+
+        //Decimos que megaman no estaba muerto.
+        megamanWasDead = false;
+
         //Creamos las animaciones de nuestro personaje y las tenemos en memoria? O referenciadas?.
         crearAnimaciones();
 
@@ -78,6 +87,10 @@ public class Megaman extends Sprite {
         //Con el metodo setRegion se dibujara nuestro personaje.
         setRegion(megamanStand);
 
+    }
+
+    public float getStateTimer(){
+       return stateTimer;
     }
 
     public void crearAnimaciones(){
@@ -137,6 +150,15 @@ public class Megaman extends Sprite {
 
         //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
         setRegion(getTextureRegion(delta));
+
+        //Verificamos que el personaje no este muerto, y si lo esta, llamamos a la funcion.
+        //Tambien verificamos que no estuviera muerto anteriormente, con la finalidad.
+        //de que el audio suene solo una vez.
+        if (megamanIsDead && !megamanWasDead){
+            MegamanMainClass.assetManager.get("audio/fall_death.wav", Sound.class).play();
+            megamanWasDead = true;
+            stateTimer = 0;
+        }
     }
 
     public TextureRegion getTextureRegion(float delta){
@@ -201,7 +223,7 @@ public class Megaman extends Sprite {
                 }
                 textureRegion = megamanDying.getKeyFrame(stateTimer);
                 if (megamanDying.isAnimationFinished(stateTimer)){
-                    //End of the game.
+                    megamanIsDead = true;
                 }
                 break;
             //Realizamos lo mismo con cada uno de los estados.
@@ -258,6 +280,15 @@ public class Megaman extends Sprite {
     public void setState(State state){
         previousState = currentState;
         currentState = state;
+    }
+
+    public Boolean isDead(){
+        if (megamanIsDead){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     //Funcion que devuelve el estado de nuestro personaje.

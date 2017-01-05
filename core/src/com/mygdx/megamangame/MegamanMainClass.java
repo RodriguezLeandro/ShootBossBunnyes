@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import Screen.GameOverScreen;
 import Screen.MainGameScreen;
 
 public class MegamanMainClass extends Game {
@@ -41,8 +42,9 @@ public class MegamanMainClass extends Game {
 		//Creamos el assetManager.
 		assetManager = new AssetManager();
 		assetManager.load("audio/introsong.mp3", Sound.class);
-
+		assetManager.load("audio/fall_death.wav",Sound.class);
 		assetManager.finishLoading();
+
 		//Ponemos la pantalla principal del juego.
 		setScreen(new MainGameScreen(this));
 	}
