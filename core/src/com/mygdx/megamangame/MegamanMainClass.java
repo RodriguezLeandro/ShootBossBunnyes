@@ -28,6 +28,9 @@ public class MegamanMainClass extends Game {
 	public final static short FLYINGGROUND_BIT = 8;
 	public final static short COIN_BIT = 16;
 	public final static short DESTROYED_BIT = 32;
+	public final static short ZERO_BIT = 64;
+	public final static short LAVA_BIT = 128;
+	public final static short MEGAMAN_SENSOR_BIT = 256;
 
 	@Override
 	public void create () {
@@ -42,8 +45,6 @@ public class MegamanMainClass extends Game {
 		assetManager.finishLoading();
 		//Ponemos la pantalla principal del juego.
 		setScreen(new MainGameScreen(this));
-
-
 	}
 
 	@Override
@@ -55,7 +56,8 @@ public class MegamanMainClass extends Game {
 	@Override
 	public void dispose () {
 
-		//Eliminamos el spritebatch.
+		//Eliminamos los recursos innecesarios.
 		batch.dispose();
+		assetManager.dispose();
 	}
 }

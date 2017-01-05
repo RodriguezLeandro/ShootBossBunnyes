@@ -1,7 +1,6 @@
 package Tools;
 
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -11,9 +10,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
+import Screen.MainGameScreen;
 import Sprites.Floor;
 import Sprites.FlyingGround;
 import Sprites.GreenCircle;
+import Sprites.Lava;
 import Sprites.RedCircle;
 
 /**
@@ -23,7 +24,10 @@ import Sprites.RedCircle;
 public class WorldCreator {
 
     //Aca creamos todos los objetos(Estaticos?) que se encuentren dentro del mundo.
-    public WorldCreator(World world, TiledMap tiledMap){
+    public WorldCreator(MainGameScreen mainGameScreen){
+
+        World world = mainGameScreen.getWorld();
+        TiledMap tiledMap = mainGameScreen.getTiledMap();
 
         //Obtenemos los objetos floor de tiled map y los creamos mediante la clase Floor.
         for(MapObject object : tiledMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
@@ -32,7 +36,7 @@ public class WorldCreator {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
 
             //Creamos los objetos en nuestro mundo.
-            new Floor(world,tiledMap,rectangle);
+            new Floor(mainGameScreen,rectangle);
         }
 
         //Obtenemos los objetos flyingground de tiled map y los creamos mediante la clase FlyinGround.
@@ -42,7 +46,7 @@ public class WorldCreator {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
 
             //Creamos los objetos en nuestro mundo.
-            new FlyingGround(world,tiledMap,rectangle);
+            new FlyingGround(mainGameScreen,rectangle);
         }
 
         for(MapObject object : tiledMap.getLayers().get(4).getObjects().getByType(EllipseMapObject.class)){
@@ -60,7 +64,7 @@ public class WorldCreator {
             ellipse = null;
 
             //Creamos los objetos en nuestro mundo.
-            new RedCircle(world,tiledMap,circle);
+            new RedCircle(mainGameScreen,circle);
         }
 
         for(MapObject object : tiledMap.getLayers().get(5).getObjects().getByType(EllipseMapObject.class)){
@@ -78,7 +82,16 @@ public class WorldCreator {
             ellipse = null;
 
             //Creamos los objetos en nuestro mundo.
-            new GreenCircle(world,tiledMap,circle);
+            new GreenCircle(mainGameScreen,circle);
+        }
+
+        //Creamos la lava.
+        for(MapObject object : tiledMap.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
+            //Obtenemos cada rectangulo de tiled map.
+            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+            //Creamos los objetos en nuestro mundo.
+            new Lava(mainGameScreen,rectangle);
         }
 
     }

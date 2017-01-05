@@ -19,7 +19,7 @@ import com.mygdx.megamangame.MegamanMainClass;
  * Created by Leandro on 04/01/2017.
  */
 
-public class Hud{
+public class Hud {
 
     public Stage stage;
     public Viewport viewport;
@@ -37,6 +37,9 @@ public class Hud{
     ProgressBar manaBar;
     ProgressBar.ProgressBarStyle progressBarStyleRed;
     ProgressBar.ProgressBarStyle progressBarStyleBlue;
+
+    //Nota: primero me quedo la impresion de que las barras estan medio jarcodeadas(si,hardcodeadas).
+    //Pero luego me convenci de que no estan taaan mal, sin embargo, una revision luego no vendria mal.
 
     public Hud(SpriteBatch spriteBatch){
 

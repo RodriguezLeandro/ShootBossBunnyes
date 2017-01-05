@@ -1,19 +1,20 @@
 package Sprites;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
+
+import Screen.MainGameScreen;
+import Tools.InteractiveTileObject;
 
 /**
  * Created by Leandro on 02/01/2017.
  */
 
-public class Floor extends  InteractiveTileObject{
+public class Floor extends InteractiveTileObject {
 
-    public Floor(World world, TiledMap tiledMap, Rectangle rectangle){
+    public Floor(MainGameScreen mainGameScreen, Rectangle rectangle){
 
         //Como floor es un objeto estatico y rectangulo, utilizamos super();
-        super(world,tiledMap,rectangle);
+        super(mainGameScreen,rectangle);
 
         //Le mandamos al user data de cada fixture la clase de objeto que es.
         fixture.setUserData(this);

@@ -3,8 +3,10 @@ package Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -17,6 +19,7 @@ import com.mygdx.megamangame.MegamanMainClass;
 
 import Scenes.Hud;
 import Sprites.Megaman;
+import Sprites.Zero;
 import Tools.WorldContactListener;
 import Tools.WorldCreator;
 
@@ -50,11 +53,20 @@ public class MainGameScreen implements Screen{
     //Megaman es el personaje principal.
     private Megaman megaman;
 
+    //Zero es el enemigo principal.
+    private Zero zero;
+
     //Creamos el hud de nuestro juego(pantalla principal).
-    private Hud hud;
+    public Hud hud;
 
     //Para verificar si el personaje murio.
     private boolean personajeEstaMuerto;
+
+    //Booleano para sacarle vida al personaje progresivamente.
+    private boolean dañarPersonajeProgresivamente;
+
+    //Para ver el daño que hay que hacerle al personaje.
+    private float healthDamage;
 
     public MainGameScreen(MegamanMainClass game) {
 
@@ -86,10 +98,13 @@ public class MainGameScreen implements Screen{
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         //WorldCreator creara un objeto fisico de box2d por cada objeto de tiled map.
-        new WorldCreator(world, tiledMap);
+        new WorldCreator(this);
 
         //Creamos a nuestro personaje principal.
-        megaman = new Megaman(world, this);
+        megaman = new Megaman(this);
+
+        //Creamos al enemigo principal.
+        zero = new Zero(this);
 
         //Creamos el Listener de nuestro mundo.
         world.setContactListener(new WorldContactListener());
@@ -105,10 +120,9 @@ public class MainGameScreen implements Screen{
 
         //Porque claramente, nuestro personaje aun vive.
         personajeEstaMuerto = false;
-    }
 
-    public MainGameScreen(boolean bool){
-        //No hago nada, solo lo uso para conectar con interactiveTiles.
+        //No lo queremos dañar ni bien arranca.
+        dañarPersonajeProgresivamente = false;
     }
 
     public  TextureAtlas getTextureAtlas(){
@@ -133,7 +147,35 @@ public class MainGameScreen implements Screen{
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
             megaman.body.applyLinearImpulse(new Vector2(-0.2f,0),megaman.body.getWorldCenter(),true);
         }
-        //Si presionamos UP, el personaje muere.
+        //Si presionamos 8, el personaje enemigo salta.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)){
+            zero.body.applyLinearImpulse(new Vector2(0,6f),zero.body.getWorldCenter(),true);
+        }
+        //Si presionamos 4, el personaje enemigo se mueve a la izquierda.
+        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)){
+            zero.body.applyLinearImpulse(new Vector2(-0.2f,0),zero.body.getWorldCenter(),true);
+        }
+        //Si presionamos 6, el personaje enemigo se mueve a la derecha.
+        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)){
+            zero.body.applyLinearImpulse(new Vector2(0.2f,0),zero.body.getWorldCenter(),true);
+        }
+        //Si presionamos 7, el personaje enemigo pega.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)){
+            zero.setState(Zero.State.HITTING);
+        }
+        //Si presionamos 9, el personaje enemigo pega.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)){
+            zero.setState(Zero.State.CROUCHING);
+        }
+        //Si presionamos 3, el personaje enemigo pega.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)){
+            zero.setState(Zero.State.GETTINGHIT);
+        }
+        //Si presionamos 1, el personaje enemigo pega.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)){
+            zero.setState(Zero.State.DYING);
+        }
+        //Si presionamos Flechita UP, el personaje muere.
         if (Gdx.input.isKeyPressed(Input.Keys.UP)){
             megaman.setState(Megaman.State.DYING);
         }
@@ -151,13 +193,7 @@ public class MainGameScreen implements Screen{
         }
         //Si presionamos P, el personaje pierde vida.
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
-            //Dañamos al personaje y verificamos si murio.
-            personajeEstaMuerto = hud.dañarPersonaje(10);
-            //Si esta muerto, ponemos estado Dying(deberia ser Dead).
-            if(personajeEstaMuerto){
-                megaman.setState(Megaman.State.DYING);
-            }
-            //Si esta vivo, no hacemos nada mas aqui..
+            dañarPersonaje(10);
         }
         //Si presionamos O, el personaje pierde mana.
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
@@ -172,11 +208,19 @@ public class MainGameScreen implements Screen{
             hud.recuperarMana(30);
         }
 
+        //Preguntamos si hay que dañarlo progresivamente al personaje.
+        if (dañarPersonajeProgresivamente){
+            dañarPersonaje(getHealthDamage());
+        }
+
         //Le decimos al mundo que avanze, que efectue cambios en las fisicas.
         world.step(1/60f,6,2);
 
         //Updateamos la posicion del sprite de nuestro personaje y luego la animacion.
         megaman.update(delta);
+
+        //Updateamos la posicion del sprite del personaje enemigo y luego la animacion.
+        zero.update(delta);
 
         //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
         if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters )&&(megaman.body.getPosition().x <= 6000 / MegamanMainClass.PixelsPerMeters)) {
@@ -206,6 +250,32 @@ public class MainGameScreen implements Screen{
         mapRenderer.setView(mainCamera);
     }
 
+    public float getHealthDamage(){
+        return healthDamage;
+    }
+
+    public void setHealthDamage(float healthDamage){
+        this.healthDamage = healthDamage;
+    }
+
+    public void dañarPersonaje(float health){
+
+        //Dañamos al personaje y verificamos si murio.
+        personajeEstaMuerto = hud.dañarPersonaje(health);
+        //Si esta muerto, ponemos estado Dying(deberia ser Dead).
+        if(personajeEstaMuerto){
+            megaman.setState(Megaman.State.DYING);
+        }
+    }
+
+    public void dañarPersonajeProgresivamente(float health){
+        setHealthDamage(health);
+        dañarPersonajeProgresivamente = true;
+    }
+
+    public void dejarDañoPersonajeProgresivo(boolean bool){
+        dañarPersonajeProgresivamente = false;
+    }
 
     @Override
     public void render(float delta) {
@@ -223,9 +293,6 @@ public class MainGameScreen implements Screen{
         //Dibujamos el debuger para los objetos que colisionan.
         box2DDebugRenderer.render(world,mainCamera.combined);
 
-        //Se puede establecer multiples proyecciones de la matriz de camaras?
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-
         //Le decimos al hud que se dibuje.
         hud.stage.draw();
 
@@ -238,10 +305,16 @@ public class MainGameScreen implements Screen{
         //Le decimos al Sprite que se dibuje segun su correspondiente region.
         megaman.draw(game.batch);
 
+        //Le decimos al Sprite que se dibuje segun su correspondiente region?.
+        zero.draw(game.batch);
+
         //Finalizamos nuestro batch.
         game.batch.end();
     }
 
+    public World getWorld(){
+        return world;
+    }
     public TiledMap getTiledMap(){
         return tiledMap;
     }
