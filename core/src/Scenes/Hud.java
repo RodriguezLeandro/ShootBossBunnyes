@@ -3,7 +3,6 @@ package Scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -55,8 +54,6 @@ public class Hud {
     private boolean leftButtonPressed;
     private boolean rightButtonPressed;
 
-    private boolean upArrowReleased;
-
     private TextureAtlas textureAtlas;
 
     private TextureRegion textureRegion;
@@ -65,9 +62,6 @@ public class Hud {
     //Pero luego me convenci de que no estan taaan mal, sin embargo, una revision luego no vendria mal.
 
     public Hud(SpriteBatch spriteBatch, TextureAtlas textureAtlas, boolean dispositivoEsAndroid){
-
-        //Cuando creamos el hud, nadie toca la flecha up.
-        upArrowReleased = true;
 
         //Guardamos el textureAtlas.
         this.textureAtlas = textureAtlas;
@@ -200,32 +194,30 @@ public class Hud {
 
     public void crearHudBotIzq() {
 
-        Table table = new Table();
+        final Table table = new Table();
         table.left().bottom();
 
         textureRegion = textureAtlas.findRegion("upArrow");
 
-        Image upImage = new Image(textureRegion.getTexture());
+        final Image upImage = new Image(textureRegion);
         upImage.setSize(50, 50);
         upImage.addListener(new InputListener() {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 upArrowPressed = true;
-                upArrowReleased = false;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                upArrowPressed = false;
-                upArrowReleased = true;
+
             }
         });
 
         textureRegion = textureAtlas.findRegion("downArrow");
 
-        Image downImage = new Image(textureRegion.getTexture());
+        Image downImage = new Image(textureRegion);
         downImage.setSize(50, 50);
         downImage.addListener(new InputListener() {
 
@@ -243,7 +235,7 @@ public class Hud {
 
         textureRegion = textureAtlas.findRegion("leftArrow");
 
-        Image leftImage = new Image(textureRegion.getTexture());
+        Image leftImage = new Image(textureRegion);
         leftImage.setSize(50, 50);
         leftImage.addListener(new InputListener() {
 
@@ -261,7 +253,7 @@ public class Hud {
 
         textureRegion = textureAtlas.findRegion("rightArrow");
 
-        Image rightImage = new Image(textureRegion.getTexture());
+        Image rightImage = new Image(textureRegion);
         rightImage.setSize(50, 50);
         rightImage.addListener(new InputListener() {
 
@@ -305,7 +297,7 @@ public class Hud {
 
         textureRegion = textureAtlas.findRegion("triangleButton");
 
-        Image upImage = new Image(textureRegion.getTexture());
+        Image upImage = new Image(textureRegion);
         upImage.setSize(50, 50);
         upImage.addListener(new InputListener() {
 
@@ -318,14 +310,13 @@ public class Hud {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                upButtonPressed = false;
             }
         });
 
 
         textureRegion = textureAtlas.findRegion("xButton");
 
-        Image downImage = new Image(textureRegion.getTexture());
+        Image downImage = new Image(textureRegion);
         downImage.setSize(50, 50);
         downImage.addListener(new InputListener() {
 
@@ -337,13 +328,13 @@ public class Hud {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                downButtonPressed = false;
+
             }
         });
 
         textureRegion = textureAtlas.findRegion("squareButton");
 
-        Image leftImage = new Image(textureRegion.getTexture());
+        Image leftImage = new Image(textureRegion);
         leftImage.setSize(50, 50);
         leftImage.addListener(new InputListener() {
 
@@ -361,7 +352,7 @@ public class Hud {
 
         textureRegion = textureAtlas.findRegion("circleButton");
 
-        Image rightImage = new Image(textureRegion.getTexture());
+        Image rightImage = new Image(textureRegion);
         rightImage.setSize(50, 50);
         rightImage.addListener(new InputListener() {
 
@@ -395,6 +386,14 @@ public class Hud {
         table.add();
 
         stage.addActor(table);
+    }
+
+    public void setUpArrowPressed(boolean bool){
+        upArrowPressed = bool;
+    }
+
+    public void setDownButtonPressed(boolean bool){
+        downButtonPressed = bool;
     }
 
     public boolean dañarPersonaje(float health){
@@ -496,7 +495,4 @@ public class Hud {
         return rightButtonPressed;
     }
 
-    public boolean isUpArrowReleased(){
-        return upArrowReleased;
-    }
 }

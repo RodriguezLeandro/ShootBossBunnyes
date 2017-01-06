@@ -68,9 +68,6 @@ public class MainGameScreen implements Screen{
     //Para ver el daño que hay que hacerle al personaje.
     private float healthDamage;
 
-    //Para saber si megaman ha saltado y aun no cayo al suelo.
-    private boolean megamanHasJumped;
-
     public MainGameScreen(MegamanMainClass game) {
 
         //Le asignamos el juego a nuestro MegamanMainClass.
@@ -133,9 +130,6 @@ public class MainGameScreen implements Screen{
 
         //No lo queremos dañar ni bien arranca.
         dañarPersonajeProgresivamente = false;
-
-        //Porque no esta saltando ni bien inicia el juego
-        megamanHasJumped = false;
     }
 
     public  TextureAtlas getTextureAtlasCharac(){
@@ -154,15 +148,15 @@ public class MainGameScreen implements Screen{
 
             //Esto es para saber si esta siendo tocada la flecha para arriba y que salte solo una vez.
             //Es decir, que no salte muchas veces sino hasta que termine de hacer click.
-            if (hud.isUpArrowPressed() && !megamanHasJumped){
-                megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
-                megamanHasJumped = true;
+            if (hud.isUpArrowPressed()){
+                if (Gdx.input.justTouched()) {
+                    hud.setUpArrowPressed(false);
+                    if (!megaman.isMegamanJumping()) {
+                        megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
+                    }
+                }
             }
 
-            //Aqui verificamos si termino de hacer click o no.
-            if (hud.isUpArrowReleased()){
-                megamanHasJumped = false;
-            }
             if (hud.isLeftArrowPressed()){
                 if (megaman.body.getLinearVelocity().x > -3)
                 megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
@@ -175,7 +169,26 @@ public class MainGameScreen implements Screen{
                 megaman.setState(Megaman.State.HITTING);
             }
             if (hud.isDownButtonPressed()){
-                megaman.setState(Megaman.State.CROUCHING);
+                //Solo si recien tocamos la pantalla.
+                if (Gdx.input.justTouched()){
+                    hud.setDownButtonPressed(false);
+
+                    //Si ya se estaba agachando, el personaje se para.
+                    if (megaman.getState() == Megaman.State.CROUCHING) {
+                        megaman.setState(Megaman.State.STANDING);
+                        megaman.redefineMegaman();
+                    }
+                    //Si no estaba agachado, se para.
+                    else {
+                        megaman.setState(Megaman.State.CROUCHING);
+                        if (megaman.isRunningRight()) {
+                            megaman.redefineMegamanCrouching(true);
+                        }
+                        else{
+                            megaman.redefineMegamanCrouching(false);
+                        }
+                    }
+                }
             }
             //Si presionamos W, el personaje salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
@@ -369,6 +382,7 @@ public class MainGameScreen implements Screen{
         //Si esta muerto, ponemos estado Dying(deberia ser Dead).
         if(personajeEstaMuerto){
             megaman.setState(Megaman.State.DYING);
+            megaman.setMegamanIsDead();
         }
     }
 

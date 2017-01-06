@@ -3,6 +3,7 @@ package Sprites;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -23,13 +24,16 @@ import Screen.MainGameScreen;
  * Created by Leandro on 02/01/2017.
  */
 
-public class Megaman extends Sprite{
+public class Megaman{
 
     public World world;
     public Body body;
     public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING};
     public State currentState;
     public State previousState;
+
+    private Sprite sprite;
+
     private MainGameScreen mainGameScreen;
 
     private TextureRegion megamanStand;
@@ -50,12 +54,12 @@ public class Megaman extends Sprite{
 
     public Megaman(MainGameScreen mainGameScreen){
 
-        //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
-        //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
-        super(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
-
         //Obtenemos el maingamescreen para luego utilizarlo.
         this.mainGameScreen = mainGameScreen;
+
+        //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
+        //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
+        sprite = new Sprite(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
 
         //Obtenemos el mundo en el que el personaje principal vivira.
         world = mainGameScreen.getWorld();
@@ -85,19 +89,19 @@ public class Megaman extends Sprite{
         defineMegaman();
 
         //Buscamos la textura inicial, en la que nuestro personaje se encuentra en Standing.
-        megamanStand = new TextureRegion(getTexture(),324,1,32,64);
+        megamanStand = new TextureRegion(sprite.getTexture(),324,1,32,64);
 
         //Definimos la posicion inicial de nuestro personaje.
         //En realidad, en update esto deberia de sobreescribirse siempre, no deberia ser necesario.
-        setBounds(0,0,64 / MegamanMainClass.PixelsPerMeters ,128 / MegamanMainClass.PixelsPerMeters);
+        sprite.setBounds(0,0,64 / MegamanMainClass.PixelsPerMeters ,128 / MegamanMainClass.PixelsPerMeters);
 
         //Con el metodo setRegion se dibujara nuestro personaje.
-        setRegion(megamanStand);
+        sprite.setRegion(megamanStand);
 
     }
 
     public float getStateTimer(){
-       return stateTimer;
+        return stateTimer;
     }
 
     public void crearAnimaciones(){
@@ -108,7 +112,7 @@ public class Megaman extends Sprite{
         //asi crear las animaciones.
         for(int i = 11; i <17;i++){
             //Creamos objetos textureregions y los agregamos al arraylist.
-            textureRegionFrames.add(new TextureRegion(getTexture(),i * 32, 1,32,64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 1,32,64));
         }
         //Creamos la animacion y queda guardada en memoria.
         megamanWalking = new Animation(0.1f,textureRegionFrames);
@@ -118,32 +122,32 @@ public class Megaman extends Sprite{
         //Realizamos la misma operacion unas 4 veces mas(para cada animacion nueva).
 
         for (int i = 17; i < 20; i++){
-            textureRegionFrames.add(new TextureRegion(getTexture(),i * 32, 1, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 1, 32, 64));
         }
         megamanCrouching = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
         for (int i = 10; i < 13; i++){
-            textureRegionFrames.add(new TextureRegion(getTexture(),i * 32, 65, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 65, 32, 64));
         }
         megamanGettingHit = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
         for (int i = 17; i < 20; i++){
-            textureRegionFrames.add(new TextureRegion(getTexture(),i * 32, 65, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 65, 32, 64));
         }
         megamanJumping = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
         for (int i = 17; i < 20; i++){
-            textureRegionFrames.add(new TextureRegion(getTexture(),i * 32 + 4, 129, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32 + 4, 129, 32, 64));
         }
         megamanHitting = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
         for (int i = 11; i < 13; i++) {
-            textureRegionFrames.add(new TextureRegion(getTexture(), i * 32, 321, 38, 64));
-            textureRegionFrames.add(new TextureRegion(getTexture(), i * 32, 321, 38, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(), i * 32, 321, 38, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(), i * 32, 321, 38, 64));
         }
         megamanDying = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
@@ -153,10 +157,10 @@ public class Megaman extends Sprite{
 
         //Aqui actualizamos la posicion de nuestro personaje principal, para que se ...
         //corresponda con la posicion del fixture(y body) de nuestro personaje.
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
+        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
 
         //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
-        setRegion(getTextureRegion(delta));
+        sprite.setRegion(getTextureRegion(delta));
 
         //Verificamos que el personaje no este muerto, y si lo esta, llamamos a la funcion.
         //Tambien verificamos que no estuviera muerto anteriormente, con la finalidad.
@@ -419,15 +423,12 @@ public class Megaman extends Sprite{
                 break;
             //En el caso de Dying, luego vemos que hacemos(porque debe finalizar el juego);
             case DYING:
-
                 //Si no estaba muriendo, reiniciamos el stateTimer.
                 if (previousState != State.DYING) {
                     stateTimer = 0;
-                }
-                textureRegion = megamanDying.getKeyFrame(stateTimer);
-                if (megamanDying.isAnimationFinished(stateTimer)){
                     megamanIsDead = true;
                 }
+                textureRegion = megamanDying.getKeyFrame(stateTimer);
                 break;
             //Realizamos lo mismo con cada uno de los estados.
             case HITTING:
@@ -492,12 +493,20 @@ public class Megaman extends Sprite{
         return textureRegion;
     }
 
+    public void draw(SpriteBatch spriteBatch){
+        sprite.draw(spriteBatch);
+    }
+
     public boolean isRunningRight(){
         if (runningRight) {
             return true;
         }else {
             return false;
         }
+    }
+
+    public void setMegamanIsDead(){
+        megamanIsDead = true;
     }
 
     private void changeBodyOrientation(){
@@ -636,7 +645,7 @@ public class Megaman extends Sprite{
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                  MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
