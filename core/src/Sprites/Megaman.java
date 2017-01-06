@@ -3,8 +3,8 @@ package Sprites;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -23,13 +23,14 @@ import Screen.MainGameScreen;
  * Created by Leandro on 02/01/2017.
  */
 
-public class Megaman extends Sprite {
+public class Megaman extends Sprite{
 
     public World world;
     public Body body;
     public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING};
     public State currentState;
     public State previousState;
+    private MainGameScreen mainGameScreen;
 
     private TextureRegion megamanStand;
     private TextureRegion textureRegion;
@@ -51,7 +52,10 @@ public class Megaman extends Sprite {
 
         //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
         //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
-        super(mainGameScreen.getTextureAtlas().findRegion("ninja_full"));
+        super(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
+
+        //Obtenemos el maingamescreen para luego utilizarlo.
+        this.mainGameScreen = mainGameScreen;
 
         //Obtenemos el mundo en el que el personaje principal vivira.
         world = mainGameScreen.getWorld();
@@ -167,13 +171,20 @@ public class Megaman extends Sprite {
     public void redefineMegamanCrouching(boolean rightOrientation) {
 
         if (rightOrientation) {
+
+            //Esto es para guardar la posicion que tenia el cuerpo.
             Vector2 position = body.getPosition();
+
+            //Esto es para guardar la velocidad que tenia el cuerpo.
+            Vector2 velocidad = body.getLinearVelocity();
 
             world.destroyBody(body);
 
             BodyDef bodyDef = new BodyDef();
 
             bodyDef.position.set(position);
+
+            bodyDef.linearVelocity.set(velocidad);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -227,11 +238,15 @@ public class Megaman extends Sprite {
         else{
             Vector2 position = body.getPosition();
 
+            Vector2 velocidad = body.getLinearVelocity();
+
             world.destroyBody(body);
 
             BodyDef bodyDef = new BodyDef();
 
             bodyDef.position.set(position);
+
+            bodyDef.linearVelocity.set(velocidad);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -288,11 +303,15 @@ public class Megaman extends Sprite {
 
         Vector2 vector2 = body.getPosition();
 
+        Vector2 velocidad = body.getLinearVelocity();
+
         world.destroyBody(body);
 
         BodyDef bodyDef = new BodyDef();
 
         bodyDef.position.set(vector2);
+
+        bodyDef.linearVelocity.set(velocidad);
 
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -381,10 +400,13 @@ public class Megaman extends Sprite {
                 textureRegion = megamanStand;
                 break;
             case GETTINGHIT:
-
+                if (previousState == State.CROUCHING){
+                    redefineMegaman();
+                }
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
+                    mainGameScreen.dañarPersonaje(10);
                 }
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = megamanGettingHit.getKeyFrame(stateTimer);
@@ -409,6 +431,10 @@ public class Megaman extends Sprite {
                 break;
             //Realizamos lo mismo con cada uno de los estados.
             case HITTING:
+                //Si estaba agachado, hay que cambiar la forma del cuerpo.
+                if (previousState == State.CROUCHING){
+                    redefineMegaman();
+                }
                 //Si no estaba pegando, reiniciamos el stateTimer.
                 if (previousState != State.HITTING) {
                     stateTimer = 0;

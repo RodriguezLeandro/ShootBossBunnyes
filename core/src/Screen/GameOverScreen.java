@@ -34,9 +34,11 @@ public class GameOverScreen implements Screen {
     private Table table;
     private Integer scoreDataInteger;
 
-    public GameOverScreen(final Game game){
+    public GameOverScreen(final Game game, Integer scoreDataInteger){
 
         this.game = game;
+
+        this.scoreDataInteger = scoreDataInteger;
 
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
@@ -49,8 +51,6 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-
-        scoreDataInteger = 100000;
 
         gameOverLabel = new Label("GAME OVER",labelStyle);
         playAgainLabel = new Label("PLAY AGAIN",labelStyle);

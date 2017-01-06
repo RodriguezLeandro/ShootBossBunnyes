@@ -32,7 +32,8 @@ public class MainGameScreen implements Screen{
     private MegamanMainClass game;
 
     //Definimos Atlas para las texturas de los personajes.
-    private TextureAtlas textureAtlas;
+    private TextureAtlas textureAtlasCharac;
+    private TextureAtlas textureAtlasTools;
 
     //Camara para nuestro juego y viewport para ajustar resoluciones.
     private OrthographicCamera mainCamera;
@@ -75,7 +76,9 @@ public class MainGameScreen implements Screen{
         //Le asignamos el juego a nuestro MegamanMainClass.
         this.game = game;
 
-        textureAtlas = new TextureAtlas("MegamanAndEnemies.pack");
+        textureAtlasCharac = new TextureAtlas("charac1/charac1.pack");
+
+        textureAtlasTools = new TextureAtlas("tools/tools.pack");
 
         //Creamos una camara para que el usuario vea el renderizado.
         mainCamera = new OrthographicCamera();
@@ -85,7 +88,7 @@ public class MainGameScreen implements Screen{
 
         //Cargamos el archivo tmx de tiles map.
         tmxMapLoader = new TmxMapLoader();
-        tiledMap = tmxMapLoader.load("tiled1.tmx");
+        tiledMap = tmxMapLoader.load("tiledmap/tiled1.tmx");
 
         //OrthogonalTiledMapRenderer se encarga del renderizado del mapa.
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / game.PixelsPerMeters);
@@ -120,10 +123,10 @@ public class MainGameScreen implements Screen{
         //Si estamos en un dispositivo android:
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             //Creamos el Hud de nuestro juego para android.
-            hud = new Hud(game.batch,true);
+            hud = new Hud(game.batch,textureAtlasTools,true);
         }else{
             //Si estamos en un dispositivo que no es android(seguramente desktop):
-            hud = new Hud(game.batch,false);
+            hud = new Hud(game.batch,textureAtlasTools,false);
         }
         //Porque claramente, nuestro personaje aun vive.
         personajeEstaMuerto = false;
@@ -135,9 +138,10 @@ public class MainGameScreen implements Screen{
         megamanHasJumped = false;
     }
 
-    public  TextureAtlas getTextureAtlas(){
-        return textureAtlas;
+    public  TextureAtlas getTextureAtlasCharac(){
+        return textureAtlasCharac;
     }
+
     @Override
     public void show() {
 
@@ -415,7 +419,7 @@ public class MainGameScreen implements Screen{
 
         //cuando termine de dibujar todo, preguntamos si el juego termino.
         if (gameOver()){
-            game.setScreen(new GameOverScreen(game));
+            game.setScreen(new GameOverScreen(game,hud.getScore()));
             dispose();
         }
     }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -56,14 +57,20 @@ public class Hud {
 
     private boolean upArrowReleased;
 
+    private TextureAtlas textureAtlas;
+
+    private TextureRegion textureRegion;
 
     //Nota: primero me quedo la impresion de que las barras estan medio jarcodeadas(si,hardcodeadas).
     //Pero luego me convenci de que no estan taaan mal, sin embargo, una revision luego no vendria mal.
 
-    public Hud(SpriteBatch spriteBatch, boolean dispositivoEsAndroid){
+    public Hud(SpriteBatch spriteBatch, TextureAtlas textureAtlas, boolean dispositivoEsAndroid){
 
         //Cuando creamos el hud, nadie toca la flecha up.
         upArrowReleased = true;
+
+        //Guardamos el textureAtlas.
+        this.textureAtlas = textureAtlas;
 
         //Si el dispositivo es android, creamos todo lo del hud.
         if (dispositivoEsAndroid) {
@@ -143,11 +150,18 @@ public class Hud {
         //Siempre tendremos el background en gris, y cuando el player gaste vida o mana,
         //iremos sacando de a poco el knob que se encuentra arriba del background,
         //por lo que dara la impresion de perder vida, aunque solo estemos sacando el knob.
-        progressBarStyleRed.background = new TextureRegionDrawable(new TextureRegion(new Texture("bar/graybar.png")));
-        progressBarStyleBlue.background = new TextureRegionDrawable(new TextureRegion(new Texture("bar/graybar.png")));
+
+
+        //Aqui tengo que crear los textureRegion solicitados.
+        textureRegion = textureAtlas.findRegion("graybar");
+
+        progressBarStyleRed.background = new TextureRegionDrawable(textureRegion);
+        progressBarStyleBlue.background = new TextureRegionDrawable(textureRegion);
+
+        textureRegion = textureAtlas.findRegion("redbar");
 
         //Creamos un textureregiondrawable para modificar las propiedades del knob.
-        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(new Texture("bar/redbar.png")));
+        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
 
         //Establecemos el tamaño del texturereciondrawable(future knob propery).
         textureRegionDrawable.setMinWidth(139);
@@ -156,8 +170,10 @@ public class Hud {
         //Creamos el knob con el tamaño especificado.
         progressBarStyleRed.knob = textureRegionDrawable;
 
+        textureRegion = textureAtlas.findRegion("bluebar");
+
         //Creamos un knob diferente con el mismo tamaño pero azul.
-        textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(new Texture("bar/bluebar.png")));
+        textureRegionDrawable = new TextureRegionDrawable(textureRegion);
 
         textureRegionDrawable.setMinWidth(139);
         textureRegionDrawable.setMinHeight(29);
@@ -187,7 +203,9 @@ public class Hud {
         Table table = new Table();
         table.left().bottom();
 
-        Image upImage = new Image(new Texture("arrow/upArrow.png"));
+        textureRegion = textureAtlas.findRegion("upArrow");
+
+        Image upImage = new Image(textureRegion.getTexture());
         upImage.setSize(50, 50);
         upImage.addListener(new InputListener() {
 
@@ -205,7 +223,9 @@ public class Hud {
             }
         });
 
-        Image downImage = new Image(new Texture("arrow/downArrow.png"));
+        textureRegion = textureAtlas.findRegion("downArrow");
+
+        Image downImage = new Image(textureRegion.getTexture());
         downImage.setSize(50, 50);
         downImage.addListener(new InputListener() {
 
@@ -221,7 +241,9 @@ public class Hud {
             }
         });
 
-        Image leftImage = new Image(new Texture("arrow/leftArrow.png"));
+        textureRegion = textureAtlas.findRegion("leftArrow");
+
+        Image leftImage = new Image(textureRegion.getTexture());
         leftImage.setSize(50, 50);
         leftImage.addListener(new InputListener() {
 
@@ -237,7 +259,9 @@ public class Hud {
             }
         });
 
-        Image rightImage = new Image(new Texture("arrow/rightArrow.png"));
+        textureRegion = textureAtlas.findRegion("rightArrow");
+
+        Image rightImage = new Image(textureRegion.getTexture());
         rightImage.setSize(50, 50);
         rightImage.addListener(new InputListener() {
 
@@ -279,7 +303,9 @@ public class Hud {
         table.right().bottom();
         table.setFillParent(true);
 
-        Image upImage = new Image(new Texture("button/triangleButton.png"));
+        textureRegion = textureAtlas.findRegion("triangleButton");
+
+        Image upImage = new Image(textureRegion.getTexture());
         upImage.setSize(50, 50);
         upImage.addListener(new InputListener() {
 
@@ -297,7 +323,9 @@ public class Hud {
         });
 
 
-        Image downImage = new Image(new Texture("button/xButton.png"));
+        textureRegion = textureAtlas.findRegion("xButton");
+
+        Image downImage = new Image(textureRegion.getTexture());
         downImage.setSize(50, 50);
         downImage.addListener(new InputListener() {
 
@@ -313,7 +341,9 @@ public class Hud {
             }
         });
 
-        Image leftImage = new Image(new Texture("button/squareButton.png"));
+        textureRegion = textureAtlas.findRegion("squareButton");
+
+        Image leftImage = new Image(textureRegion.getTexture());
         leftImage.setSize(50, 50);
         leftImage.addListener(new InputListener() {
 
@@ -329,7 +359,9 @@ public class Hud {
             }
         });
 
-        Image rightImage = new Image(new Texture("button/circleButton.png"));
+        textureRegion = textureAtlas.findRegion("circleButton");
+
+        Image rightImage = new Image(textureRegion.getTexture());
         rightImage.setSize(50, 50);
         rightImage.addListener(new InputListener() {
 
@@ -426,6 +458,10 @@ public class Hud {
         }else{
             manaBar.getStyle().knob.setMinWidth(manaNuevo);
         }
+    }
+
+    public Integer getScore(){
+        return score;
     }
 
     public boolean isUpArrowPressed() {

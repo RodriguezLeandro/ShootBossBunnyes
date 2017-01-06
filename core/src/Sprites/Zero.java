@@ -52,7 +52,7 @@ public class Zero extends Sprite {
 
         //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
         //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
-        super(mainGameScreen.getTextureAtlas().findRegion("advnt_full"));
+        super(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
 
         //Obtenemos el mundo en el que el enemigo principal vivira.
         world = mainGameScreen.getWorld();
@@ -425,11 +425,15 @@ public class Zero extends Sprite {
         if (orientation) {
             Vector2 position = body.getPosition();
 
+            Vector2 velocidad = body.getLinearVelocity();
+
             world.destroyBody(body);
 
             BodyDef bodyDef = new BodyDef();
 
             bodyDef.position.set(position);
+
+            bodyDef.linearVelocity.set(velocidad);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -483,11 +487,15 @@ public class Zero extends Sprite {
         else {
             Vector2 position = body.getPosition();
 
+            Vector2 velocidad = body.getLinearVelocity();
+
             world.destroyBody(body);
 
             BodyDef bodyDef = new BodyDef();
 
             bodyDef.position.set(position);
+
+            bodyDef.linearVelocity.set(velocidad);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -544,11 +552,15 @@ public class Zero extends Sprite {
 
         Vector2 vector2 = body.getPosition();
 
+        Vector2 velocidad = body.getLinearVelocity();
+
         world.destroyBody(body);
 
         BodyDef bodyDef = new BodyDef();
 
         bodyDef.position.set(vector2);
+
+        bodyDef.linearVelocity.set(velocidad);
 
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
