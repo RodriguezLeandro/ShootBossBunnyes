@@ -4,12 +4,15 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
@@ -161,6 +164,184 @@ public class Megaman extends Sprite {
         }
     }
 
+    public void redefineMegamanCrouching(boolean rightOrientation) {
+
+        if (rightOrientation) {
+            Vector2 position = body.getPosition();
+
+            world.destroyBody(body);
+
+            BodyDef bodyDef = new BodyDef();
+
+            bodyDef.position.set(position);
+
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+            body = world.createBody(bodyDef);
+
+            FixtureDef fixtureDef = new FixtureDef();
+
+            CircleShape circleShape = new CircleShape();
+
+            circleShape.setRadius(8 / MegamanMainClass.PixelsPerMeters);
+
+            circleShape.setPosition(new Vector2(14 / MegamanMainClass.PixelsPerMeters, 2 / MegamanMainClass.PixelsPerMeters));
+
+            fixtureDef.shape = circleShape;
+
+            fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
+
+            fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+
+            body.createFixture(fixtureDef);
+
+            circleShape.setRadius(20 / MegamanMainClass.PixelsPerMeters);
+
+            circleShape.setPosition(new Vector2(10 / MegamanMainClass.PixelsPerMeters, -32 / MegamanMainClass.PixelsPerMeters));
+
+            body.createFixture(fixtureDef);
+
+            PolygonShape polygonShape = new PolygonShape();
+
+            Vector2[] vertices = new Vector2[4];
+
+            vertices[0] = new Vector2(30f / MegamanMainClass.PixelsPerMeters, -53f / MegamanMainClass.PixelsPerMeters);
+            vertices[1] = new Vector2(30f / MegamanMainClass.PixelsPerMeters, 12f / MegamanMainClass.PixelsPerMeters);
+            vertices[2] = new Vector2(-10f / MegamanMainClass.PixelsPerMeters, 12f / MegamanMainClass.PixelsPerMeters);
+            vertices[3] = new Vector2(-10f / MegamanMainClass.PixelsPerMeters, -53f / MegamanMainClass.PixelsPerMeters);
+
+            polygonShape.set(vertices);
+
+            vertices = null;
+
+            fixtureDef.shape = polygonShape;
+
+            fixtureDef.isSensor = true;
+
+            fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
+
+            body.createFixture(fixtureDef).setUserData(this);
+        }
+        else{
+            Vector2 position = body.getPosition();
+
+            world.destroyBody(body);
+
+            BodyDef bodyDef = new BodyDef();
+
+            bodyDef.position.set(position);
+
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+            body = world.createBody(bodyDef);
+
+            FixtureDef fixtureDef = new FixtureDef();
+
+            CircleShape circleShape = new CircleShape();
+
+            circleShape.setRadius(8 / MegamanMainClass.PixelsPerMeters);
+
+            circleShape.setPosition(new Vector2(-14 / MegamanMainClass.PixelsPerMeters, 2 / MegamanMainClass.PixelsPerMeters));
+
+            fixtureDef.shape = circleShape;
+
+            fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
+
+            fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+
+            body.createFixture(fixtureDef);
+
+            circleShape.setRadius(20 / MegamanMainClass.PixelsPerMeters);
+
+            circleShape.setPosition(new Vector2(-10 / MegamanMainClass.PixelsPerMeters, -32 / MegamanMainClass.PixelsPerMeters));
+
+            body.createFixture(fixtureDef);
+
+            PolygonShape polygonShape = new PolygonShape();
+
+            Vector2[] vertices = new Vector2[4];
+
+            vertices[0] = new Vector2(-30f / MegamanMainClass.PixelsPerMeters, -53f / MegamanMainClass.PixelsPerMeters);
+            vertices[1] = new Vector2(-30f / MegamanMainClass.PixelsPerMeters, 12f / MegamanMainClass.PixelsPerMeters);
+            vertices[2] = new Vector2(10f / MegamanMainClass.PixelsPerMeters, 12f / MegamanMainClass.PixelsPerMeters);
+            vertices[3] = new Vector2(10f / MegamanMainClass.PixelsPerMeters, -53f / MegamanMainClass.PixelsPerMeters);
+
+            polygonShape.set(vertices);
+
+            vertices = null;
+
+            fixtureDef.shape = polygonShape;
+
+            fixtureDef.isSensor = true;
+
+            fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
+
+            body.createFixture(fixtureDef).setUserData(this);
+        }
+    }
+
+    public void redefineMegaman(){
+
+        Vector2 vector2 = body.getPosition();
+
+        world.destroyBody(body);
+
+        BodyDef bodyDef = new BodyDef();
+
+        bodyDef.position.set(vector2);
+
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+        body = world.createBody(bodyDef);
+
+        FixtureDef fixtureDef = new FixtureDef();
+
+        CircleShape circleShape = new CircleShape();
+
+        circleShape.setRadius(20 / MegamanMainClass.PixelsPerMeters);
+
+        circleShape.setPosition(new Vector2(0, 10 / MegamanMainClass.PixelsPerMeters ));
+
+        fixtureDef.shape = circleShape;
+
+        fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
+
+        fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+
+        body.createFixture(fixtureDef);
+
+        circleShape.setPosition(new Vector2(0,-32 / MegamanMainClass.PixelsPerMeters));
+
+        body.createFixture(fixtureDef);
+
+        PolygonShape polygonShape = new PolygonShape();
+
+        Vector2[] vertices = new Vector2[4];
+
+        vertices[0] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+        vertices[1] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[2] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[3] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+
+        polygonShape.set(vertices);
+
+        vertices = null;
+
+        fixtureDef.shape = polygonShape;
+
+        fixtureDef.isSensor = true;
+
+        fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
+
+        body.createFixture(fixtureDef).setUserData(this);
+    }
+
     public TextureRegion getTextureRegion(float delta){
 
         //Obtenemos el estado actual de nuestro personaje.
@@ -246,12 +427,21 @@ public class Megaman extends Sprite {
                 textureRegion = megamanCrouching.getKeyFrame(stateTimer);
                 if (megamanCrouching.isAnimationFinished(stateTimer)){
                     shouldBeJumping = false;
-                    currentState = State.STANDING;
                 }
                 break;
             default:
                 textureRegion = megamanStand;
                 break;
+        }
+
+        //Nota: podriamos combinar esta seccion de codigo con la de abajo, la de cambiar
+        //la orientacion del spritesheet, pero para no complicar visualmente el codigo, no lo hacemos.
+        //Si cambia la orientacion del cuerpo.
+        if ((body.getLinearVelocity().x < 0 && runningRight)||(body.getLinearVelocity().x > 0 && !runningRight)) {
+            // Y si el personaje esta agachado, cambiamos la forma de la orientacion del cuerpo.
+            if (currentState == State.CROUCHING) {
+                changeBodyOrientation();
+            }
         }
 
         //Verificamos para que lado esta mirando el personaje y si nuestra imagen ve para el mismo lado...
@@ -274,6 +464,66 @@ public class Megaman extends Sprite {
 
         //Devolvemos el textureRegion que corresponde.
         return textureRegion;
+    }
+
+    public boolean isRunningRight(){
+        if (runningRight) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private void changeBodyOrientation(){
+        //Recorremos todos los fixtures que conforman el cuerpo del personaje.
+        //La idea es que a cada uno le cambiaremos la orientacion.
+        for(Fixture fixture : body.getFixtureList()){
+
+            if (fixture.getShape().getType() == Shape.Type.Polygon){
+
+                //Si bien es un poligono, solo trabajaremos con cuadrados o rectangulos.
+                //Y asi podremos cambiar la orientacion en los ejes importantes.
+
+                Vector2[] vector2array = new Vector2[4];
+
+                for (int i = 0; i < 4; i ++){
+                    vector2array[i] = new Vector2();
+                }
+
+                for (int i = 0; i < 4; i ++){
+                    ((PolygonShape) fixture.getShape()).getVertex(i,vector2array[i]);
+                }
+
+                //El problema es que al crearse el poligono cambia las posiciones.
+                //Por el momento cambio el signo del eje x.
+
+                vector2array[0].set(-vector2array[0].x,vector2array[0].y);
+
+                vector2array[1].set(-vector2array[1].x,vector2array[1].y);
+
+                vector2array[2].set(-vector2array[2].x,vector2array[2].y);
+
+                vector2array[3].set(-vector2array[3].x,vector2array[3].y);
+
+                ((PolygonShape) fixture.getShape()).set(vector2array);
+
+                //Liberamos la memoria, importante.
+
+                vector2array = null;
+
+            }
+            else if(fixture.getShape().getType() == Shape.Type.Circle){
+
+                //Si es un circulo, le cambiamos la orientacion al fixture.
+                //Poniendo el vector posicion del cuerpo pero de forma negativa.
+                //Importante : solo cambiamos la orientacion en el eje x.
+
+                ((CircleShape) fixture.getShape()).setPosition(new Vector2(- ((CircleShape) fixture.getShape()).getPosition().x,((CircleShape) fixture.getShape()).getPosition().y));
+            }
+            //Dejo el else por futuras actualizaciones, por si no es ni polygon ni circle.
+            else {
+            }
+        }
     }
 
     //Funcion para modificar el estado de nuestro personaje desde pantalla principal.
@@ -385,9 +635,9 @@ public class Megaman extends Sprite {
         Vector2[] vertices = new Vector2[4];
 
         //Creamos cada vector del array y les asignamos las correspondientes posiciones.
-        vertices[0] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[0] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
         vertices[1] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,30f / MegamanMainClass.PixelsPerMeters);
-        vertices[2] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+        vertices[2] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
         vertices[3] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
 
         //Ponemos los vertices del array que conforman la forma poligonal.
@@ -410,4 +660,12 @@ public class Megaman extends Sprite {
 
     }
 
+    public boolean isMegamanJumping(){
+        if (body.getLinearVelocity().y == 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }

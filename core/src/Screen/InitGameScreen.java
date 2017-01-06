@@ -16,58 +16,53 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import Sprites.Megaman;
+
 /**
- * Created by Leandro on 05/01/2017.
+ * Created by Leandro on 06/01/2017.
  */
 
-public class GameOverScreen implements Screen {
+public class InitGameScreen implements Screen {
 
     private Game game;
     private Viewport viewport;
     private Stage stage;
 
-    private Label gameOverLabel;
-    private Label playAgainLabel;
-    private Label scoreLabel;
-    private Label backToMainMenu;
+    private Label nameGameLabel;
+    private Label newGameLabel;
+    private Label controlsLabel;
+    private Label exitLabel;
+
     private Label.LabelStyle labelStyle;
-    private Table table;
-    private Integer scoreDataInteger;
 
-    public GameOverScreen(final Game game){
 
+    public InitGameScreen(final Game game){
         this.game = game;
 
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
-        stage = new Stage(viewport,((MegamanMainClass) game).batch);
+        stage = new Stage(viewport,((MegamanMainClass)game).batch);
 
         Gdx.input.setInputProcessor(stage);
 
-        table = new Table();
-        table.top();
-        table.setFillParent(true);
+        Table table = new Table();
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        scoreDataInteger = 100000;
+        nameGameLabel = new Label("Geometry-Man",labelStyle);
+        newGameLabel = new Label("New Game",labelStyle);
+        controlsLabel = new Label("Controls",labelStyle);
+        exitLabel = new Label("Exit",labelStyle);
 
-        gameOverLabel = new Label("GAME OVER",labelStyle);
-        playAgainLabel = new Label("PLAY AGAIN",labelStyle);
-        scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
-        backToMainMenu = new Label("MAIN MENU",labelStyle);
-
-        scoreLabel.setFontScale(1.5f);
-        gameOverLabel.setFontScale(2f);
-        playAgainLabel.setFontScale(1.5f);
-        backToMainMenu.setFontScale(1.5f);
-
-        playAgainLabel.addListener(new InputListener(){
+        newGameLabel.addListener(new InputListener(){
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
                 game.setScreen(new MainGameScreen((MegamanMainClass) game));
+
                 dispose();
+
                 return true;
             }
 
@@ -77,11 +72,29 @@ public class GameOverScreen implements Screen {
             }
         });
 
-        backToMainMenu.addListener(new InputListener(){
+        controlsLabel.addListener(new InputListener(){
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new InitGameScreen((MegamanMainClass)game));
+                //Hay que enviar al usuario a la pantalla de controles..
+                game.setScreen(new ControlsScreen((MegamanMainClass) game));
+                dispose();
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+            }
+        });
+
+        exitLabel.addListener(new InputListener(){
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //Hay que eliminar todo? O sacar al usuario al menos de la app.
+                Gdx.app.exit();
                 dispose();
                 return true;
             }
@@ -92,19 +105,23 @@ public class GameOverScreen implements Screen {
             }
         });
 
+        table.top().padTop(100);
 
-        table.row().padTop(80);
-        table.add(gameOverLabel).expandX();
-        table.row().padTop(80);
-        table.add(scoreLabel);
+        table.setFillParent(true);
 
-        table.row().padTop(120);
+        nameGameLabel.setFontScale(3);
 
-        table.add(playAgainLabel).expandX();
+        newGameLabel.setFontScale(2);
+        controlsLabel.setFontScale(2);
+        exitLabel.setFontScale(2);
 
-        table.row().padTop(60);
-
-        table.add(backToMainMenu).expandX();
+        table.add(nameGameLabel).expandX();
+        table.row().padTop(150);
+        table.add(newGameLabel).expandX();
+        table.row().padTop(20);
+        table.add(controlsLabel).expandX();
+        table.row().padTop(20);
+        table.add(exitLabel).expandX();
 
         stage.addActor(table);
     }
@@ -116,12 +133,10 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        //Limpiamos la pantalla
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.draw();
-
     }
 
     @Override

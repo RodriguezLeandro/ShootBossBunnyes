@@ -5,8 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import Screen.GameOverScreen;
-import Screen.MainGameScreen;
+import Screen.InitGameScreen;
 
 public class MegamanMainClass extends Game {
 
@@ -46,7 +45,7 @@ public class MegamanMainClass extends Game {
 		assetManager.finishLoading();
 
 		//Ponemos la pantalla principal del juego.
-		setScreen(new MainGameScreen(this));
+		setScreen(new InitGameScreen(this));
 	}
 
 	@Override

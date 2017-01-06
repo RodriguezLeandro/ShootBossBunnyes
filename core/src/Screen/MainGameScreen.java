@@ -4,10 +4,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -69,8 +67,8 @@ public class MainGameScreen implements Screen{
     //Para ver el daño que hay que hacerle al personaje.
     private float healthDamage;
 
-    //Para saber si megaman esta saltando.
-    private boolean isMegamanJumping;
+    //Para saber si megaman ha saltado y aun no cayo al suelo.
+    private boolean megamanHasJumped;
 
     public MainGameScreen(MegamanMainClass game) {
 
@@ -134,7 +132,7 @@ public class MainGameScreen implements Screen{
         dañarPersonajeProgresivamente = false;
 
         //Porque no esta saltando ni bien inicia el juego
-        isMegamanJumping = false;
+        megamanHasJumped = false;
     }
 
     public  TextureAtlas getTextureAtlas(){
@@ -152,19 +150,21 @@ public class MainGameScreen implements Screen{
 
             //Esto es para saber si esta siendo tocada la flecha para arriba y que salte solo una vez.
             //Es decir, que no salte muchas veces sino hasta que termine de hacer click.
-            if (hud.isUpArrowPressed() && !isMegamanJumping){
+            if (hud.isUpArrowPressed() && !megamanHasJumped){
                 megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
-                isMegamanJumping = true;
+                megamanHasJumped = true;
             }
 
             //Aqui verificamos si termino de hacer click o no.
             if (hud.isUpArrowReleased()){
-                isMegamanJumping = false;
+                megamanHasJumped = false;
             }
             if (hud.isLeftArrowPressed()){
+                if (megaman.body.getLinearVelocity().x > -3)
                 megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
             if (hud.isRightArrowPressed()){
+                if (megaman.body.getLinearVelocity().x < 3)
                 megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
             }
             if (hud.isLeftButtonPressed()){
@@ -175,14 +175,20 @@ public class MainGameScreen implements Screen{
             }
             //Si presionamos W, el personaje salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+                //Solo salta si no estaba saltando o volando en el aire.
+                if(!megaman.isMegamanJumping())
                 megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
             }
             //Si presionamos D, el personaje se mueve a la derecha.
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+                if (megaman.body.getLinearVelocity().x < 3)
                 megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
             }
             //Si presionamos A, el personaje se mueve a la izquierda.
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+                if (megaman.body.getLinearVelocity().x > -3)
                 megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
             //Si presionamos Flechita UP, el personaje muere.
@@ -190,8 +196,22 @@ public class MainGameScreen implements Screen{
                 megaman.setState(Megaman.State.DYING);
             }
             //Si presionamos Left, el personaje se agacha.
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                megaman.setState(Megaman.State.CROUCHING);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                //Si ya se estaba agachando, el personaje se para.
+                if (megaman.getState() == Megaman.State.CROUCHING) {
+                    megaman.setState(Megaman.State.STANDING);
+                    megaman.redefineMegaman();
+                }
+                //Si no estaba agachado, se para.
+                else {
+                    megaman.setState(Megaman.State.CROUCHING);
+                    if (megaman.isRunningRight()) {
+                        megaman.redefineMegamanCrouching(true);
+                    }
+                    else{
+                        megaman.redefineMegamanCrouching(false);
+                    }
+                }
             }
             //Si presionamos Right, el personaje pega.
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -225,14 +245,17 @@ public class MainGameScreen implements Screen{
         if (!zero.isDead()) {
             //Si presionamos 8, el personaje enemigo salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
+                if(!zero.isZeroJumping())
                 zero.body.applyLinearImpulse(new Vector2(0, 6f), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 4, el personaje enemigo se mueve a la izquierda.
             if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)) {
+                if (zero.body.getLinearVelocity().x > -3)
                 zero.body.applyLinearImpulse(new Vector2(-0.2f, 0), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 6, el personaje enemigo se mueve a la derecha.
             if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)) {
+                if (zero.body.getLinearVelocity().x < 3)
                 zero.body.applyLinearImpulse(new Vector2(0.2f, 0), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 7, el personaje enemigo pega.
@@ -241,7 +264,21 @@ public class MainGameScreen implements Screen{
             }
             //Si presionamos 9, el personaje enemigo pega.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
-                zero.setState(Zero.State.CROUCHING);
+                //Si ya se estaba agachando, el personaje se para.
+                if (zero.getState() == Zero.State.CROUCHING) {
+                    zero.setState(Zero.State.STANDING);
+                    zero.redefineZero();
+                }
+                //Si no estaba agachado, se para.
+                else {
+                    zero.setState(Zero.State.CROUCHING);
+                    if (zero.isRunningRight()) {
+                        zero.redefineZeroCrouching(true);
+                    }
+                    else{
+                        zero.redefineZeroCrouching(false);
+                    }
+                }
             }
             //Si presionamos 3, el personaje enemigo pega.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
@@ -354,7 +391,7 @@ public class MainGameScreen implements Screen{
         mapRenderer.render();
 
         //Dibujamos el debuger para los objetos que colisionan.
-      //  box2DDebugRenderer.render(world,mainCamera.combined);
+        box2DDebugRenderer.render(world,mainCamera.combined);
 
         //Establecemos la proyeccion de la matriz de la camara principal.
         game.batch.setProjectionMatrix(mainCamera.combined);
