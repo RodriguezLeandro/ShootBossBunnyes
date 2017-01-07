@@ -18,6 +18,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import java.util.ArrayList;
+
 import Screen.MainGameScreen;
 
 /**
@@ -208,7 +210,7 @@ public class Megaman{
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                     | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -335,7 +337,7 @@ public class Megaman{
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -576,6 +578,10 @@ public class Megaman{
         }
     }
 
+    public Vector2 getPositionFireAttack(){
+        return new Vector2(body.getPosition().x + sprite.getWidth()/ 2,body.getPosition().y);
+    }
+
     //Funcion que devuelve el estado de nuestro personaje.
     public State getState(){
 
@@ -645,7 +651,7 @@ public class Megaman{
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -691,7 +697,7 @@ public class Megaman{
         fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 
         //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
-        body.createFixture(fixtureDef).setUserData("mainNinja");
+        body.createFixture(fixtureDef).setUserData(this);
 
     }
 

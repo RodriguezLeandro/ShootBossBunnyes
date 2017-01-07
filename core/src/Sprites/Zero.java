@@ -25,6 +25,7 @@ public class Zero extends Sprite {
 
     public World world;
     public Body body;
+    private MainGameScreen mainGameScreen;
 
     public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING};
     public State currentState;
@@ -43,9 +44,13 @@ public class Zero extends Sprite {
     private Animation zeroDying;
 
     private float stateTimer;
+    private float untouchableCount;
+
     private boolean runningRight;
     private boolean shouldBeJumping;
     private boolean zeroIsDead;
+    private boolean makeZeroUntouchable;
+    private boolean deactivateZeroBody;
 
 
     public Zero(MainGameScreen mainGameScreen){
@@ -53,6 +58,9 @@ public class Zero extends Sprite {
         //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
         //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
         super(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
+
+        //Obtenemos el maingamescreen.
+        this.mainGameScreen = mainGameScreen;
 
         //Obtenemos el mundo en el que el enemigo principal vivira.
         world = mainGameScreen.getWorld();
@@ -89,9 +97,19 @@ public class Zero extends Sprite {
         //Con el metodo setRegion se dibujara nuestro personaje.
         setRegion(zeroStand);
 
+        //Establecemos el valor inicial del contador en 0.
+        untouchableCount = 0;
+
+        //Porque el personaje enemigo debe ser tocable.
+        makeZeroUntouchable = false;
+
+        //Queremos que el cuerpo del personaje este activo.
+        deactivateZeroBody = false;
+
     }
 
     public void update(float delta){
+
         //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
         //corresponda con la posicion del fixture(y body) de nuestro personaje.
 
@@ -99,6 +117,19 @@ public class Zero extends Sprite {
 
         //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
         setRegion(getTextureRegion(delta));
+
+        if (makeZeroUntouchable){
+            setUntouchable3Seconds();
+        }
+
+        if (deactivateZeroBody){
+            if (body.isActive()) {
+                body.setActive(false);
+            }
+        }else {
+            body.setActive(true);
+        }
+
     }
 
 
@@ -185,7 +216,7 @@ public class Zero extends Sprite {
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT |
                 MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT;
+                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -226,6 +257,8 @@ public class Zero extends Sprite {
 
         //Decimos que nuestro shape es un sensor.
         fixtureDef.isSensor = true;
+
+        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
 
         //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
         body.createFixture(fixtureDef).setUserData(this);
@@ -340,14 +373,14 @@ public class Zero extends Sprite {
         //Verificamos para que lado esta mirando el personaje y si nuestra imagen ve para el mismo lado...
         //De no ser asi, damos vuelta las imagenes de nuestro animacion para que se vea en el lado correcto.
         if ((body.getLinearVelocity().x < 0 || !runningRight) && (!textureRegion.isFlipX())){
-            textureRegion.flip(true,false);
-            //Acordarse que si cambiamos la orientacion, hay que cambiar el booleano tambien.
-            runningRight = false;
+                textureRegion.flip(true, false);
+                //Acordarse que si cambiamos la orientacion, hay que cambiar el booleano tambien.
+                runningRight = false;
         }
         //Lo mismo que arriba.
         else if((body.getLinearVelocity().x > 0 || runningRight) &&(textureRegion.isFlipX())){
-            textureRegion.flip(true,false);
-            runningRight = true;
+                textureRegion.flip(true, false);
+                runningRight = true;
         }
 
         //Si no hemos cambiado de estado, entonces le agregamos tiempo a la animacion...
@@ -453,7 +486,7 @@ public class Zero extends Sprite {
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                     | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT;
+                    MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -480,7 +513,7 @@ public class Zero extends Sprite {
 
             fixtureDef.isSensor = true;
 
-            fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
+            fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
 
             body.createFixture(fixtureDef).setUserData(this);
         }
@@ -515,7 +548,7 @@ public class Zero extends Sprite {
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                     | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT;
+                    MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -542,9 +575,32 @@ public class Zero extends Sprite {
 
             fixtureDef.isSensor = true;
 
-            fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
+            fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
 
             body.createFixture(fixtureDef).setUserData(this);
+        }
+    }
+
+    public void setUntouchable3Seconds(){
+
+        if(untouchableCount < 3f){
+            body.setLinearVelocity(0,0);
+            untouchableCount += mainGameScreen.getDeltaTime();
+            makeZeroUntouchable = true;
+            deactivateZeroBody = true;
+        }
+        else {
+            untouchableCount = 0;
+            deactivateZeroBody = false;
+            makeZeroUntouchable = false;
+        }
+    }
+
+    public void onBodyHit(boolean bool) {
+        if (bool) {
+            setState(State.GETTINGHIT);
+        }else {
+            setState(State.GETTINGHIT);
         }
     }
 
@@ -580,7 +636,7 @@ public class Zero extends Sprite {
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT;
+                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -605,7 +661,7 @@ public class Zero extends Sprite {
 
         fixtureDef.isSensor = true;
 
-        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
+        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
 
         body.createFixture(fixtureDef).setUserData(this);
     }

@@ -16,7 +16,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import java.util.ArrayList;
+
 import Scenes.Hud;
+import Sprites.Fireball;
 import Sprites.Megaman;
 import Sprites.Zero;
 import Tools.WorldContactListener;
@@ -67,6 +70,14 @@ public class MainGameScreen implements Screen{
 
     //Para ver el daño que hay que hacerle al personaje.
     private float healthDamage;
+
+    //Para saber el delta time.
+    private float deltaTime;
+
+    //Para controlar y ver el tamaño del arraylist de fireballs.
+    private Integer arrayListSize;
+
+    private ArrayList<Fireball> arrayListFireball;
 
     public MainGameScreen(MegamanMainClass game) {
 
@@ -130,10 +141,19 @@ public class MainGameScreen implements Screen{
 
         //No lo queremos dañar ni bien arranca.
         dañarPersonajeProgresivamente = false;
+
+        arrayListFireball = new ArrayList<Fireball>();
+
+        //El size del array list esta vacio al comienzo.
+        arrayListSize = 0;
     }
 
     public  TextureAtlas getTextureAtlasCharac(){
         return textureAtlasCharac;
+    }
+
+    public  TextureAtlas getTextureAtlasTools(){
+        return textureAtlasTools;
     }
 
     @Override
@@ -231,8 +251,23 @@ public class MainGameScreen implements Screen{
                 }
             }
             //Si presionamos Right, el personaje pega.
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                megaman.setState(Megaman.State.HITTING);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
+                //Solo cambia el estado de megaman si puede tirar pelotas(estado-->animacion).
+                if (arrayListSize < 3) {
+                     megaman.setState(Megaman.State.HITTING);
+
+                     //Aca tenemos que crear la bola de fuego(fireball).
+                     Vector2 positionFireball = megaman.getPositionFireAttack();
+
+                    //Si el personaje mira a la derecha, dispara hacia alli,
+                    if (megaman.isRunningRight()) {
+                        arrayListFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true));
+                    } else {
+                        //Si mira a la izquierda, dispara hacia el otro lado.
+                        arrayListFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false));
+                    }
+                }
             }
             //Si presionamos Down, el personaje es lastimado.
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
@@ -318,7 +353,14 @@ public class MainGameScreen implements Screen{
         }
     }
 
+    public float getDeltaTime(){
+        return deltaTime;
+    }
+
     public void update(float delta){
+
+        //Guardamos el delta time.
+        deltaTime = delta;
 
         //Manejamos la entrada de datos de los usuarios.
         handleMegamanInput(delta);
@@ -337,6 +379,19 @@ public class MainGameScreen implements Screen{
 
         //Updateamos la posicion del sprite del personaje enemigo y luego la animacion.
         zero.update(delta);
+
+        //Tenemos que updatear cada fireball lanzado.
+        arrayListSize = arrayListFireball.size();
+
+        //Para cada fireball de la lista, updateamos.
+        for (int i = 0; i < arrayListSize; i ++){
+            arrayListFireball.get(i).update(delta);
+        }
+
+        //Si el personaje quiere cruzar el limite izquierdo de la pantalla no lo dejamos.
+        if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters){
+            megaman.body.applyLinearImpulse(new Vector2(1,0),megaman.body.getWorldCenter(),true);
+        }
 
         //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
         if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters )&&(megaman.body.getPosition().x <= 6000 / MegamanMainClass.PixelsPerMeters)) {
@@ -359,6 +414,18 @@ public class MainGameScreen implements Screen{
         if (megaman.body.getPosition().y <= 0){
             megaman.setState(Megaman.State.DYING);
         }
+
+        //Al igual que arriba, hay que comprobar si la bola de fuego sale de la pantalla.
+        arrayListSize = arrayListFireball.size();
+
+        for(int i = 0;i < arrayListSize; i ++){
+            if ((arrayListFireball.get(i).body.getPosition().x > megaman.body.getPosition().x + 400 / MegamanMainClass.PixelsPerMeters)||(arrayListFireball.get(i).body.getPosition().x < megaman.body.getPosition().x - 400 / MegamanMainClass.PixelsPerMeters)){
+                arrayListFireball.get(i).dispose();
+                arrayListFireball.remove(i);
+                arrayListSize = arrayListFireball.size();
+            }
+        }
+
 
         //Por cada renderizado de la pantalla, la camara se actualiza.
         mainCamera.update();
@@ -422,6 +489,15 @@ public class MainGameScreen implements Screen{
 
         //Le decimos al Sprite que se dibuje segun su correspondiente region?.
         zero.draw(game.batch);
+
+        //Dibujamos el fireball.
+        //Tenemos que dibujar cada fireball lanzado.
+        int arrayListSize = arrayListFireball.size();
+
+        //Para cada fireball de la lista, dibujamos.
+        for (int i = 0; i < arrayListSize; i ++){
+            arrayListFireball.get(i).draw(game.batch);
+        }
 
         //Finalizamos nuestro batch.
         game.batch.end();
