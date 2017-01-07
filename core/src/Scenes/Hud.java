@@ -207,19 +207,22 @@ public class Hud {
 
         progressBarStyleRed.background = new TextureRegionDrawable(textureRegion);
 
-        textureRegion = textureAtlas.findRegion("redbar");
+        progressBarStyleRed.background.setMinWidth(0);
+        progressBarStyleRed.background.setMinHeight(0);
+
+        textureRegion = new TextureRegion(textureAtlas.findRegion("redbar").getTexture(),133,72,120,13);
 
         TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
 
-        textureRegionDrawable.setMinWidth(139);
-        textureRegionDrawable.setMinHeight(29);
+        textureRegionDrawable.setMinWidth(29);
+        textureRegionDrawable.setMinHeight(239);
 
         progressBarStyleRed.knob = textureRegionDrawable;
 
         //Creamos las barras de vida y mana con las especificaciones anteriores.
-        healthBarZero = new ProgressBar(0,139,10,false,progressBarStyleRed);
+        healthBarZero = new ProgressBar(0,239,20,true,progressBarStyleRed);
 
-        table.add(healthBarZero).expandY();
+        table.add(healthBarZero).expandY().padRight(30);
 
         stage.addActor(table);
     }
@@ -428,7 +431,7 @@ public class Hud {
         downButtonPressed = bool;
     }
 
-    public boolean dañarPersonaje(float health){
+    public boolean dañarMegamanPersonaje(float health){
 
         //Vemos cuanta vida tiene el personaje.
         float healthAnterior = healthBarMegaman.getStyle().knob.getMinWidth();
@@ -446,6 +449,30 @@ public class Hud {
         }else{
             //Tenemos que dejar la barra de vida del personaje en 0.
             healthBarMegaman.getStyle().knob.setMinWidth(0);
+
+            //Tenemos que avisar que, lamentablemente, el personaje murio.
+            return true;
+        }
+    }
+
+    public boolean dañarZeroPersonaje(){
+
+        //Vemos cuanta vida tiene el personaje.
+        float healthAnterior = healthBarZero.getStyle().knob.getMinHeight();
+
+        //Le restamos el numero que llega a la vida que teniamos.
+        float healthNuevo = healthAnterior - 50;
+
+        if (healthNuevo > 0) {
+            //Hacemos que la barra pierda vida(haciendo desaparecer al knob).
+            healthBarZero.getStyle().knob.setMinHeight(healthNuevo);
+
+            //Como la vida es superior a 0, devolvemos false.
+            //Porque el personaje no murio.
+            return false;
+        }else{
+            //Tenemos que dejar la barra de vida del personaje en 0.
+            healthBarZero.getStyle().knob.setMinHeight(0);
 
             //Tenemos que avisar que, lamentablemente, el personaje murio.
             return true;

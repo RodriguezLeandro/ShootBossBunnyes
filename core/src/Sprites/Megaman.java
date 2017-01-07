@@ -4,7 +4,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -17,8 +16,6 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
-
-import java.util.ArrayList;
 
 import Screen.MainGameScreen;
 
@@ -417,7 +414,7 @@ public class Megaman{
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
-                    mainGameScreen.dañarPersonaje(megamanDamageCuantity);
+                    mainGameScreen.dañarMegamanPersonaje(megamanDamageCuantity);
                     //Volvemos a poner el daño en default.
                     megamanDamageCuantity = 10;
                 }
@@ -634,7 +631,7 @@ public class Megaman{
         BodyDef bodyDef = new BodyDef();
 
         //Establecemos la posicion que tendra nuestro personaje.
-        bodyDef.position.set(6000 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(200 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
         //Decidimos si es StaticBody, DynamicBody o KinematicBody.
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 

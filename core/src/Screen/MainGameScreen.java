@@ -248,12 +248,12 @@ public class MainGameScreen implements Screen{
                 if (megaman.body.getLinearVelocity().x > -3)
                 megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
-            //Si presionamos Flechita UP, el personaje muere.
-            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            //Si presionamos R, el personaje muere.
+            if (Gdx.input.isKeyPressed(Input.Keys.R)) {
                 megaman.setState(Megaman.State.DYING);
             }
-            //Si presionamos Left, el personaje se agacha.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            //Si presionamos C, el personaje se agacha.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
                 //Si ya se estaba agachando, el personaje se para.
                 if (megaman.getState() == Megaman.State.CROUCHING) {
                     megaman.setState(Megaman.State.STANDING);
@@ -270,8 +270,8 @@ public class MainGameScreen implements Screen{
                     }
                 }
             }
-            //Si presionamos Right, el personaje pega.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            //Si presionamos E, el personaje pega.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
                 //Solo cambia el estado de megaman si puede tirar pelotas(estado-->animacion).
                 if (arrayListMegamanSize < 3) {
@@ -289,13 +289,13 @@ public class MainGameScreen implements Screen{
                     }
                 }
             }
-            //Si presionamos Down, el personaje es lastimado.
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            //Si presionamos Q, el personaje es lastimado.
+            if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
                 megaman.setState(Megaman.State.GETTINGHIT);
             }
             //Si presionamos P, el personaje pierde vida.
             if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-                dañarPersonaje(10);
+                dañarMegamanPersonaje(10);
             }
             //Si presionamos O, el personaje pierde mana.
             if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
@@ -408,7 +408,7 @@ public class MainGameScreen implements Screen{
 
         //Preguntamos si hay que dañarlo progresivamente al personaje.
         if (dañarPersonajeProgresivamente){
-            dañarPersonaje(getHealthDamage());
+            dañarMegamanPersonaje(getHealthDamage());
         }
 
         //Le decimos al mundo que avanze, que efectue cambios en las fisicas.
@@ -537,14 +537,23 @@ public class MainGameScreen implements Screen{
         this.healthDamage = healthDamage;
     }
 
-    public void dañarPersonaje(float health){
+    public void dañarMegamanPersonaje(float health){
 
         //Dañamos al personaje y verificamos si murio.
-        personajeEstaMuerto = hud.dañarPersonaje(health);
+        personajeEstaMuerto = hud.dañarMegamanPersonaje(health);
         //Si esta muerto, ponemos estado Dying(deberia ser Dead).
         if(personajeEstaMuerto){
             megaman.setState(Megaman.State.DYING);
             megaman.setMegamanIsDead();
+        }
+    }
+
+    public void dañarZeroPersonaje(){
+        //Dañamos al personaje y verificamos si murio.
+        personajeEstaMuerto = hud.dañarZeroPersonaje();
+        //Si esta muerto, ponemos estado Dying(deberia ser Dead).
+        if(personajeEstaMuerto){
+            zero.setState(Zero.State.DYING);
         }
     }
 

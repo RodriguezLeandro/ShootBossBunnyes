@@ -320,6 +320,7 @@ public class Zero{
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
+                    mainGameScreen.dañarZeroPersonaje();
                 }
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = zeroGettingHit.getKeyFrame(stateTimer);
