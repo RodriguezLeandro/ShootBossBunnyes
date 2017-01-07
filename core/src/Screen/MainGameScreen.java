@@ -68,6 +68,9 @@ public class MainGameScreen implements Screen{
     //Booleano para sacarle vida al personaje progresivamente.
     private boolean dañarPersonajeProgresivamente;
 
+    //Para saber si estan peleando la batalla final boss.
+    private boolean stageInFinalBattle;
+
     //Para ver el daño que hay que hacerle al personaje.
     private float healthDamage;
 
@@ -146,6 +149,9 @@ public class MainGameScreen implements Screen{
 
         //El size del array list esta vacio al comienzo.
         arrayListSize = 0;
+
+        //Porque no se puede pelear la batalla ni bien arranca.
+        stageInFinalBattle = false;
     }
 
     public  TextureAtlas getTextureAtlasCharac(){
@@ -214,7 +220,7 @@ public class MainGameScreen implements Screen{
             if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
                 //Solo salta si no estaba saltando o volando en el aire.
                 if(!megaman.isMegamanJumping())
-                megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
+                megaman.body.applyLinearImpulse(new Vector2(0, 9f), megaman.body.getWorldCenter(), true);
             }
             //Si presionamos D, el personaje se mueve a la derecha.
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -298,7 +304,7 @@ public class MainGameScreen implements Screen{
             //Si presionamos 8, el personaje enemigo salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
                 if(!zero.isZeroJumping())
-                zero.body.applyLinearImpulse(new Vector2(0, 6f), zero.body.getWorldCenter(), true);
+                zero.body.applyLinearImpulse(new Vector2(0, 10f), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 4, el personaje enemigo se mueve a la izquierda.
             if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)) {
@@ -388,44 +394,67 @@ public class MainGameScreen implements Screen{
             arrayListFireball.get(i).update(delta);
         }
 
-        //Si el personaje quiere cruzar el limite izquierdo de la pantalla no lo dejamos.
-        if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters){
-            megaman.body.applyLinearImpulse(new Vector2(1,0),megaman.body.getWorldCenter(),true);
-        }
+        //Si estamos en la batalla final los movimientos de la camara son distintos.
+        //Las restricciones son distintas tambien.
+        if (!stageInFinalBattle) {
+            //Si el personaje quiere cruzar el limite izquierdo de la pantalla no lo dejamos.
+            if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters) {
+                megaman.body.applyLinearImpulse(new Vector2(1, 0), megaman.body.getWorldCenter(), true);
+            }
 
-        //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
-        if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters )&&(megaman.body.getPosition().x <= 6000 / MegamanMainClass.PixelsPerMeters)) {
+            //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
+            if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters) && (megaman.body.getPosition().x <= 6000 / MegamanMainClass.PixelsPerMeters)) {
 
-            //Hacemos que la camara tenga en el centro a nuestro personaje principal.
-            mainCamera.position.x = megaman.body.getPosition().x;
-        }
-        else {
-            //Dejo comentada la primera parte de la manera "estructurada de hacerlo".
+                //Hacemos que la camara tenga en el centro a nuestro personaje principal.
+                mainCamera.position.x = megaman.body.getPosition().x;
+
+            } else {
+                //Dejo comentada la primera parte de la manera "estructurada de hacerlo".
           /*  if (megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters)){
                 mainCamera.position.x = (399 / MegamanMainClass.PixelsPerMeters);
             }
           */
-            //Logica: Si el cuerpo del personaje sale de los limites x del mundo, la camara queda fija.
-            mainCamera.position.x = megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters) ? (399 / MegamanMainClass.PixelsPerMeters) : (6001 / MegamanMainClass.PixelsPerMeters);
-        }
-
-        //De la misma manera deberiamos comprobar si el personaje sale del limite inferior del mapa...
-        //y de esa manera eliminarlo(setToDead).
-        if (megaman.body.getPosition().y <= 0){
-            megaman.setState(Megaman.State.DYING);
-        }
-
-        //Al igual que arriba, hay que comprobar si la bola de fuego sale de la pantalla.
-        arrayListSize = arrayListFireball.size();
-
-        for(int i = 0;i < arrayListSize; i ++){
-            if ((arrayListFireball.get(i).body.getPosition().x > megaman.body.getPosition().x + 400 / MegamanMainClass.PixelsPerMeters)||(arrayListFireball.get(i).body.getPosition().x < megaman.body.getPosition().x - 400 / MegamanMainClass.PixelsPerMeters)){
-                arrayListFireball.get(i).dispose();
-                arrayListFireball.remove(i);
-                arrayListSize = arrayListFireball.size();
+                //Logica: Si el cuerpo del personaje sale de los limites x del mundo, la camara queda fija.
+                mainCamera.position.x = megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters) ? (399 / MegamanMainClass.PixelsPerMeters) : (6001 / MegamanMainClass.PixelsPerMeters);
             }
+
+            //De la misma manera deberiamos comprobar si el personaje sale del limite inferior del mapa...
+            //y de esa manera eliminarlo(setToDead).
+            if (megaman.body.getPosition().y <= 0) {
+                megaman.setState(Megaman.State.DYING);
+            }
+
+            //Si el personaje cruza el limite derecho de la pantalla, actualizamos la camara.
+            if (megaman.body.getPosition().x > 6400 / MegamanMainClass.PixelsPerMeters) {
+                mainCamera.position.x = 68;
+                stageInFinalBattle = true;
+            }
+
+            //Todo lo que ocurre arriba es solo si no estamos en la batalla final.
+        }else{
+            //El personaje no puede cruzar ni el limite izquierdo ni el limite derecho de la pantalla.
+            if (megaman.body.getPosition().x < 6410 / MegamanMainClass.PixelsPerMeters){
+                megaman.body.setLinearVelocity(0,megaman.body.getLinearVelocity().y);
+                megaman.body.applyLinearImpulse(new Vector2(1f,0),megaman.body.getWorldCenter(),true);
+            }
+
+            if (megaman.body.getPosition().x > 7190 / MegamanMainClass.PixelsPerMeters){
+                megaman.body.setLinearVelocity(0,megaman.body.getLinearVelocity().y);
+                megaman.body.applyLinearImpulse(new Vector2(-1f,0),megaman.body.getWorldCenter(),true);
+            }
+
         }
 
+            arrayListSize = arrayListFireball.size();
+
+            for(int i = 0;i < arrayListSize; i ++){
+                    if ((arrayListFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)){
+
+                        arrayListFireball.get(i).dispose();
+                        arrayListFireball.remove(i);
+                        arrayListSize = arrayListFireball.size();
+                    }
+            }
 
         //Por cada renderizado de la pantalla, la camara se actualiza.
         mainCamera.update();

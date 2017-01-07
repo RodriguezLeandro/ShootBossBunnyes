@@ -188,7 +188,7 @@ public class Zero extends Sprite {
         BodyDef bodyDef = new BodyDef();
 
         //Establecemos la posicion que tendra nuestro personaje.
-        bodyDef.position.set(2000 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(7100 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
         //Decidimos si es StaticBody, DynamicBody o KinematicBody.
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
