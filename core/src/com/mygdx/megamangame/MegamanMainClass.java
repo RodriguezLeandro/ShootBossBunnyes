@@ -31,8 +31,9 @@ public class MegamanMainClass extends Game {
 	public final static short ZERO_BIT = 64;
 	public final static short LAVA_BIT = 128;
 	public final static short MEGAMAN_SENSOR_BIT = 256;
-	public final static short FIREBALL_SENSOR_BIT = 512;
+	public final static short FIREBALL_MEGAMAN_SENSOR_BIT = 512;
 	public final static short ZERO_SENSOR_BIT = 1024;
+	public final static short FIREBALL_ZERO_SENSOR_BIT = 2024;
 
 	@Override
 	public void create () {

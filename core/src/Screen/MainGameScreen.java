@@ -71,6 +71,9 @@ public class MainGameScreen implements Screen{
     //Para saber si estan peleando la batalla final boss.
     private boolean stageInFinalBattle;
 
+    //Para saber que el hud final esta desactivado.
+    private boolean finalHudActivated;
+
     //Para ver el daño que hay que hacerle al personaje.
     private float healthDamage;
 
@@ -78,9 +81,15 @@ public class MainGameScreen implements Screen{
     private float deltaTime;
 
     //Para controlar y ver el tamaño del arraylist de fireballs.
-    private Integer arrayListSize;
+    private Integer arrayListMegamanSize;
 
-    private ArrayList<Fireball> arrayListFireball;
+    //Para ver la cantidad de objetos del arraylist del personaje enemigo.
+    private Integer arrayListZeroSize;
+
+    //Arraylist que contendra los fireballs.
+    private ArrayList<Fireball> arrayListMegamanFireball;
+
+    private ArrayList<Fireball> arrayListZeroFireball;
 
     public MainGameScreen(MegamanMainClass game) {
 
@@ -145,13 +154,18 @@ public class MainGameScreen implements Screen{
         //No lo queremos dañar ni bien arranca.
         dañarPersonajeProgresivamente = false;
 
-        arrayListFireball = new ArrayList<Fireball>();
+        arrayListMegamanFireball = new ArrayList<Fireball>();
+        arrayListZeroFireball = new ArrayList<Fireball>();
 
         //El size del array list esta vacio al comienzo.
-        arrayListSize = 0;
+        arrayListMegamanSize = 0;
+        arrayListZeroSize = 0;
 
         //Porque no se puede pelear la batalla ni bien arranca.
         stageInFinalBattle = false;
+
+        //No esta activado el final hud.
+        finalHudActivated = false;
     }
 
     public  TextureAtlas getTextureAtlasCharac(){
@@ -260,7 +274,7 @@ public class MainGameScreen implements Screen{
             if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
                 //Solo cambia el estado de megaman si puede tirar pelotas(estado-->animacion).
-                if (arrayListSize < 3) {
+                if (arrayListMegamanSize < 3) {
                      megaman.setState(Megaman.State.HITTING);
 
                      //Aca tenemos que crear la bola de fuego(fireball).
@@ -268,10 +282,10 @@ public class MainGameScreen implements Screen{
 
                     //Si el personaje mira a la derecha, dispara hacia alli,
                     if (megaman.isRunningRight()) {
-                        arrayListFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true));
+                        arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, megaman));
                     } else {
                         //Si mira a la izquierda, dispara hacia el otro lado.
-                        arrayListFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false));
+                        arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
                     }
                 }
             }
@@ -318,9 +332,24 @@ public class MainGameScreen implements Screen{
             }
             //Si presionamos 7, el personaje enemigo pega.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
-                zero.setState(Zero.State.HITTING);
+                    //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
+                    //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
+                    if (arrayListZeroSize < 3) {
+                        zero.setState(Zero.State.HITTING);
+
+                        //Aca tenemos que crear la bola de fuego(fireball).
+                        Vector2 positionFireball = zero.getPositionFireAttack();
+
+                        //Si el personaje mira a la derecha, dispara hacia alli,
+                        if (zero.isRunningRight()) {
+                            arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, zero));
+                        } else {
+                            //Si mira a la izquierda, dispara hacia el otro lado.
+                            arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, zero));
+                        }
+                    }
             }
-            //Si presionamos 9, el personaje enemigo pega.
+            //Si presionamos 9, el personaje enemigo se agacha.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
                 //Si ya se estaba agachando, el personaje se para.
                 if (zero.getState() == Zero.State.CROUCHING) {
@@ -368,6 +397,11 @@ public class MainGameScreen implements Screen{
         //Guardamos el delta time.
         deltaTime = delta;
 
+        if (stageInFinalBattle && !finalHudActivated){
+            hud.setGameIsInFinalStage();
+            finalHudActivated = true;
+        }
+
         //Manejamos la entrada de datos de los usuarios.
         handleMegamanInput(delta);
         handleZeroInput(delta);
@@ -387,11 +421,19 @@ public class MainGameScreen implements Screen{
         zero.update(delta);
 
         //Tenemos que updatear cada fireball lanzado.
-        arrayListSize = arrayListFireball.size();
+        arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Para cada fireball de la lista, updateamos.
-        for (int i = 0; i < arrayListSize; i ++){
-            arrayListFireball.get(i).update(delta);
+        for (int i = 0; i < arrayListMegamanSize; i ++){
+            arrayListMegamanFireball.get(i).update(delta);
+        }
+
+        //Tenemos que updatear cada fireball lanzado.
+        arrayListZeroSize = arrayListZeroFireball.size();
+
+        //Para cada fireball de la lista, updateamos.
+        for (int i = 0; i < arrayListZeroSize; i ++){
+            arrayListZeroFireball.get(i).update(delta);
         }
 
         //Si estamos en la batalla final los movimientos de la camara son distintos.
@@ -442,19 +484,43 @@ public class MainGameScreen implements Screen{
                 megaman.body.setLinearVelocity(0,megaman.body.getLinearVelocity().y);
                 megaman.body.applyLinearImpulse(new Vector2(-1f,0),megaman.body.getWorldCenter(),true);
             }
+            //Zero tampoco puede salir de la pantalla.
+            if (zero.body.getPosition().x < 6410 / MegamanMainClass.PixelsPerMeters){
+                zero.body.setLinearVelocity(0,zero.body.getLinearVelocity().y);
+                zero.body.applyLinearImpulse(new Vector2(1f,0),zero.body.getWorldCenter(),true);
+            }
+
+            if (zero.body.getPosition().x > 7190 / MegamanMainClass.PixelsPerMeters){
+                zero.body.setLinearVelocity(0,zero.body.getLinearVelocity().y);
+                zero.body.applyLinearImpulse(new Vector2(-1f,0),zero.body.getWorldCenter(),true);
+            }
 
         }
 
-            arrayListSize = arrayListFireball.size();
+        //Vemos cuantos objetos hay en el arraylist.
+            arrayListMegamanSize = arrayListMegamanFireball.size();
 
-            for(int i = 0;i < arrayListSize; i ++){
-                    if ((arrayListFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)){
+        //Decimos que para cada fireball.
+            for(int i = 0; i < arrayListMegamanSize; i ++){
+                //Si sale de la camara lo eliminamos.
+                    if ((arrayListMegamanFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListMegamanFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)){
 
-                        arrayListFireball.get(i).dispose();
-                        arrayListFireball.remove(i);
-                        arrayListSize = arrayListFireball.size();
+                        arrayListMegamanFireball.get(i).dispose();
+                        arrayListMegamanFireball.remove(i);
+                        arrayListMegamanSize = arrayListMegamanFireball.size();
                     }
             }
+
+        arrayListZeroSize = arrayListZeroFireball.size();
+
+        for(int i = 0; i < arrayListZeroSize; i ++){
+            if ((arrayListZeroFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)){
+
+                arrayListZeroFireball.get(i).dispose();
+                arrayListZeroFireball.remove(i);
+                arrayListZeroSize = arrayListZeroFireball.size();
+            }
+        }
 
         //Por cada renderizado de la pantalla, la camara se actualiza.
         mainCamera.update();
@@ -521,11 +587,20 @@ public class MainGameScreen implements Screen{
 
         //Dibujamos el fireball.
         //Tenemos que dibujar cada fireball lanzado.
-        int arrayListSize = arrayListFireball.size();
+        arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Para cada fireball de la lista, dibujamos.
-        for (int i = 0; i < arrayListSize; i ++){
-            arrayListFireball.get(i).draw(game.batch);
+        for (int i = 0; i < arrayListMegamanSize; i ++){
+            arrayListMegamanFireball.get(i).draw(game.batch);
+        }
+
+        //Dibujamos el otro fireball.
+        //Tenemos que dibujar cada fireball lanzado.
+        int arrayListZeroSize = arrayListZeroFireball.size();
+
+        //Para cada fireball de la lista, dibujamos.
+        for (int i = 0; i < arrayListZeroSize; i ++){
+            arrayListZeroFireball.get(i).draw(game.batch);
         }
 
         //Finalizamos nuestro batch.

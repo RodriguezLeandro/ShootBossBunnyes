@@ -17,7 +17,7 @@
   <object id="1" x="0.333333" y="736.333" width="2143.33" height="63.5"/>
   <object id="14" x="2785.33" y="736" width="798.667" height="64.6667"/>
   <object id="15" x="5089.33" y="736" width="1310" height="64.5"/>
-  <object id="34" x="6399.33" y="736.5" width="2400" height="63.5"/>
+  <object id="34" x="6399.33" y="736.5" width="801.333" height="63.5"/>
   <object id="35" x="6337.33" y="-1.33333" width="60" height="577.333"/>
  </objectgroup>
  <objectgroup name="FlyingGround">

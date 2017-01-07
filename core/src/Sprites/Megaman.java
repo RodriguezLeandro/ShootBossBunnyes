@@ -49,6 +49,8 @@ public class Megaman{
     private Animation megamanDying;
 
     private float stateTimer;
+    private float megamanDamageCuantity;
+
     private boolean runningRight;
     private boolean shouldBeJumping;
     private boolean megamanIsDead;
@@ -99,6 +101,9 @@ public class Megaman{
 
         //Con el metodo setRegion se dibujara nuestro personaje.
         sprite.setRegion(megamanStand);
+
+        //El daño default que se le hara a megaman por golpe es :
+        megamanDamageCuantity = 10;
 
     }
 
@@ -210,7 +215,7 @@ public class Megaman{
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                     | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
+                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -337,7 +342,7 @@ public class Megaman{
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -412,7 +417,9 @@ public class Megaman{
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
-                    mainGameScreen.dañarPersonaje(10);
+                    mainGameScreen.dañarPersonaje(megamanDamageCuantity);
+                    //Volvemos a poner el daño en default.
+                    megamanDamageCuantity = 10;
                 }
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = megamanGettingHit.getKeyFrame(stateTimer);
@@ -505,6 +512,10 @@ public class Megaman{
         }else {
             return false;
         }
+    }
+
+    public void setMegamanDamageCuantity(float damage){
+        megamanDamageCuantity = damage;
     }
 
     public void setMegamanIsDead(){
@@ -651,7 +662,7 @@ public class Megaman{
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT;
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -699,6 +710,12 @@ public class Megaman{
         //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
         body.createFixture(fixtureDef).setUserData(this);
 
+    }
+
+    public void onBodyHit(){
+        //O sea, que el enemigo pega fuerte.
+        megamanDamageCuantity = 30;
+        currentState = State.GETTINGHIT;
     }
 
     public boolean isMegamanJumping(){

@@ -53,7 +53,7 @@ public class WorldContactListener implements ContactListener {
 
                 break;
 
-            case MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.FIREBALL_SENSOR_BIT:
+            case MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT:
 
                 fixtureBody = fixtureA.getUserData().getClass() == Zero.class ? fixtureA: fixtureB;
                 fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
@@ -65,7 +65,20 @@ public class WorldContactListener implements ContactListener {
                         ((Zero) fixtureBody.getUserData()).onBodyHit(false);
                     }
                 //Luego, que la bola no puedo volver a pegarle por unos 3 segundos.
-                ((Zero)fixtureBody.getUserData()).setUntouchable3Seconds();
+                ((Zero)fixtureBody.getUserData()).setZeroUntouchableDot5Seconds();
+
+                break;
+
+            case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT:
+                fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+
+                //Basicamente, si la bola de fuego va hacia la derecha manda true, sino false.
+                if (((Fireball)fixtureObject.getUserData()).fireToRight) {
+                    ((Megaman) fixtureBody.getUserData()).onBodyHit();
+                }else{
+                    ((Megaman) fixtureBody.getUserData()).onBodyHit();
+                }
 
             default:
 

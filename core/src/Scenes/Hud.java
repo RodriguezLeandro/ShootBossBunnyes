@@ -39,8 +39,9 @@ public class Hud {
 
     private Label.LabelStyle labelStyle;
 
-    private ProgressBar healthBar;
-    private ProgressBar manaBar;
+    private ProgressBar healthBarMegaman;
+    private ProgressBar manaBarMegaman;
+    private ProgressBar healthBarZero;
     private ProgressBar.ProgressBarStyle progressBarStyleRed;
     private ProgressBar.ProgressBarStyle progressBarStyleBlue;
 
@@ -175,8 +176,8 @@ public class Hud {
         progressBarStyleBlue.knob = textureRegionDrawable;
 
         //Creamos las barras de vida y mana con las especificaciones anteriores.
-        healthBar = new ProgressBar(0,139,10,false,progressBarStyleRed);
-        manaBar = new ProgressBar(0,100,1,false,progressBarStyleBlue);
+        healthBarMegaman = new ProgressBar(0,139,10,false,progressBarStyleRed);
+        manaBarMegaman = new ProgressBar(0,100,1,false,progressBarStyleBlue);
 
         //Añadimos a la tabla todo lo anterior, con expand entran varios objetos en una fila.
         table.add(healthLabel).expandX().pad(5);
@@ -184,11 +185,42 @@ public class Hud {
         table.add(scoreLabel).expandX().pad(5);
         //Con row se crea una fila debajo de la anterior.
         table.row();
-        table.add(healthBar).expandX().pad(5);
-        table.add(manaBar).expandX().pad(5);
+        table.add(healthBarMegaman).expandX().pad(5);
+        table.add(manaBarMegaman).expandX().pad(5);
         table.add(scoreNumberLabel).expandX().pad(5);
 
         //Añadimos la tabla al stage.
+        stage.addActor(table);
+    }
+
+    public void setGameIsInFinalStage(){
+
+        Table table = new Table();
+
+        table.right();
+
+        table.setFillParent(true);
+
+        progressBarStyleRed = new ProgressBar.ProgressBarStyle();
+
+        textureRegion = textureAtlas.findRegion("graybar");
+
+        progressBarStyleRed.background = new TextureRegionDrawable(textureRegion);
+
+        textureRegion = textureAtlas.findRegion("redbar");
+
+        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
+
+        textureRegionDrawable.setMinWidth(139);
+        textureRegionDrawable.setMinHeight(29);
+
+        progressBarStyleRed.knob = textureRegionDrawable;
+
+        //Creamos las barras de vida y mana con las especificaciones anteriores.
+        healthBarZero = new ProgressBar(0,139,10,false,progressBarStyleRed);
+
+        table.add(healthBarZero).expandY();
+
         stage.addActor(table);
     }
 
@@ -399,21 +431,21 @@ public class Hud {
     public boolean dañarPersonaje(float health){
 
         //Vemos cuanta vida tiene el personaje.
-        float healthAnterior = healthBar.getStyle().knob.getMinWidth();
+        float healthAnterior = healthBarMegaman.getStyle().knob.getMinWidth();
 
         //Le restamos el numero que llega a la vida que teniamos.
         float healthNuevo = healthAnterior - health;
 
         if (healthNuevo > 0) {
             //Hacemos que la barra pierda vida(haciendo desaparecer al knob).
-            healthBar.getStyle().knob.setMinWidth(healthNuevo);
+            healthBarMegaman.getStyle().knob.setMinWidth(healthNuevo);
 
             //Como la vida es superior a 0, devolvemos false.
             //Porque el personaje no murio.
             return false;
         }else{
             //Tenemos que dejar la barra de vida del personaje en 0.
-            healthBar.getStyle().knob.setMinWidth(0);
+            healthBarMegaman.getStyle().knob.setMinWidth(0);
 
             //Tenemos que avisar que, lamentablemente, el personaje murio.
             return true;
@@ -422,40 +454,40 @@ public class Hud {
 
     public void gastarMana(float mana){
 
-        float manaAnterior = manaBar.getStyle().knob.getMinWidth();
+        float manaAnterior = manaBarMegaman.getStyle().knob.getMinWidth();
 
         float manaNuevo = manaAnterior - mana;
 
         if (manaNuevo > 0) {
-            manaBar.getStyle().knob.setMinWidth(manaNuevo);
+            manaBarMegaman.getStyle().knob.setMinWidth(manaNuevo);
         }else{
-            manaBar.getStyle().knob.setMinWidth(0);
+            manaBarMegaman.getStyle().knob.setMinWidth(0);
         }
     }
 
     public void curarPersonaje(float health){
 
-        float healthAnterior = healthBar.getStyle().knob.getMinWidth();
+        float healthAnterior = healthBarMegaman.getStyle().knob.getMinWidth();
 
         float healthNuevo = healthAnterior + health;
 
         if (healthNuevo > 139) {
-            healthBar.getStyle().knob.setMinWidth(139);
+            healthBarMegaman.getStyle().knob.setMinWidth(139);
         }else{
-            healthBar.getStyle().knob.setMinWidth(healthNuevo);
+            healthBarMegaman.getStyle().knob.setMinWidth(healthNuevo);
         }
     }
 
     public void recuperarMana(float mana){
 
-        float manaAnterior = manaBar.getStyle().knob.getMinWidth();
+        float manaAnterior = manaBarMegaman.getStyle().knob.getMinWidth();
 
         float manaNuevo = manaAnterior + mana;
 
         if (manaNuevo > 139) {
-            manaBar.getStyle().knob.setMinWidth(139);
+            manaBarMegaman.getStyle().knob.setMinWidth(139);
         }else{
-            manaBar.getStyle().knob.setMinWidth(manaNuevo);
+            manaBarMegaman.getStyle().knob.setMinWidth(manaNuevo);
         }
     }
 
