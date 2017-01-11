@@ -3,7 +3,7 @@ package Sprites;
 import com.badlogic.gdx.math.Circle;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 import Tools.Circle2X2Tiles;
 
 /**
@@ -12,8 +12,8 @@ import Tools.Circle2X2Tiles;
 
 public class RedCircle extends Circle2X2Tiles{
 
-    public RedCircle(MainGameScreen mainGameScreen, Circle circle){
-        super(mainGameScreen,circle);
+    public RedCircle(Level1Screen level1Screen, Circle circle){
+        super(level1Screen,circle);
 
         //Le mandamos al user data de cada fixture la clase de objeto que es.
         fixture.setUserData(this);

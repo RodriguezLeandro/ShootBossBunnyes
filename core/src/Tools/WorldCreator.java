@@ -13,7 +13,7 @@ import com.mygdx.megamangame.MegamanMainClass;
 
 import java.util.ArrayList;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 import Sprites.Bunny;
 import Sprites.Floor;
 import Sprites.FlyingGround;
@@ -34,10 +34,10 @@ public class WorldCreator {
     //Nota, borre los circle 2 x 2 and 4 x 4 porque son innecesarios?
 
     //Aca creamos todos los objetos(Estaticos?) que se encuentren dentro del mundo.
-    public WorldCreator(MainGameScreen mainGameScreen){
+    public WorldCreator(Level1Screen level1Screen){
 
-        World world = mainGameScreen.getWorld();
-        TiledMap tiledMap = mainGameScreen.getTiledMap();
+        World world = level1Screen.getWorld();
+        TiledMap tiledMap = level1Screen.getTiledMap();
 
         //Obtenemos los objetos floor de tiled map y los creamos mediante la clase Floor.
         for(MapObject object : tiledMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
@@ -46,7 +46,7 @@ public class WorldCreator {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
 
             //Creamos los objetos en nuestro mundo.
-            new Floor(mainGameScreen,rectangle);
+            new Floor(level1Screen,rectangle);
         }
 
         //Obtenemos los objetos flyingground de tiled map y los creamos mediante la clase FlyinGround.
@@ -56,7 +56,7 @@ public class WorldCreator {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
 
             //Creamos los objetos en nuestro mundo.
-            new FlyingGround(mainGameScreen,rectangle);
+            new FlyingGround(level1Screen,rectangle);
         }
 
         //Borrados los circle 2 x 2. Dejo comentado.
@@ -75,7 +75,7 @@ public class WorldCreator {
             ellipse = null;
 
             //Creamos los objetos en nuestro mundo.
-            new RedCircle(mainGameScreen,circle);
+            new RedCircle(level1Screen,circle);
         }
 
 
@@ -97,7 +97,7 @@ public class WorldCreator {
             ellipse = null;
 
             //Creamos los objetos en nuestro mundo.
-            new GreenCircle(mainGameScreen,circle);
+            new GreenCircle(level1Screen,circle);
         }
 
 
@@ -107,7 +107,7 @@ public class WorldCreator {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
 
             //Creamos los objetos en nuestro mundo.
-            new Lava(mainGameScreen,rectangle);
+            new Lava(level1Screen,rectangle);
         }
 
         //Creamos el arraylist.
@@ -118,7 +118,7 @@ public class WorldCreator {
 
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
 
-            arrayListBunny.add(new Bunny(mainGameScreen, rectangle.x / MegamanMainClass.PixelsPerMeters, rectangle.y / MegamanMainClass.PixelsPerMeters, rectangle.getWidth() / MegamanMainClass.PixelsPerMeters, rectangle.getHeight() / MegamanMainClass.PixelsPerMeters));
+            arrayListBunny.add(new Bunny(level1Screen, rectangle.x / MegamanMainClass.PixelsPerMeters, rectangle.y / MegamanMainClass.PixelsPerMeters, rectangle.getWidth() / MegamanMainClass.PixelsPerMeters, rectangle.getHeight() / MegamanMainClass.PixelsPerMeters));
         }
 
     }

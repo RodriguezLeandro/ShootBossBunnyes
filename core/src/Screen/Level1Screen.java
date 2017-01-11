@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,11 +14,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import Scenes.Hud;
 import Sprites.Bunny;
@@ -33,7 +32,7 @@ import Tools.WorldCreator;
  * Created by Leandro on 01/01/2017.
  */
 
-public class MainGameScreen implements Screen {
+public class Level1Screen implements Screen {
 
     //Objeto MegamanMainClass
     private MegamanMainClass game;
@@ -68,6 +67,9 @@ public class MainGameScreen implements Screen {
 
     //Creamos el hud de nuestro juego(pantalla principal).
     public Hud hud;
+
+    //Para guardar el levelSelectScreen.
+    public LevelSelect levelSelectScreen;
 
     //Para verificar si el personaje murio.
     private boolean personajeEstaMuerto;
@@ -109,10 +111,12 @@ public class MainGameScreen implements Screen {
 
     private ArrayList<Bunny> arrayListBunny;
 
-    public MainGameScreen(MegamanMainClass game) {
+    public Level1Screen(MegamanMainClass game,LevelSelect levelSelect) {
 
         //Le asignamos el juego a nuestro MegamanMainClass.
         this.game = game;
+
+        levelSelectScreen = levelSelect;
 
         textureAtlasCharac = new TextureAtlas("charac1/charac1.pack");
 
@@ -212,45 +216,72 @@ public class MainGameScreen implements Screen {
         if (!megaman.isDead()) {
 
             //Esto es para saber si esta siendo tocada la flecha para arriba y que salte solo una vez.
-            //Es decir, que no salte muchas veces sino hasta que termine de hacer click.
             if (hud.isUpArrowPressed()) {
-                if (Gdx.input.justTouched()) {
-                    hud.setUpArrowPressed(false);
-                    if (!megaman.isMegamanJumping()) {
-                        megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
-                    }
-                }
-            }
 
+            }
+            //Si toca flecha izquierda impulso a izquierda.
             if (hud.isLeftArrowPressed()) {
                 if (megaman.body.getLinearVelocity().x > -3)
                     megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
+            //Si toca flecha derecha impulso a derecha.
             if (hud.isRightArrowPressed()) {
                 if (megaman.body.getLinearVelocity().x < 3)
                     megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
             }
+            //Si toca cuadrado pega.
             if (hud.isLeftButtonPressed()) {
-                megaman.setState(Megaman.State.HITTING);
+                if (Gdx.input.justTouched()) {
+                    hud.setLeftButtonPressed(false);
+                    if (arrayListMegamanSize < 3) {
+                        megaman.setState(Megaman.State.HITTING);
+
+                        //Aca tenemos que crear la bola de fuego(fireball).
+                        Vector2 positionFireball = megaman.getPositionFireAttack();
+
+                        //Si el personaje mira a la derecha, dispara hacia alli,
+                        if (megaman.isRunningRight()) {
+                            arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, megaman));
+                        } else {
+                            //Si mira a la izquierda, dispara hacia el otro lado.
+                            arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
+                        }
+                    }
+                }
             }
+            //Si toca redondo slashea.
+            if ( hud.isRightButtonPressed()) {
+                //Esta linea es para que solo puedo tocar una vez.
+                if (Gdx.input.justTouched()) {
+                    hud.setRightButtonPressed(false);
+                    //Solo puede slashear si no estaba saltando.
+                    if (!megaman.isMegamanJumping()) {
+                        if (megaman.isRunningRight()) {
+                            if (megaman.body.getLinearVelocity().x < 5)
+                                megaman.body.applyLinearImpulse(new Vector2(4f, 0), megaman.body.getWorldCenter(), true);
+                            megaman.setState(Megaman.State.SLASHING);
+                        } else {
+                            if (megaman.body.getLinearVelocity().x > -5)
+                                megaman.body.applyLinearImpulse(new Vector2(-5, 0), megaman.body.getWorldCenter(), true);
+                            megaman.setState(Megaman.State.SLASHING);
+                        }
+                    }
+                 }
+            }
+            //Si toca x salta
             if (hud.isDownButtonPressed()) {
                 //Solo si recien tocamos la pantalla.
                 if (Gdx.input.justTouched()) {
                     hud.setDownButtonPressed(false);
 
-                    //Si ya se estaba agachando, el personaje se para.
-                    if (megaman.getState() == Megaman.State.CROUCHING) {
-                        megaman.setState(Megaman.State.STANDING);
-                        megaman.redefineMegaman();
-                    }
-                    //Si no estaba agachado, se para.
-                    else {
-                        megaman.setState(Megaman.State.CROUCHING);
-                        if (megaman.isRunningRight()) {
-                            megaman.redefineMegamanCrouching(true);
-                        } else {
-                            megaman.redefineMegamanCrouching(false);
-                        }
+                    //Si estaba haciendo slash el personaje, puede saltar mas alto.
+                    if (megaman.getState() == Megaman.State.SLASHING) {
+                        if (!megaman.isMegamanJumping())
+                            megaman.body.applyLinearImpulse(new Vector2(0, 8f), megaman.body.getWorldCenter(), true);
+                    } else {
+                        //Solo salta si no estaba saltando o volando en el aire.
+                        if (!megaman.isMegamanJumping())
+                            megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
                     }
                 }
             }
@@ -782,7 +813,7 @@ public class MainGameScreen implements Screen {
 
         //cuando termine de dibujar todo, preguntamos si el juego termino.
         if (gameOver()) {
-            game.setScreen(new GameOverScreen(game, hud.getScore()));
+            game.setScreen(new GameOverScreen(game, hud.getScore(),levelSelectScreen));
             dispose();
         }
     }
@@ -823,6 +854,10 @@ public class MainGameScreen implements Screen {
         world.dispose();
         box2DDebugRenderer.dispose();
         arrayListZeroFireball.clear();
+        arrayListBunny.clear();
+        arrayListMegamanFireball.clear();
+        textureAtlasCharac.dispose();
+        textureAtlasTools.dispose();
     }
 
     //Dejo comentadas las funciones de abajo, ya que sirven si queremos utilizar controles en nuestro juego.

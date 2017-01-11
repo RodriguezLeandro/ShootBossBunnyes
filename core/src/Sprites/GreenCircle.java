@@ -1,14 +1,10 @@
 package Sprites;
 
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Circle;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.MainGameScreen;
-import Tools.Circle2X2Tiles;
+import Screen.Level1Screen;
 import Tools.Circle4X4Tiles;
-import Tools.InteractiveTileObject;
 
 /**
  * Created by Leandro on 03/01/2017.
@@ -16,8 +12,8 @@ import Tools.InteractiveTileObject;
 
 public class GreenCircle extends Circle4X4Tiles {
 
-    public GreenCircle(MainGameScreen mainGameScreen, Circle circle){
-        super(mainGameScreen,circle);
+    public GreenCircle(Level1Screen level1Screen, Circle circle){
+        super(level1Screen,circle);
 
         //Le mandamos al user data de cada fixture la clase de objeto que es.
         fixture.setUserData(this);

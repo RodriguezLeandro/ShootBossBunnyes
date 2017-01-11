@@ -3,7 +3,7 @@ package Sprites;
 import com.badlogic.gdx.math.Shape2D;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 import Tools.InteractiveTileObject;
 
 /**
@@ -12,12 +12,12 @@ import Tools.InteractiveTileObject;
 
 public class Lava extends InteractiveTileObject {
 
-    MainGameScreen mainGameScreen;
+    Level1Screen level1Screen;
 
-    public Lava(MainGameScreen mainGameScreen, Shape2D shape2D) {
-        super(mainGameScreen, shape2D);
+    public Lava(Level1Screen level1Screen, Shape2D shape2D) {
+        super(level1Screen, shape2D);
 
-        this.mainGameScreen = mainGameScreen;
+        this.level1Screen = level1Screen;
 
         //Le mandamos al user data de cada fixture la clase de objeto que es.
         fixture.setUserData(this);
@@ -28,11 +28,11 @@ public class Lava extends InteractiveTileObject {
 
     @Override
     public void onBodyHit() {
-        mainGameScreen.dañarPersonajeProgresivamente(1);
+        level1Screen.dañarPersonajeProgresivamente(1);
     }
 
     public void onBodyStopHit(){
-        mainGameScreen.dejarDañoPersonajeProgresivo(false);
+        level1Screen.dejarDañoPersonajeProgresivo(false);
     }
 
 }

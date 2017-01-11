@@ -1,11 +1,10 @@
 package Tools;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Shape2D;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 
 /**
  * Created by Leandro on 04/01/2017.
@@ -15,8 +14,8 @@ public abstract class Circle2X2Tiles extends InteractiveTileObject {
 
     protected TiledMapTileLayer.Cell[] tiledMapTileLayersCell;
 
-    public Circle2X2Tiles(MainGameScreen mainGameScreen, Shape2D shape2D) {
-        super(mainGameScreen, shape2D);
+    public Circle2X2Tiles(Level1Screen level1Screen, Shape2D shape2D) {
+        super(level1Screen, shape2D);
 
     }
 
@@ -43,7 +42,7 @@ public abstract class Circle2X2Tiles extends InteractiveTileObject {
         //Liberamos la memoria que ocupaba el array.
         tiledMapTileLayersCell = null;
 
-        mainGameScreen.restoreMegamanHp(60);
+        level1Screen.restoreMegamanHp(60);
     }
     //Esta funcion solo sirve para nuestra clase CirculoPequeño.
     //Sin embargo, esta clase puede obtener cualquier objeto circular.

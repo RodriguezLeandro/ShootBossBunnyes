@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 import Tools.Enemy;
 
 /**
@@ -25,9 +25,9 @@ public class Bunny extends Enemy {
 
     private Animation animationBunny;
 
-    public Bunny(MainGameScreen mainGameScreen, float positionX, float positionY, float width, float height){
+    public Bunny(Level1Screen level1Screen, float positionX, float positionY, float width, float height){
 
-        super(mainGameScreen,new Texture("bunnyspritesheet.png"),positionX,positionY,width,height);
+        super(level1Screen,new Texture("bunnyspritesheet.png"),positionX,positionY,width,height);
 
         fixture.setUserData(this);
 
@@ -93,7 +93,7 @@ public class Bunny extends Enemy {
 
 
     public void makeBunnyFight(){
-        if (mainGameScreen.getMegaman().body.getPosition().x < body.getPosition().x){
+        if (level1Screen.getMegaman().body.getPosition().x < body.getPosition().x){
             //Limito la velocidad porque va demasiado rapido sino.
             if (body.getLinearVelocity().x > -1) {
                 body.applyLinearImpulse(new Vector2(-0.2f, 0), body.getWorldCenter(), true);
@@ -102,7 +102,7 @@ public class Bunny extends Enemy {
                 body.applyLinearImpulse(new Vector2(1f, 0), body.getWorldCenter(), true);
         }
 
-        if(mainGameScreen.getMegaman().body.getPosition().y < body.getPosition().y){
+        if(level1Screen.getMegaman().body.getPosition().y < body.getPosition().y){
             if (body.getLinearVelocity().y > -0.5f)
             body.applyLinearImpulse(new Vector2(0,-0.05f),body.getWorldCenter(),true);
         }else {

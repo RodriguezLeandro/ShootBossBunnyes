@@ -14,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 
 /**
  * Created by Leandro on 02/01/2017.
@@ -30,19 +30,19 @@ public abstract class InteractiveTileObject {
     protected FixtureDef fixtureDef = new FixtureDef();
     protected Body body;
     protected Fixture fixture;
-    protected  MainGameScreen mainGameScreen;
+    protected Level1Screen level1Screen;
 
     protected TiledMap tiledMap;
 
-    public InteractiveTileObject(MainGameScreen mainGameScreen, Shape2D shape2D){
+    public InteractiveTileObject(Level1Screen level1Screen, Shape2D shape2D){
 
-        this.mainGameScreen = mainGameScreen;
+        this.level1Screen = level1Screen;
 
         //Realizamos un Switch pero sin su forma.
         //Si el shape2d es un rectangulo, entonces ejecutamos lo primero.
         if (shape2D.getClass() == Rectangle.class) {
-            World world = mainGameScreen.getWorld();
-            tiledMap = mainGameScreen.getTiledMap();
+            World world = level1Screen.getWorld();
+            tiledMap = level1Screen.getTiledMap();
             //Tengo que guardar en memoria el mapa para cada objeto creado, ya que despues...
             //voy a poder manipular su visibilidad en pantalla.
             //Aunque se trata solo de una referencia, no es que se guarda todo en memoria.
@@ -67,8 +67,8 @@ public abstract class InteractiveTileObject {
         }
         //En cambio si el shape es un circulo, ejecutamos lo siguiente.
         else if(shape2D.getClass() == Circle.class){
-            World world = mainGameScreen.getWorld();
-            tiledMap = mainGameScreen.getTiledMap();
+            World world = level1Screen.getWorld();
+            tiledMap = level1Screen.getTiledMap();
 
             //Tengo que guardar en memoria el mapa para cada objeto creado, ya que despues...
             //voy a poder manipular su visibilidad en pantalla.

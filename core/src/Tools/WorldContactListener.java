@@ -59,11 +59,7 @@ public class WorldContactListener implements ContactListener {
                 fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
 
                 //Basicamente, si la bola de fuego va hacia la derecha manda true, sino false.
-                    if (((Fireball)fixtureObject.getUserData()).fireToRight) {
-                        ((Zero) fixtureBody.getUserData()).onBodyHit(true);
-                    }else{
-                        ((Zero) fixtureBody.getUserData()).onBodyHit(false);
-                    }
+                ((Zero) fixtureBody.getUserData()).onBodyHit();
                 //Luego, que la bola no puedo volver a pegarle por unos 3 segundos.
                 ((Zero)fixtureBody.getUserData()).setZeroUntouchableDot5Seconds();
 

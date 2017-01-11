@@ -18,7 +18,7 @@ import com.mygdx.megamangame.MegamanMainClass;
 
 import java.util.Random;
 
-import Screen.MainGameScreen;
+import Screen.Level1Screen;
 
 /**
  * Created by Leandro on 04/01/2017.
@@ -28,7 +28,7 @@ public class Zero{
 
     public World world;
     public Body body;
-    private MainGameScreen mainGameScreen;
+    private Level1Screen level1Screen;
     private Megaman megaman;
 
     private Sprite sprite;
@@ -58,25 +58,24 @@ public class Zero{
     private boolean shouldBeJumping;
     private boolean zeroIsDead;
     private boolean makeZeroUntouchable;
-    private boolean deactivateZeroBody;
     private boolean isZeroFighting;
     private boolean zeroShouldJump;
 
 
-    public Zero(MainGameScreen mainGameScreen){
+    public Zero(Level1Screen level1Screen){
 
         //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
         //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
-        sprite = new Sprite(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
+        sprite = new Sprite(level1Screen.getTextureAtlasCharac().findRegion("advnt_full"));
 
         //Obtenemos el maingamescreen.
-        this.mainGameScreen = mainGameScreen;
+        this.level1Screen = level1Screen;
 
         //Obtenemos el mundo en el que el enemigo principal vivira.
-        world = mainGameScreen.getWorld();
+        world = level1Screen.getWorld();
 
         //Traemos la referencia de megaman.
-        megaman = mainGameScreen.getMegaman();
+        megaman = level1Screen.getMegaman();
 
         //Inicializamos los estados de nuestro personaje.
         currentState = State.STANDING;
@@ -116,9 +115,6 @@ public class Zero{
         //Porque el personaje enemigo debe ser tocable.
         makeZeroUntouchable = false;
 
-        //Queremos que el cuerpo del personaje este activo.
-        deactivateZeroBody = false;
-
         //Al comienzo del juego zero no esta peleando.
         isZeroFighting = false;
 
@@ -145,14 +141,6 @@ public class Zero{
                 setZeroUntouchableDot5Seconds();
             }
 
-            if (deactivateZeroBody) {
-                if (body.isActive()) {
-                    body.setActive(false);
-                }
-            } else {
-                body.setActive(true);
-            }
-
         }
         else {
             //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
@@ -167,13 +155,6 @@ public class Zero{
                 setZeroUntouchableDot5Seconds();
             }
 
-            if (deactivateZeroBody) {
-                if (body.isActive()) {
-                    body.setActive(false);
-                }
-            } else {
-                body.setActive(true);
-            }
         }
 
     }
@@ -186,14 +167,14 @@ public class Zero{
                 Integer randomNumer = random.nextInt(10);
 
                 if (randomNumer == 0){
-                    mainGameScreen.isZeroHitting();
+                    level1Screen.isZeroHitting();
                 }
                 else if (randomNumer == 1){
-                    mainGameScreen.isZeroRunningToMegaman();
+                    level1Screen.isZeroRunningToMegaman();
                 }
 
                 if (zeroShouldJump){
-                    mainGameScreen.isZeroJumping();
+                    level1Screen.isZeroJumping();
                     zeroShouldJump = false;
                 }
                 break;
@@ -203,14 +184,18 @@ public class Zero{
                 Integer randomNumer2 = random2.nextInt(10);
 
                 if (randomNumer2 == 0){
-                    mainGameScreen.isZeroHitting();
+                    level1Screen.isZeroHitting();
                 }
                 else if(randomNumer2 == 1){
-                    mainGameScreen.isZeroRunningAwayFromMegaman();
+                    level1Screen.isZeroRunningAwayFromMegaman();
                 }
                 else if(randomNumer2 == 2){
-                    mainGameScreen.isZeroJumping();
+                    level1Screen.isZeroJumping();
                 }
+
+                break;
+
+            case 2:
 
                 break;
 
@@ -431,7 +416,7 @@ public class Zero{
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
-                    mainGameScreen.dañarZeroPersonaje();
+                    level1Screen.dañarZeroPersonaje();
                 }
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = zeroGettingHit.getKeyFrame(stateTimer);
@@ -717,21 +702,19 @@ public class Zero{
     public void setZeroUntouchableDot5Seconds(){
 
         if(untouchableCount < 1.5f){
-            body.setLinearVelocity(0,0);
-            untouchableCount += mainGameScreen.getDeltaTime();
+            untouchableCount += level1Screen.getDeltaTime();
             makeZeroUntouchable = true;
-            deactivateZeroBody = true;
         }
         else {
             untouchableCount = 0;
-            deactivateZeroBody = false;
             makeZeroUntouchable = false;
         }
     }
 
-    public void onBodyHit(boolean bool) {
-        if (bool) {
-            setState(State.GETTINGHIT);
+    public void onBodyHit() {
+        //Si no hay que pegarle no le pegamos, de lo contrario lo hacemos.
+        if (makeZeroUntouchable) {
+
         }else {
             setState(State.GETTINGHIT);
         }

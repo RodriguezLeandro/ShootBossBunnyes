@@ -30,11 +30,12 @@ public class GameOverScreen implements Screen {
     private Label playAgainLabel;
     private Label scoreLabel;
     private Label backToMainMenu;
+    private Label backToLevelSelect;
     private Label.LabelStyle labelStyle;
     private Table table;
     private Integer scoreDataInteger;
 
-    public GameOverScreen(final Game game, Integer scoreDataInteger){
+    public GameOverScreen(final Game game, Integer scoreDataInteger, final LevelSelect levelSelectScreen){
 
         this.game = game;
 
@@ -56,17 +57,19 @@ public class GameOverScreen implements Screen {
         playAgainLabel = new Label("PLAY AGAIN",labelStyle);
         scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
         backToMainMenu = new Label("MAIN MENU",labelStyle);
+        backToLevelSelect = new Label("SELECT LEVEL",labelStyle);
 
         scoreLabel.setFontScale(1.5f);
         gameOverLabel.setFontScale(2f);
         playAgainLabel.setFontScale(1.5f);
         backToMainMenu.setFontScale(1.5f);
+        backToLevelSelect.setFontScale(1.5f);
 
         playAgainLabel.addListener(new InputListener(){
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new MainGameScreen((MegamanMainClass) game));
+                game.setScreen(new Level1Screen((MegamanMainClass) game,levelSelectScreen));
                 dispose();
                 return true;
             }
@@ -81,7 +84,7 @@ public class GameOverScreen implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new InitGameScreen((MegamanMainClass)game));
+                game.setScreen(new InitGameScreen(game,levelSelectScreen));
                 dispose();
                 return true;
             }
@@ -90,6 +93,21 @@ public class GameOverScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
             }
+        });
+
+        backToLevelSelect.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(levelSelectScreen);
+                dispose();
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+            }
+
         });
 
 
@@ -101,6 +119,10 @@ public class GameOverScreen implements Screen {
         table.row().padTop(120);
 
         table.add(playAgainLabel).expandX();
+
+        table.row().padTop(60);
+
+        table.add(backToLevelSelect).expandX();
 
         table.row().padTop(60);
 
@@ -117,7 +139,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void render(float delta) {
         //Limpiamos la pantalla
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.25f, 0.51f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.draw();

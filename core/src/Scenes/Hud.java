@@ -431,6 +431,18 @@ public class Hud {
         downButtonPressed = bool;
     }
 
+    public void setRightButtonPressed(boolean bool){
+        rightButtonPressed = bool;
+    }
+
+    public void setLeftButtonPressed(boolean bool){
+        leftButtonPressed = bool;
+    }
+
+    public void setUpButtonPressed(boolean bool){
+        upButtonPressed = bool;
+    }
+
     public boolean dañarMegamanPersonaje(float health){
 
         //Vemos cuanta vida tiene el personaje.
