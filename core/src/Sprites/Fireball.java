@@ -24,9 +24,9 @@ public class Fireball {
 
     private MainGameScreen mainGameScreen;
 
-    private Sprite sprite;
+    protected Sprite sprite;
 
-    private Vector2 vector2PositionFireball;
+    protected Vector2 vector2PositionFireball;
 
     public boolean fireToRight;
 
@@ -39,17 +39,17 @@ public class Fireball {
 
         world = mainGameScreen.getWorld();
 
-        sprite = new Sprite(mainGameScreen.getTextureAtlasTools().findRegion("fireball"));
-
         vector2PositionFireball = new Vector2(x,y);
-
-        sprite.setBounds(x,y,12 / MegamanMainClass.PixelsPerMeters, 12 / MegamanMainClass.PixelsPerMeters);
 
         //Si la fireball proviene del personaje principal, creamos el fireball con ciertas propiedades.
         if (player.getClass() == Megaman.class) {
+            sprite = new Sprite(mainGameScreen.getTextureAtlasTools().findRegion("fireball"));
+            sprite.setBounds(x,y,12 / MegamanMainClass.PixelsPerMeters, 12 / MegamanMainClass.PixelsPerMeters);
             defineMegamanFireball();
             //Si viene del personaje enemigo, creamos otras propiedades.
         }else if(player.getClass() == Zero.class){
+            sprite = new Sprite(mainGameScreen.getTextureAtlasTools().findRegion("coldball"));
+            sprite.setBounds(x,y,12 / MegamanMainClass.PixelsPerMeters, 12 / MegamanMainClass.PixelsPerMeters);
             defineZeroFireball();
         }else {
             System.out.println(player.getClass());

@@ -13,7 +13,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -107,8 +106,6 @@ public class MainGameScreen implements Screen {
     private ArrayList<Fireball> arrayListMegamanFireball;
 
     private ArrayList<Fireball> arrayListZeroFireball;
-
-    private Array<Controller> controllers;
 
     private ArrayList<Bunny> arrayListBunny;
 
@@ -281,6 +278,7 @@ public class MainGameScreen implements Screen {
                 if (megaman.body.getLinearVelocity().x > -3)
                     megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
+
             //Si el jugador toca flecha abajo, el personaje slashea.
             if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                 //Solo puede slashear si no estaba saltando.
@@ -774,7 +772,6 @@ public class MainGameScreen implements Screen {
         for (int i = 0; i < arrayListZeroSize; i++) {
             arrayListZeroFireball.get(i).draw(game.batch);
         }
-
         //Finalizamos nuestro batch.
         game.batch.end();
 

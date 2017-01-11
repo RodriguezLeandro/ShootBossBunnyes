@@ -87,9 +87,16 @@ upArrow
   orig: 39, 50
   offset: 0, 0
   index: -1
-fireball
+coldball
   rotate: false
   xy: 408, 66
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+fireball
+  rotate: false
+  xy: 426, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
