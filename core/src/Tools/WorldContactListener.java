@@ -100,8 +100,17 @@ public class WorldContactListener implements ContactListener {
 
                 fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
                 fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
-                ((Megaman) fixtureBody.getUserData()).onBodyHitLower();
 
+                //Si megaman es golpeado por la derecha, entonces impulso por la derecha,
+                //De lo contrario, impulso por la izquierda.
+                if (((Megaman) fixtureBody.getUserData()).body.getPosition().x < ((Enemy) fixtureObject.getUserData()).body.getPosition().x) {
+                    //Mandamos true si es impulso a  la izquierda, de lo contrario mandamos false.
+                    //Tambien le voy a mandar el body del enemigo que lo choco, para que se separen.
+                    ((Megaman) fixtureBody.getUserData()).onBodyHitLower(true);
+                }
+                else {
+                    ((Megaman) fixtureBody.getUserData()).onBodyHitLower(false);
+                }
                 break;
 
             case MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT| MegamanMainClass.ENEMY_BIT:

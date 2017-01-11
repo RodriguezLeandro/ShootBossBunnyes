@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import Screen.MainGameScreen;
+import Tools.Enemy;
 
 /**
  * Created by Leandro on 02/01/2017.
@@ -222,9 +223,7 @@ public class Megaman{
             fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
-                    | MegamanMainClass.ENEMY_BIT;
+                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -360,9 +359,7 @@ public class Megaman{
         fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
-                | MegamanMainClass.ENEMY_BIT;
+                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -704,9 +701,7 @@ public class Megaman{
 
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
-                 | MegamanMainClass.ENEMY_BIT;
+                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -770,12 +765,26 @@ public class Megaman{
         }
     }
 
-    public void onBodyHitLower(){
-        //Si no esta muerto megaman.
-        if (currentState != State.DYING) {
-            //O sea, que el enemigo no pega tan fuerte.
-            megamanDamageCuantity = 15;
-            currentState = State.GETTINGHIT;
+    public void onBodyHitLower(boolean bool){
+        if (bool) {
+            //Si no esta muerto megaman.
+            if (currentState != State.DYING) {
+                //O sea, que el enemigo no pega tan fuerte.
+                megamanDamageCuantity = 15;
+                currentState = State.GETTINGHIT;
+                body.applyLinearImpulse(new Vector2(-4f,0),body.getWorldCenter(),true);
+            }
+        }
+        else {
+            //Si no esta muerto megaman.
+            if (currentState != State.DYING) {
+                //O sea, que el enemigo no pega tan fuerte.
+                megamanDamageCuantity = 15;
+                currentState = State.GETTINGHIT;
+                body.setLinearVelocity(0,0);
+                body.setLinearDamping(0);
+                body.applyLinearImpulse(new Vector2(4f,0),body.getWorldCenter(),true);
+            }
         }
     }
 
