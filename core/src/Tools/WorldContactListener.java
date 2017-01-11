@@ -79,6 +79,39 @@ public class WorldContactListener implements ContactListener {
                 }else{
                     ((Megaman) fixtureBody.getUserData()).onBodyHit();
                 }
+                break;
+
+            case MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT | MegamanMainClass.ZERO_SENSOR_BIT_2:
+                fixtureBody = fixtureA.getUserData().getClass() == Zero.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+
+                ((Zero)fixtureBody.getUserData()).setZeroShouldJump();
+
+                break;
+
+            case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.ZERO_SENSOR_BIT:
+                fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+                ((Megaman) fixtureBody.getUserData()).onBodyHit();
+
+                break;
+
+            case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.ENEMY_BIT:
+
+                fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+                ((Megaman) fixtureBody.getUserData()).onBodyHitLower();
+
+                break;
+
+            case MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT| MegamanMainClass.ENEMY_BIT:
+
+                fixtureBody = fixtureA.getUserData().getClass() == Fireball.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+                ((Enemy) fixtureObject.getUserData()).onBodyHit();
+                ((Fireball)fixtureBody.getUserData()).destroy();
+
+                break;
 
             default:
 

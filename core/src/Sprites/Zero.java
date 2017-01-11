@@ -16,6 +16,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import java.util.Random;
+
 import Screen.MainGameScreen;
 
 /**
@@ -27,6 +29,7 @@ public class Zero{
     public World world;
     public Body body;
     private MainGameScreen mainGameScreen;
+    private Megaman megaman;
 
     private Sprite sprite;
 
@@ -49,11 +52,15 @@ public class Zero{
     private float stateTimer;
     private float untouchableCount;
 
+    private Integer fightingState;
+
     private boolean runningRight;
     private boolean shouldBeJumping;
     private boolean zeroIsDead;
     private boolean makeZeroUntouchable;
     private boolean deactivateZeroBody;
+    private boolean isZeroFighting;
+    private boolean zeroShouldJump;
 
 
     public Zero(MainGameScreen mainGameScreen){
@@ -67,6 +74,9 @@ public class Zero{
 
         //Obtenemos el mundo en el que el enemigo principal vivira.
         world = mainGameScreen.getWorld();
+
+        //Traemos la referencia de megaman.
+        megaman = mainGameScreen.getMegaman();
 
         //Inicializamos los estados de nuestro personaje.
         currentState = State.STANDING;
@@ -109,32 +119,108 @@ public class Zero{
         //Queremos que el cuerpo del personaje este activo.
         deactivateZeroBody = false;
 
+        //Al comienzo del juego zero no esta peleando.
+        isZeroFighting = false;
+
+        //Inicializamos el estado de pelea inicial.
+        fightingState = 0;
+
     }
 
     public void update(float delta){
 
-        //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
-        //corresponda con la posicion del fixture(y body) de nuestro personaje.
+        //Zero esta peleando solo si nos encontramos en la seccion final del nivel.
+        if (isZeroFighting){
 
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
+            makeZeroFight();
+            //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
+            //corresponda con la posicion del fixture(y body) de nuestro personaje.
 
-        //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
-        sprite.setRegion(getTextureRegion(delta));
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
 
-        if (makeZeroUntouchable){
-            setZeroUntouchableDot5Seconds();
-        }
+            //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
+            sprite.setRegion(getTextureRegion(delta));
 
-        if (deactivateZeroBody){
-            if (body.isActive()) {
-                body.setActive(false);
+            if (makeZeroUntouchable) {
+                setZeroUntouchableDot5Seconds();
             }
-        }else {
-            body.setActive(true);
+
+            if (deactivateZeroBody) {
+                if (body.isActive()) {
+                    body.setActive(false);
+                }
+            } else {
+                body.setActive(true);
+            }
+
+        }
+        else {
+            //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
+            //corresponda con la posicion del fixture(y body) de nuestro personaje.
+
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
+
+            //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
+            sprite.setRegion(getTextureRegion(delta));
+
+            if (makeZeroUntouchable) {
+                setZeroUntouchableDot5Seconds();
+            }
+
+            if (deactivateZeroBody) {
+                if (body.isActive()) {
+                    body.setActive(false);
+                }
+            } else {
+                body.setActive(true);
+            }
         }
 
     }
 
+    public void makeZeroFight(){
+
+        switch(fightingState){
+            case 0:
+                Random random = new Random();
+                Integer randomNumer = random.nextInt(10);
+
+                if (randomNumer == 0){
+                    mainGameScreen.isZeroHitting();
+                }
+                else if (randomNumer == 1){
+                    mainGameScreen.isZeroRunningToMegaman();
+                }
+
+                if (zeroShouldJump){
+                    mainGameScreen.isZeroJumping();
+                    zeroShouldJump = false;
+                }
+                break;
+
+            case 1:
+                Random random2 = new Random();
+                Integer randomNumer2 = random2.nextInt(10);
+
+                if (randomNumer2 == 0){
+                    mainGameScreen.isZeroHitting();
+                }
+                else if(randomNumer2 == 1){
+                    mainGameScreen.isZeroRunningAwayFromMegaman();
+                }
+                else if(randomNumer2 == 2){
+                    mainGameScreen.isZeroJumping();
+                }
+
+                break;
+
+        }
+
+    }
+
+    public void setZeroFightingStateNumber(Integer integer){
+        fightingState = integer;
+    }
 
     public void crearAnimaciones(){
 
@@ -191,7 +277,7 @@ public class Zero{
         BodyDef bodyDef = new BodyDef();
 
         //Establecemos la posicion que tendra nuestro personaje.
-        bodyDef.position.set(7100 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(13500 / MegamanMainClass.PixelsPerMeters ,200 / MegamanMainClass.PixelsPerMeters);
         //Decidimos si es StaticBody, DynamicBody o KinematicBody.
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -219,7 +305,7 @@ public class Zero{
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT |
                 MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
+                MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -266,12 +352,37 @@ public class Zero{
         //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
         body.createFixture(fixtureDef).setUserData(this);
 
+        vertices = new Vector2[4];
+
+        //Creamos cada vector del array y les asignamos las correspondientes posiciones.
+        vertices[0] = new Vector2(250f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+        vertices[1] = new Vector2(250f / MegamanMainClass.PixelsPerMeters,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[2] = new Vector2(-250f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[3] = new Vector2(-250f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+
+        //Ponemos los vertices del array que conforman la forma poligonal.
+        polygonShape.set(vertices);
+
+        fixtureDef.shape = polygonShape;
+
+        fixtureDef.isSensor = true;
+
+        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT_2;
+
+        fixtureDef.filter.maskBits = MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
+
+        body.createFixture(fixtureDef).setUserData(this);
+
     }
 
     //Funcion para modificar el estado de nuestro personaje desde pantalla principal.
     public void setState(State state){
         previousState = currentState;
         currentState = state;
+    }
+
+    public void setZeroShouldJump(){
+        zeroShouldJump = true;
     }
 
     public TextureRegion getTextureRegion(float delta){
@@ -416,6 +527,10 @@ public class Zero{
 
     public void draw(SpriteBatch spriteBatch){
         sprite.draw(spriteBatch);
+    }
+
+    public void setZeroFighting(boolean bool){
+        isZeroFighting = bool;
     }
 
     private void changeBodyOrientation(){

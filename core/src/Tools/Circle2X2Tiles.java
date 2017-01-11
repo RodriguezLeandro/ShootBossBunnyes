@@ -43,8 +43,7 @@ public abstract class Circle2X2Tiles extends InteractiveTileObject {
         //Liberamos la memoria que ocupaba el array.
         tiledMapTileLayersCell = null;
 
-        //Suena la cancion 1, no se escucha bien, pongo la 2.
-        MegamanMainClass.assetManager.get("audio/introsong.mp3", Sound.class).play();
+        mainGameScreen.restoreMegamanHp(60);
     }
     //Esta funcion solo sirve para nuestra clase CirculoPequeño.
     //Sin embargo, esta clase puede obtener cualquier objeto circular.

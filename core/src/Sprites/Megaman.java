@@ -27,7 +27,7 @@ public class Megaman{
 
     public World world;
     public Body body;
-    public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING};
+    public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING, SLASHING};
     public State currentState;
     public State previousState;
 
@@ -37,6 +37,7 @@ public class Megaman{
 
     private TextureRegion megamanStand;
     private TextureRegion textureRegion;
+    private TextureRegion megamanSlashing;
 
     private Animation megamanWalking;
     private Animation megamanCrouching;
@@ -91,6 +92,9 @@ public class Megaman{
 
         //Buscamos la textura inicial, en la que nuestro personaje se encuentra en Standing.
         megamanStand = new TextureRegion(sprite.getTexture(),324,1,32,64);
+
+        //Creamos el textureregion de megamanSlashing.
+        megamanSlashing = new TextureRegion(sprite.getTexture(),354,68,32,64);
 
         //Definimos la posicion inicial de nuestro personaje.
         //En realidad, en update esto deberia de sobreescribirse siempre, no deberia ser necesario.
@@ -159,21 +163,28 @@ public class Megaman{
 
     public void update(float delta){
 
-        //Aqui actualizamos la posicion de nuestro personaje principal, para que se ...
-        //corresponda con la posicion del fixture(y body) de nuestro personaje.
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
+        if (!megamanIsDead) {
+            //Aqui actualizamos la posicion de nuestro personaje principal, para que se ...
+            //corresponda con la posicion del fixture(y body) de nuestro personaje.
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
 
-        //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
-        sprite.setRegion(getTextureRegion(delta));
+            //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
+            sprite.setRegion(getTextureRegion(delta));
 
-        //Verificamos que el personaje no este muerto, y si lo esta, llamamos a la funcion.
-        //Tambien verificamos que no estuviera muerto anteriormente, con la finalidad.
-        //de que el audio suene solo una vez.
-        if (megamanIsDead && !megamanWasDead){
-            MegamanMainClass.assetManager.get("audio/fall_death.wav", Sound.class).play();
-            megamanWasDead = true;
-            stateTimer = 0;
+            //Verificamos que el personaje no este muerto, y si lo esta, llamamos a la funcion.
+            //Tambien verificamos que no estuviera muerto anteriormente, con la finalidad.
+            //de que el audio suene solo una vez.
+            if (megamanIsDead && !megamanWasDead) {
+                MegamanMainClass.assetManager.get("audio/fall_death.wav", Sound.class).play();
+                megamanWasDead = true;
+                stateTimer = 0;
+            }
+        }else {
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
+            sprite.setRegion(getTextureRegion(delta));
+            stateTimer += delta;
         }
+
     }
 
     public void redefineMegamanCrouching(boolean rightOrientation) {
@@ -212,7 +223,8 @@ public class Megaman{
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                     | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
+                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                    | MegamanMainClass.ENEMY_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -238,6 +250,11 @@ public class Megaman{
             fixtureDef.shape = polygonShape;
 
             fixtureDef.isSensor = true;
+
+            fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                    | MegamanMainClass.ENEMY_BIT;
 
             fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 
@@ -274,7 +291,7 @@ public class Megaman{
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                     | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT;
+                    MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.ENEMY_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -300,6 +317,11 @@ public class Megaman{
             fixtureDef.shape = polygonShape;
 
             fixtureDef.isSensor = true;
+
+            fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                    | MegamanMainClass.ENEMY_BIT;
 
             fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 
@@ -339,7 +361,8 @@ public class Megaman{
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
+                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                | MegamanMainClass.ENEMY_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -363,6 +386,11 @@ public class Megaman{
         fixtureDef.shape = polygonShape;
 
         fixtureDef.isSensor = true;
+
+        fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                | MegamanMainClass.ENEMY_BIT;
 
         fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 
@@ -403,6 +431,19 @@ public class Megaman{
                 //Si esta callendo, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
                 break;
+            case SLASHING:
+                if (previousState != State.SLASHING){
+                    stateTimer = 0;
+                }
+                if (stateTimer < 1.5f) {
+                    textureRegion = megamanSlashing;
+                }
+                else {
+                    setState(State.STANDING);
+                    textureRegion = megamanStand;
+                    stateTimer = 0;
+                }
+                break;
             case STANDING:
                 //Si esta en standing, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
@@ -430,9 +471,11 @@ public class Megaman{
             //En el caso de Dying, luego vemos que hacemos(porque debe finalizar el juego);
             case DYING:
                 //Si no estaba muriendo, reiniciamos el stateTimer.
-                if (previousState != State.DYING) {
+                if (currentState == State.DYING && megamanIsDead == false) {
                     stateTimer = 0;
                     megamanIsDead = true;
+                    MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).stop();
+                    mainGameScreen.setZeroFightState(1);
                 }
                 textureRegion = megamanDying.getKeyFrame(stateTimer);
                 break;
@@ -516,7 +559,7 @@ public class Megaman{
     }
 
     public void setMegamanIsDead(){
-        megamanIsDead = true;
+        currentState = State.DYING;
     }
 
     private void changeBodyOrientation(){
@@ -605,6 +648,9 @@ public class Megaman{
         else if (currentState == State.DYING){
             return State.DYING;
         }
+        else if (currentState == State.SLASHING){
+            return State.SLASHING;
+        }
         //Si el jugador estaba saltando, aunque luego caiga devolvemos el State.Jumping.
         else if ((body.getLinearVelocity().y > 0 && shouldBeJumping) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
             return State.JUMPING;
@@ -659,7 +705,8 @@ public class Megaman{
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
                 | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
+                MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                 | MegamanMainClass.ENEMY_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -704,15 +751,32 @@ public class Megaman{
         //Creamos una nueva categoria para nuestro sensor.
         fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 
+        fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
+                | MegamanMainClass.ENEMY_BIT;
+
         //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
         body.createFixture(fixtureDef).setUserData(this);
 
     }
 
     public void onBodyHit(){
-        //O sea, que el enemigo pega fuerte.
-        megamanDamageCuantity = 30;
-        currentState = State.GETTINGHIT;
+        //Si no esta muerto megaman.
+        if (currentState != State.DYING) {
+            //O sea, que el enemigo pega fuerte.
+            megamanDamageCuantity = 30;
+            currentState = State.GETTINGHIT;
+        }
+    }
+
+    public void onBodyHitLower(){
+        //Si no esta muerto megaman.
+        if (currentState != State.DYING) {
+            //O sea, que el enemigo no pega tan fuerte.
+            megamanDamageCuantity = 15;
+            currentState = State.GETTINGHIT;
+        }
     }
 
     public boolean isMegamanJumping(){

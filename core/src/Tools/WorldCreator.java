@@ -9,8 +9,12 @@ import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.megamangame.MegamanMainClass;
+
+import java.util.ArrayList;
 
 import Screen.MainGameScreen;
+import Sprites.Bunny;
 import Sprites.Floor;
 import Sprites.FlyingGround;
 import Sprites.GreenCircle;
@@ -22,6 +26,12 @@ import Sprites.RedCircle;
  */
 
 public class WorldCreator {
+
+    //Creamos el arraylist que contendra a los bunnys.
+    private ArrayList<Bunny> arrayListBunny;
+
+
+    //Nota, borre los circle 2 x 2 and 4 x 4 porque son innecesarios?
 
     //Aca creamos todos los objetos(Estaticos?) que se encuentren dentro del mundo.
     public WorldCreator(MainGameScreen mainGameScreen){
@@ -49,6 +59,7 @@ public class WorldCreator {
             new FlyingGround(mainGameScreen,rectangle);
         }
 
+        //Borrados los circle 2 x 2. Dejo comentado.
         for(MapObject object : tiledMap.getLayers().get(4).getObjects().getByType(EllipseMapObject.class)){
 
             //Obtenemos cada elipse de tiled map.
@@ -66,6 +77,10 @@ public class WorldCreator {
             //Creamos los objetos en nuestro mundo.
             new RedCircle(mainGameScreen,circle);
         }
+
+
+
+        //Borrados los circle 4 x 4 dejo comentado.
 
         for(MapObject object : tiledMap.getLayers().get(5).getObjects().getByType(EllipseMapObject.class)){
 
@@ -85,6 +100,7 @@ public class WorldCreator {
             new GreenCircle(mainGameScreen,circle);
         }
 
+
         //Creamos la lava.
         for(MapObject object : tiledMap.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
             //Obtenemos cada rectangulo de tiled map.
@@ -94,5 +110,20 @@ public class WorldCreator {
             new Lava(mainGameScreen,rectangle);
         }
 
+        //Creamos el arraylist.
+        arrayListBunny = new ArrayList<Bunny>();
+
+        //Creamos los maravillosos Bunnys!!
+        for(MapObject object : tiledMap.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)){
+
+            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+            arrayListBunny.add(new Bunny(mainGameScreen, rectangle.x / MegamanMainClass.PixelsPerMeters, rectangle.y / MegamanMainClass.PixelsPerMeters, rectangle.getWidth() / MegamanMainClass.PixelsPerMeters, rectangle.getHeight() / MegamanMainClass.PixelsPerMeters));
+        }
+
+    }
+
+    public ArrayList<Bunny> getBunnys(){
+        return arrayListBunny;
     }
 }

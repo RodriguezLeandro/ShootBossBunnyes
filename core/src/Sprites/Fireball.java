@@ -30,6 +30,8 @@ public class Fireball {
 
     public boolean fireToRight;
 
+    public boolean destroyFireball;
+
     public Fireball(MainGameScreen mainGameScreen, float x, float y, boolean fireToRight, Object player) {
         this.mainGameScreen = mainGameScreen;
 
@@ -61,6 +63,10 @@ public class Fireball {
         sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,body.getPosition().y - sprite.getWidth() / 2);
     }
 
+    public void destroy(){
+        destroyFireball = true;
+    }
+
     public void defineMegamanFireball(){
 
         if (fireToRight) {
@@ -89,7 +95,7 @@ public class Fireball {
 
             fixtureDef.filter.categoryBits = MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
-            fixtureDef.filter.maskBits = MegamanMainClass.ZERO_SENSOR_BIT;
+            fixtureDef.filter.maskBits = MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.ZERO_SENSOR_BIT_2 | MegamanMainClass.ENEMY_BIT;
 
             body.createFixture(fixtureDef).setUserData(this);
 
@@ -120,7 +126,7 @@ public class Fireball {
 
             fixtureDef.filter.categoryBits = MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
-            fixtureDef.filter.maskBits = MegamanMainClass.ZERO_SENSOR_BIT;
+            fixtureDef.filter.maskBits = MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.ZERO_SENSOR_BIT_2 | MegamanMainClass.ENEMY_BIT;
 
             body.createFixture(fixtureDef).setUserData(this);
         }

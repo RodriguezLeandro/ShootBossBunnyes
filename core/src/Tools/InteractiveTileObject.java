@@ -30,10 +30,13 @@ public abstract class InteractiveTileObject {
     protected FixtureDef fixtureDef = new FixtureDef();
     protected Body body;
     protected Fixture fixture;
+    protected  MainGameScreen mainGameScreen;
 
     protected TiledMap tiledMap;
 
     public InteractiveTileObject(MainGameScreen mainGameScreen, Shape2D shape2D){
+
+        this.mainGameScreen = mainGameScreen;
 
         //Realizamos un Switch pero sin su forma.
         //Si el shape2d es un rectangulo, entonces ejecutamos lo primero.

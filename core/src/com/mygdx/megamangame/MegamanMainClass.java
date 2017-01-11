@@ -33,7 +33,9 @@ public class MegamanMainClass extends Game {
 	public final static short MEGAMAN_SENSOR_BIT = 256;
 	public final static short FIREBALL_MEGAMAN_SENSOR_BIT = 512;
 	public final static short ZERO_SENSOR_BIT = 1024;
-	public final static short FIREBALL_ZERO_SENSOR_BIT = 2024;
+	public final static short FIREBALL_ZERO_SENSOR_BIT = 2048;
+	public final static short ZERO_SENSOR_BIT_2 = 4096;
+	public final static short ENEMY_BIT = 8192;
 
 	@Override
 	public void create () {
@@ -44,6 +46,7 @@ public class MegamanMainClass extends Game {
 		//Creamos el assetManager.
 		assetManager = new AssetManager();
 		assetManager.load("audio/introsong.mp3", Sound.class);
+		assetManager.load("audio/topman.mp3", Sound.class);
 		assetManager.load("audio/fall_death.wav",Sound.class);
 		assetManager.finishLoading();
 

@@ -43,9 +43,6 @@ public class Circle4X4Tiles extends InteractiveTileObject {
         }
         //Liberamos la memoria que ocupaba el array.
         tiledMapTileLayersCell = null;
-
-        //Suena la cancion 1, no se escucha bien, pongo la 2.
-        MegamanMainClass.assetManager.get("audio/introsong.mp3", Sound.class).play();
     }
 
     public TiledMapTileLayer.Cell[] getCell(){
