@@ -6,9 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -30,7 +27,6 @@ import Sprites.Bunny;
 import Sprites.Fireball;
 import Sprites.Megaman;
 import Sprites.Zero;
-import Tools.InteractiveTileObject;
 import Tools.WorldContactListener;
 import Tools.WorldCreator;
 
@@ -38,7 +34,7 @@ import Tools.WorldCreator;
  * Created by Leandro on 01/01/2017.
  */
 
-public class MainGameScreen implements Screen,ControllerListener{
+public class MainGameScreen implements Screen {
 
     //Objeto MegamanMainClass
     private MegamanMainClass game;
@@ -168,10 +164,10 @@ public class MainGameScreen implements Screen,ControllerListener{
         //Si estamos en un dispositivo android:
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             //Creamos el Hud de nuestro juego para android.
-            hud = new Hud(game.batch,textureAtlasTools,true);
-        }else{
+            hud = new Hud(game.batch, textureAtlasTools, true);
+        } else {
             //Si estamos en un dispositivo que no es android(seguramente desktop):
-            hud = new Hud(game.batch,textureAtlasTools,false);
+            hud = new Hud(game.batch, textureAtlasTools, false);
         }
         //Porque claramente, nuestro personaje aun vive.
         personajeEstaMuerto = false;
@@ -193,15 +189,6 @@ public class MainGameScreen implements Screen,ControllerListener{
         //No esta activado el final hud.
         finalHudActivated = false;
 
-        //Asociamos el arraylist a la cantidad de controles conectados.
-        controllers = Controllers.getControllers();
-
-        //Le asignamos a cada control un Listener.
-        if (controllers.size > 0)
-        controllers.get(0).addListener(this);
-        if (controllers.size > 1)
-        controllers.get(1).addListener(this);
-
         //Ponemos musica de background.
         MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).play(0.2f);
 
@@ -209,11 +196,11 @@ public class MainGameScreen implements Screen,ControllerListener{
         arrayListBunny = worldCreator.getBunnys();
     }
 
-    public  TextureAtlas getTextureAtlasCharac(){
+    public TextureAtlas getTextureAtlasCharac() {
         return textureAtlasCharac;
     }
 
-    public  TextureAtlas getTextureAtlasTools(){
+    public TextureAtlas getTextureAtlasTools() {
         return textureAtlasTools;
     }
 
@@ -223,13 +210,13 @@ public class MainGameScreen implements Screen,ControllerListener{
     }
 
     //Funcion que se encargara de manejar los inputs que hayan en el juego.
-    public void handleMegamanInput(float delta){
+    public void handleMegamanInput(float delta) {
 
         if (!megaman.isDead()) {
 
             //Esto es para saber si esta siendo tocada la flecha para arriba y que salte solo una vez.
             //Es decir, que no salte muchas veces sino hasta que termine de hacer click.
-            if (hud.isUpArrowPressed()){
+            if (hud.isUpArrowPressed()) {
                 if (Gdx.input.justTouched()) {
                     hud.setUpArrowPressed(false);
                     if (!megaman.isMegamanJumping()) {
@@ -238,20 +225,20 @@ public class MainGameScreen implements Screen,ControllerListener{
                 }
             }
 
-            if (hud.isLeftArrowPressed()){
+            if (hud.isLeftArrowPressed()) {
                 if (megaman.body.getLinearVelocity().x > -3)
-                megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
+                    megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
-            if (hud.isRightArrowPressed()){
+            if (hud.isRightArrowPressed()) {
                 if (megaman.body.getLinearVelocity().x < 3)
-                megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
+                    megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
             }
-            if (hud.isLeftButtonPressed()){
+            if (hud.isLeftButtonPressed()) {
                 megaman.setState(Megaman.State.HITTING);
             }
-            if (hud.isDownButtonPressed()){
+            if (hud.isDownButtonPressed()) {
                 //Solo si recien tocamos la pantalla.
-                if (Gdx.input.justTouched()){
+                if (Gdx.input.justTouched()) {
                     hud.setDownButtonPressed(false);
 
                     //Si ya se estaba agachando, el personaje se para.
@@ -264,8 +251,7 @@ public class MainGameScreen implements Screen,ControllerListener{
                         megaman.setState(Megaman.State.CROUCHING);
                         if (megaman.isRunningRight()) {
                             megaman.redefineMegamanCrouching(true);
-                        }
-                        else{
+                        } else {
                             megaman.redefineMegamanCrouching(false);
                         }
                     }
@@ -274,10 +260,10 @@ public class MainGameScreen implements Screen,ControllerListener{
             //Si presionamos W, el personaje salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
                 //Si estaba haciendo slash el personaje, puede saltar mas alto.
-                if (megaman.getState() == Megaman.State.SLASHING){
+                if (megaman.getState() == Megaman.State.SLASHING) {
                     if (!megaman.isMegamanJumping())
                         megaman.body.applyLinearImpulse(new Vector2(0, 8f), megaman.body.getWorldCenter(), true);
-                }else {
+                } else {
                     //Solo salta si no estaba saltando o volando en el aire.
                     if (!megaman.isMegamanJumping())
                         megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
@@ -287,13 +273,13 @@ public class MainGameScreen implements Screen,ControllerListener{
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                 //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
                 if (megaman.body.getLinearVelocity().x < 3)
-                megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
+                    megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
             }
             //Si presionamos A, el personaje se mueve a la izquierda.
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
                 //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
                 if (megaman.body.getLinearVelocity().x > -3)
-                megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
+                    megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
             //Si el jugador toca flecha abajo, el personaje slashea.
             if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
@@ -312,9 +298,9 @@ public class MainGameScreen implements Screen,ControllerListener{
             }
 
             //Si presionamos M, el personaje se traslada a una posicion cercana al final.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.M)){
+            if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
                 arrayListBunny.clear();
-                megaman.body.setTransform(12400 / MegamanMainClass.PixelsPerMeters,200 / MegamanMainClass.PixelsPerMeters,megaman.body.getAngle());
+                megaman.body.setTransform(12400 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters, megaman.body.getAngle());
             }
             //Si presionamos Arriba, el personaje muere.
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
@@ -332,8 +318,7 @@ public class MainGameScreen implements Screen,ControllerListener{
                     megaman.setState(Megaman.State.CROUCHING);
                     if (megaman.isRunningRight()) {
                         megaman.redefineMegamanCrouching(true);
-                    }
-                    else{
+                    } else {
                         megaman.redefineMegamanCrouching(false);
                     }
                 }
@@ -343,10 +328,10 @@ public class MainGameScreen implements Screen,ControllerListener{
                 //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
                 //Solo cambia el estado de megaman si puede tirar pelotas(estado-->animacion).
                 if (arrayListMegamanSize < 3) {
-                     megaman.setState(Megaman.State.HITTING);
+                    megaman.setState(Megaman.State.HITTING);
 
-                     //Aca tenemos que crear la bola de fuego(fireball).
-                     Vector2 positionFireball = megaman.getPositionFireAttack();
+                    //Aca tenemos que crear la bola de fuego(fireball).
+                    Vector2 positionFireball = megaman.getPositionFireAttack();
 
                     //Si el personaje mira a la derecha, dispara hacia alli,
                     if (megaman.isRunningRight()) {
@@ -380,42 +365,42 @@ public class MainGameScreen implements Screen,ControllerListener{
         }
     }
 
-    public void handleZeroInput(float delta){
+    public void handleZeroInput(float delta) {
 
         if (!zero.isDead()) {
             //Si presionamos 8, el personaje enemigo salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
-                if(!zero.isZeroJumping())
-                zero.body.applyLinearImpulse(new Vector2(0, 6f), zero.body.getWorldCenter(), true);
+                if (!zero.isZeroJumping())
+                    zero.body.applyLinearImpulse(new Vector2(0, 6f), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 4, el personaje enemigo se mueve a la izquierda.
             if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)) {
                 if (zero.body.getLinearVelocity().x > -3)
-                zero.body.applyLinearImpulse(new Vector2(-0.2f, 0), zero.body.getWorldCenter(), true);
+                    zero.body.applyLinearImpulse(new Vector2(-0.2f, 0), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 6, el personaje enemigo se mueve a la derecha.
             if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)) {
                 if (zero.body.getLinearVelocity().x < 3)
-                zero.body.applyLinearImpulse(new Vector2(0.2f, 0), zero.body.getWorldCenter(), true);
+                    zero.body.applyLinearImpulse(new Vector2(0.2f, 0), zero.body.getWorldCenter(), true);
             }
             //Si presionamos 7, el personaje enemigo pega.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
-                    //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
-                    //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
-                    if (arrayListZeroSize < 3) {
-                        zero.setState(Zero.State.HITTING);
+                //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
+                //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
+                if (arrayListZeroSize < 3) {
+                    zero.setState(Zero.State.HITTING);
 
-                        //Aca tenemos que crear la bola de fuego(fireball).
-                        Vector2 positionFireball = zero.getPositionFireAttack();
+                    //Aca tenemos que crear la bola de fuego(fireball).
+                    Vector2 positionFireball = zero.getPositionFireAttack();
 
-                        //Si el personaje mira a la derecha, dispara hacia alli,
-                        if (zero.isRunningRight()) {
-                            arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, zero));
-                        } else {
-                            //Si mira a la izquierda, dispara hacia el otro lado.
-                            arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, zero));
-                        }
+                    //Si el personaje mira a la derecha, dispara hacia alli,
+                    if (zero.isRunningRight()) {
+                        arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, zero));
+                    } else {
+                        //Si mira a la izquierda, dispara hacia el otro lado.
+                        arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, zero));
                     }
+                }
             }
             //Si presionamos 9, el personaje enemigo se agacha.
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
@@ -429,8 +414,7 @@ public class MainGameScreen implements Screen,ControllerListener{
                     zero.setState(Zero.State.CROUCHING);
                     if (zero.isRunningRight()) {
                         zero.redefineZeroCrouching(true);
-                    }
-                    else{
+                    } else {
                         zero.redefineZeroCrouching(false);
                     }
                 }
@@ -446,7 +430,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         }
     }
 
-    public void isZeroHitting(){
+    public void isZeroHitting() {
         //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
         //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
         if (arrayListZeroSize < 3) {
@@ -465,82 +449,79 @@ public class MainGameScreen implements Screen,ControllerListener{
         }
     }
 
-    public void isZeroRunningToMegaman(){
-        if (megaman.body.getPosition().x < zero.body.getPosition().x){
+    public void isZeroRunningToMegaman() {
+        if (megaman.body.getPosition().x < zero.body.getPosition().x) {
             if (zero.body.getLinearVelocity().x > -3)
                 zero.body.applyLinearImpulse(new Vector2(-1f, 0), zero.body.getWorldCenter(), true);
-        }
-        else {
+        } else {
             if (zero.body.getLinearVelocity().x < 3)
                 zero.body.applyLinearImpulse(new Vector2(1f, 0), zero.body.getWorldCenter(), true);
         }
     }
 
-    public void restoreMegamanHp(float health){
+    public void restoreMegamanHp(float health) {
         hud.curarPersonaje(health);
     }
 
-    public void setZeroFightState(Integer integer){
+    public void setZeroFightState(Integer integer) {
         zero.setZeroFightingStateNumber(integer);
     }
 
-    public void isZeroRunningAwayFromMegaman(){
-        if (megaman.body.getPosition().x < zero.body.getPosition().x){
+    public void isZeroRunningAwayFromMegaman() {
+        if (megaman.body.getPosition().x < zero.body.getPosition().x) {
             if (zero.body.getLinearVelocity().x > -3)
                 zero.body.applyLinearImpulse(new Vector2(1f, 0), zero.body.getWorldCenter(), true);
-        }
-        else {
+        } else {
             if (zero.body.getLinearVelocity().x < 3)
                 zero.body.applyLinearImpulse(new Vector2(-1f, 0), zero.body.getWorldCenter(), true);
         }
     }
 
-    public void  isZeroJumping(){
-        if(!zero.isZeroJumping())
+    public void isZeroJumping() {
+        if (!zero.isZeroJumping())
             zero.body.applyLinearImpulse(new Vector2(0, 10f), zero.body.getWorldCenter(), true);
     }
 
 
     //Para ver si el jugador esta muerto desde hace mas de 3 segundos.
-    public boolean gameOver(){
-        if (megaman.isDead() && megaman.getStateTimer() > 3f){
+    public boolean gameOver() {
+        if (megaman.isDead() && megaman.getStateTimer() > 3f) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    public float getDeltaTime(){
+    public float getDeltaTime() {
         return deltaTime;
     }
 
-    public void logicaMovimientoPersonajes(){
-        if (moverMegamanDerecha){
+    public void logicaMovimientoPersonajes() {
+        if (moverMegamanDerecha) {
             if (megaman.body.getLinearVelocity().x < 3)
                 megaman.body.applyLinearImpulse(new Vector2(0.5f, 0), megaman.body.getWorldCenter(), true);
         }
-        if (moverMegamanIzquierda){
+        if (moverMegamanIzquierda) {
             if (megaman.body.getLinearVelocity().x > -3)
                 megaman.body.applyLinearImpulse(new Vector2(-0.5f, 0), megaman.body.getWorldCenter(), true);
         }
-        if (moverZeroDerecha){
+        if (moverZeroDerecha) {
             if (zero.body.getLinearVelocity().x < 3)
                 zero.body.applyLinearImpulse(new Vector2(0.5f, 0), zero.body.getWorldCenter(), true);
         }
-        if (moverZeroIzquierda){
+        if (moverZeroIzquierda) {
             if (zero.body.getLinearVelocity().x > -3)
                 zero.body.applyLinearImpulse(new Vector2(-0.5f, 0), zero.body.getWorldCenter(), true);
         }
     }
 
 
-    public void update(float delta){
+    public void update(float delta) {
 
         //Guardamos el delta time.
         deltaTime = delta;
 
-        if (stageInFinalBattle && !finalHudActivated){
+        if (stageInFinalBattle && !finalHudActivated) {
             hud.setGameIsInFinalStage();
             finalHudActivated = true;
             zero.setZeroFighting(true);
@@ -554,12 +535,12 @@ public class MainGameScreen implements Screen,ControllerListener{
         logicaMovimientoPersonajes();
 
         //Preguntamos si hay que dañarlo progresivamente al personaje.
-        if (dañarPersonajeProgresivamente){
+        if (dañarPersonajeProgresivamente) {
             dañarMegamanPersonaje(getHealthDamage());
         }
 
         //Le decimos al mundo que avanze, que efectue cambios en las fisicas.
-        world.step(1/60f,6,2);
+        world.step(1 / 60f, 6, 2);
 
         //Updateamos la posicion del sprite de nuestro personaje y luego la animacion.
         megaman.update(delta);
@@ -571,17 +552,16 @@ public class MainGameScreen implements Screen,ControllerListener{
         arrayListBunnySize = arrayListBunny.size();
 
         //Updateamos los bunnys.
-        for (int i = 0; i < arrayListBunnySize; i ++){
+        for (int i = 0; i < arrayListBunnySize; i++) {
             //Si hay que destruirlo, lo destruimos, sino lo updateamos.
             if (arrayListBunny.get(i).destroyBunny) {
                 arrayListBunny.get(i).dispose();
                 arrayListBunny.remove(i);
                 arrayListBunnySize = arrayListBunny.size();
-            }
-            else {
+            } else {
                 arrayListBunny.get(i).update(delta);
                 //Si el enemigo esta cerca, lo despertamos, sino no.
-                if (arrayListBunny.get(i).getPositionX() < megaman.body.getPosition().x + 500 / MegamanMainClass.PixelsPerMeters){
+                if (arrayListBunny.get(i).getPositionX() < megaman.body.getPosition().x + 500 / MegamanMainClass.PixelsPerMeters) {
                     arrayListBunny.get(i).body.setActive(true);
                 }
             }
@@ -591,14 +571,13 @@ public class MainGameScreen implements Screen,ControllerListener{
         arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Para cada fireball de la lista, updateamos.
-        for (int i = 0; i < arrayListMegamanSize; i ++){
+        for (int i = 0; i < arrayListMegamanSize; i++) {
             //Si hay que destruirlo, lo destruimos, sino, lo updateamos.
-            if (arrayListMegamanFireball.get(i).destroyFireball){
+            if (arrayListMegamanFireball.get(i).destroyFireball) {
                 arrayListMegamanFireball.get(i).dispose();
                 arrayListMegamanFireball.remove(i);
                 arrayListMegamanSize = arrayListMegamanFireball.size();
-            }
-            else {
+            } else {
                 arrayListMegamanFireball.get(i).update(delta);
             }
         }
@@ -607,7 +586,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         arrayListZeroSize = arrayListZeroFireball.size();
 
         //Para cada fireball de la lista, updateamos.
-        for (int i = 0; i < arrayListZeroSize; i ++){
+        for (int i = 0; i < arrayListZeroSize; i++) {
             arrayListZeroFireball.get(i).update(delta);
         }
 
@@ -616,7 +595,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         if (!stageInFinalBattle) {
             //Si el personaje quiere cruzar el limite izquierdo de la pantalla no lo dejamos.
             if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters) {
-                megaman.body.setTransform(new Vector2(10 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y),megaman.body.getAngle());
+                megaman.body.setTransform(new Vector2(10 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
             }
 
             //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
@@ -648,48 +627,48 @@ public class MainGameScreen implements Screen,ControllerListener{
             }
 
             //Todo lo que ocurre arriba es solo si no estamos en la batalla final.
-        }else{
+        } else {
             //El personaje no puede cruzar ni el limite izquierdo ni el limite derecho de la pantalla.
-            if (megaman.body.getPosition().x < 12800 / MegamanMainClass.PixelsPerMeters){
-                megaman.body.setLinearVelocity(0,megaman.body.getLinearVelocity().y);
-                megaman.body.setTransform(new Vector2(12800 / MegamanMainClass.PixelsPerMeters,megaman.body.getPosition().y),megaman.body.getAngle());
+            if (megaman.body.getPosition().x < 12800 / MegamanMainClass.PixelsPerMeters) {
+                megaman.body.setLinearVelocity(0, megaman.body.getLinearVelocity().y);
+                megaman.body.setTransform(new Vector2(12800 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
             }
 
-            if (megaman.body.getPosition().x > 13600 / MegamanMainClass.PixelsPerMeters){
-                megaman.body.setLinearVelocity(0,megaman.body.getLinearVelocity().y);
-                megaman.body.setTransform(new Vector2(13600 / MegamanMainClass.PixelsPerMeters,megaman.body.getPosition().y),megaman.body.getAngle());
+            if (megaman.body.getPosition().x > 13600 / MegamanMainClass.PixelsPerMeters) {
+                megaman.body.setLinearVelocity(0, megaman.body.getLinearVelocity().y);
+                megaman.body.setTransform(new Vector2(13600 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
             }
             //Zero tampoco puede salir de la pantalla.
-            if (zero.body.getPosition().x < 12800 / MegamanMainClass.PixelsPerMeters){
-                zero.body.setLinearVelocity(0,zero.body.getLinearVelocity().y);
-                zero.body.setTransform(new Vector2(12800 / MegamanMainClass.PixelsPerMeters,zero.body.getPosition().y),zero.body.getAngle());
+            if (zero.body.getPosition().x < 12800 / MegamanMainClass.PixelsPerMeters) {
+                zero.body.setLinearVelocity(0, zero.body.getLinearVelocity().y);
+                zero.body.setTransform(new Vector2(12800 / MegamanMainClass.PixelsPerMeters, zero.body.getPosition().y), zero.body.getAngle());
             }
 
-            if (zero.body.getPosition().x > 13600 / MegamanMainClass.PixelsPerMeters){
-                zero.body.setLinearVelocity(0,zero.body.getLinearVelocity().y);
-                zero.body.setTransform(new Vector2(13600 / MegamanMainClass.PixelsPerMeters,zero.body.getPosition().y),zero.body.getAngle());
+            if (zero.body.getPosition().x > 13600 / MegamanMainClass.PixelsPerMeters) {
+                zero.body.setLinearVelocity(0, zero.body.getLinearVelocity().y);
+                zero.body.setTransform(new Vector2(13600 / MegamanMainClass.PixelsPerMeters, zero.body.getPosition().y), zero.body.getAngle());
             }
 
         }
 
         //Vemos cuantos objetos hay en el arraylist.
-            arrayListMegamanSize = arrayListMegamanFireball.size();
+        arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Decimos que para cada fireball.
-            for(int i = 0; i < arrayListMegamanSize; i ++){
-                //Si sale de la camara lo eliminamos.
-                    if ((arrayListMegamanFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListMegamanFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)){
+        for (int i = 0; i < arrayListMegamanSize; i++) {
+            //Si sale de la camara lo eliminamos.
+            if ((arrayListMegamanFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListMegamanFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
 
-                        arrayListMegamanFireball.get(i).dispose();
-                        arrayListMegamanFireball.remove(i);
-                        arrayListMegamanSize = arrayListMegamanFireball.size();
-                    }
+                arrayListMegamanFireball.get(i).dispose();
+                arrayListMegamanFireball.remove(i);
+                arrayListMegamanSize = arrayListMegamanFireball.size();
             }
+        }
 
         arrayListZeroSize = arrayListZeroFireball.size();
 
-        for(int i = 0; i < arrayListZeroSize; i ++){
-            if ((arrayListZeroFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)){
+        for (int i = 0; i < arrayListZeroSize; i++) {
+            if ((arrayListZeroFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
 
                 arrayListZeroFireball.get(i).dispose();
                 arrayListZeroFireball.remove(i);
@@ -704,44 +683,44 @@ public class MainGameScreen implements Screen,ControllerListener{
         mapRenderer.setView(mainCamera);
     }
 
-    public Megaman getMegaman(){
+    public Megaman getMegaman() {
         return megaman;
     }
 
-    public float getHealthDamage(){
+    public float getHealthDamage() {
         return healthDamage;
     }
 
-    public void setHealthDamage(float healthDamage){
+    public void setHealthDamage(float healthDamage) {
         this.healthDamage = healthDamage;
     }
 
-    public void dañarMegamanPersonaje(float health){
+    public void dañarMegamanPersonaje(float health) {
 
         //Dañamos al personaje y verificamos si murio.
         personajeEstaMuerto = hud.dañarMegamanPersonaje(health);
         //Si esta muerto, ponemos estado Dying(deberia ser Dead).
-        if(personajeEstaMuerto){
+        if (personajeEstaMuerto) {
             megaman.setState(Megaman.State.DYING);
             megaman.setMegamanIsDead();
         }
     }
 
-    public void dañarZeroPersonaje(){
+    public void dañarZeroPersonaje() {
         //Dañamos al personaje y verificamos si murio.
         personajeEstaMuerto = hud.dañarZeroPersonaje();
         //Si esta muerto, ponemos estado Dying(deberia ser Dead).
-        if(personajeEstaMuerto){
+        if (personajeEstaMuerto) {
             zero.setState(Zero.State.DYING);
         }
     }
 
-    public void dañarPersonajeProgresivamente(float health){
+    public void dañarPersonajeProgresivamente(float health) {
         setHealthDamage(health);
         dañarPersonajeProgresivamente = true;
     }
 
-    public void dejarDañoPersonajeProgresivo(boolean bool){
+    public void dejarDañoPersonajeProgresivo(boolean bool) {
         dañarPersonajeProgresivamente = false;
     }
 
@@ -759,7 +738,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         mapRenderer.render();
 
         //Dibujamos el debuger para los objetos que colisionan.
-        box2DDebugRenderer.render(world,mainCamera.combined);
+        box2DDebugRenderer.render(world, mainCamera.combined);
 
         //Establecemos la proyeccion de la matriz de la camara principal.
         game.batch.setProjectionMatrix(mainCamera.combined);
@@ -774,7 +753,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         zero.draw(game.batch);
 
         //Dibujamos los bunnys.
-        for (Bunny bunny : arrayListBunny){
+        for (Bunny bunny : arrayListBunny) {
             bunny.draw(game.batch);
         }
 
@@ -783,7 +762,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Para cada fireball de la lista, dibujamos.
-        for (int i = 0; i < arrayListMegamanSize; i ++){
+        for (int i = 0; i < arrayListMegamanSize; i++) {
             arrayListMegamanFireball.get(i).draw(game.batch);
         }
 
@@ -792,7 +771,7 @@ public class MainGameScreen implements Screen,ControllerListener{
         int arrayListZeroSize = arrayListZeroFireball.size();
 
         //Para cada fireball de la lista, dibujamos.
-        for (int i = 0; i < arrayListZeroSize; i ++){
+        for (int i = 0; i < arrayListZeroSize; i++) {
             arrayListZeroFireball.get(i).draw(game.batch);
         }
 
@@ -805,22 +784,23 @@ public class MainGameScreen implements Screen,ControllerListener{
         hud.stage.draw();
 
         //cuando termine de dibujar todo, preguntamos si el juego termino.
-        if (gameOver()){
-            game.setScreen(new GameOverScreen(game,hud.getScore()));
+        if (gameOver()) {
+            game.setScreen(new GameOverScreen(game, hud.getScore()));
             dispose();
         }
     }
 
-    public World getWorld(){
+    public World getWorld() {
         return world;
     }
-    public TiledMap getTiledMap(){
+
+    public TiledMap getTiledMap() {
         return tiledMap;
     }
 
     @Override
     public void resize(int width, int height) {
-        mainViewport.update(width,height);
+        mainViewport.update(width, height);
     }
 
     @Override
@@ -848,45 +828,34 @@ public class MainGameScreen implements Screen,ControllerListener{
         arrayListZeroFireball.clear();
     }
 
-    //Lo de abajo son metodos para controles.
-    @Override
-    public void connected(Controller controller) {
-
-    }
-
-    @Override
-    public void disconnected(Controller controller) {
-
-    }
-
+    //Dejo comentadas las funciones de abajo, ya que sirven si queremos utilizar controles en nuestro juego.
+    //Controles de ps1, sin embargo, esto hace que ande mal la app.
+/*
     //Aca manejamos los inputs de los botones. x cuad triang red l1 l2 start l3 r3 31 32 select, etc
-    @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
 
         //Controller.getbutton 0 es triangulo.
-        if (controller.getButton(0)){
+        if (controller.getButton(0)) {
             //Hacemos un flash.
-            if (controller.equals(controllers.get(0))){
-                if (megaman.isRunningRight()){
-                    megaman.body.setTransform(new Vector2(megaman.body.getPosition().x + 100 / MegamanMainClass.PixelsPerMeters,megaman.body.getPosition().y),megaman.body.getAngle());
-                }else {
-                    megaman.body.setTransform(new Vector2(megaman.body.getPosition().x - 100 / MegamanMainClass.PixelsPerMeters,megaman.body.getPosition().y),megaman.body.getAngle());
+            if (controller.equals(controllers.get(0))) {
+                if (megaman.isRunningRight()) {
+                    megaman.body.setTransform(new Vector2(megaman.body.getPosition().x + 100 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
+                } else {
+                    megaman.body.setTransform(new Vector2(megaman.body.getPosition().x - 100 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
                 }
-            }
-            else {
-                if (zero.isRunningRight()){
-                    zero.body.setTransform(new Vector2(zero.body.getPosition().x + 100 / MegamanMainClass.PixelsPerMeters,zero.body.getPosition().y),zero.body.getAngle());
-                }
-                else {
-                    zero.body.setTransform(new Vector2(zero.body.getPosition().x - 100 / MegamanMainClass.PixelsPerMeters,zero.body.getPosition().y),megaman.body.getAngle());
+            } else {
+                if (zero.isRunningRight()) {
+                    zero.body.setTransform(new Vector2(zero.body.getPosition().x + 100 / MegamanMainClass.PixelsPerMeters, zero.body.getPosition().y), zero.body.getAngle());
+                } else {
+                    zero.body.setTransform(new Vector2(zero.body.getPosition().x - 100 / MegamanMainClass.PixelsPerMeters, zero.body.getPosition().y), megaman.body.getAngle());
                 }
             }
         }
 
 
         //Controller.getbutton(1) es redondo.
-        if(controller.getButton(1)){
-            if (controller.equals(controllers.get(0))){
+        if (controller.getButton(1)) {
+            if (controller.equals(controllers.get(0))) {
                 if (megaman.getState() == Megaman.State.CROUCHING) {
                     megaman.setState(Megaman.State.STANDING);
                     megaman.redefineMegaman();
@@ -896,13 +865,11 @@ public class MainGameScreen implements Screen,ControllerListener{
                     megaman.setState(Megaman.State.CROUCHING);
                     if (megaman.isRunningRight()) {
                         megaman.redefineMegamanCrouching(true);
-                    }
-                    else{
+                    } else {
                         megaman.redefineMegamanCrouching(false);
                     }
                 }
-            }
-            else{
+            } else {
                 if (zero.getState() == Zero.State.CROUCHING) {
                     zero.setState(Zero.State.STANDING);
                     zero.redefineZero();
@@ -912,8 +879,7 @@ public class MainGameScreen implements Screen,ControllerListener{
                     zero.setState(Zero.State.CROUCHING);
                     if (zero.isRunningRight()) {
                         zero.redefineZeroCrouching(true);
-                    }
-                    else{
+                    } else {
                         zero.redefineZeroCrouching(false);
                     }
                 }
@@ -922,22 +888,21 @@ public class MainGameScreen implements Screen,ControllerListener{
 
 
         //controller.getbutton(2) es equis.
-        if(controller.getButton(2)){
-            if (controller.equals(controllers.get(0))){
+        if (controller.getButton(2)) {
+            if (controller.equals(controllers.get(0))) {
                 //Si presionamos cuadrado, el personaje salta.
-                    //Solo salta si no estaba saltando o volando en el aire.
-                    if(!megaman.isMegamanJumping())
-                        megaman.body.applyLinearImpulse(new Vector2(0, 9f), megaman.body.getWorldCenter(), true);
-            }
-            else{
-                if(!zero.isZeroJumping())
+                //Solo salta si no estaba saltando o volando en el aire.
+                if (!megaman.isMegamanJumping())
+                    megaman.body.applyLinearImpulse(new Vector2(0, 9f), megaman.body.getWorldCenter(), true);
+            } else {
+                if (!zero.isZeroJumping())
                     zero.body.applyLinearImpulse(new Vector2(0, 10f), zero.body.getWorldCenter(), true);
             }
         }
 
         //controller.getButton(3) es cuadrado
-        if(controller.getButton(3)){
-            if (controller.equals(controllers.get(0))){
+        if (controller.getButton(3)) {
+            if (controller.equals(controllers.get(0))) {
                 if (arrayListMegamanSize < 3) {
                     megaman.setState(Megaman.State.HITTING);
 
@@ -952,8 +917,7 @@ public class MainGameScreen implements Screen,ControllerListener{
                         arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
                     }
                 }
-            }
-            else{
+            } else {
                 if (arrayListZeroSize < 3) {
                     zero.setState(Zero.State.HITTING);
 
@@ -974,123 +938,90 @@ public class MainGameScreen implements Screen,ControllerListener{
         return false;
     }
 
-    @Override
-    public boolean buttonUp(Controller controller, int buttonCode) {
-        return false;
-    }
-
-    @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
 
         //Solo si nos estamos moviendo en el eje x.
         //Luego con controller.getAxis(axisCode), comprobamos que haya terminado completamente
         //el movimiento, por ej, JustTouched. Porque el analog tiene 2 sensores?
         if (axisCode == 1 && (controller.getAxis(axisCode) > 0.99 || controller.getAxis(axisCode) < -0.99)) {
-                //Si estamos con el control 1.
-                if (controller.equals(controllers.get(0))) {
-                    //Si el axiscode es 1, mover a la derecha.
-                    if (controller.getAxis(axisCode) > 0.99){
-                        //La logica es la siguiente: Si el personaje se estaba moviendo a la derecha, y ahora quiere ir a la izquierda,
-                        //lo frenamos, en cambio si estaba frenado, lo dejamos correr al otro lado.
-                        if (moverMegamanIzquierda){
-                            //Por ultimo, comprobamos que el personaje no este saltando, ya que sino se convierte
-                            //en un movimiento feo.
-                            if (megaman.isMegamanJumping()){
-                                moverMegamanIzquierda = false;
-                                moverMegamanDerecha = true;
-                            }
-                            else {
-                                moverMegamanIzquierda = false;
-                            }
-                        }
-                        else {
+            //Si estamos con el control 1.
+            if (controller.equals(controllers.get(0))) {
+                //Si el axiscode es 1, mover a la derecha.
+                if (controller.getAxis(axisCode) > 0.99) {
+                    //La logica es la siguiente: Si el personaje se estaba moviendo a la derecha, y ahora quiere ir a la izquierda,
+                    //lo frenamos, en cambio si estaba frenado, lo dejamos correr al otro lado.
+                    if (moverMegamanIzquierda) {
+                        //Por ultimo, comprobamos que el personaje no este saltando, ya que sino se convierte
+                        //en un movimiento feo.
+                        if (megaman.isMegamanJumping()) {
+                            moverMegamanIzquierda = false;
                             moverMegamanDerecha = true;
+                        } else {
+                            moverMegamanIzquierda = false;
                         }
-                        //Dejo comentada la logica anterior por si la llego a necesitar(no creo).
-                        //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
-                     //   if (megaman.body.getLinearVelocity().x < 3)
+                    } else {
+                        moverMegamanDerecha = true;
+                    }
+                    //Dejo comentada la logica anterior por si la llego a necesitar(no creo).
+                    //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+                    //   if (megaman.body.getLinearVelocity().x < 3)
                     //        megaman.body.applyLinearImpulse(new Vector2(2f, 0), megaman.body.getWorldCenter(), true);
-                    }
-                    //Sino, mover a la izquierda en el otro caso.
-                    else if (controller.getAxis(axisCode) < -0.99){
-                        if (moverMegamanDerecha){
-                            if (megaman.isMegamanJumping()){
-                                moverMegamanDerecha = false;
-                                moverMegamanIzquierda = true;
-                            }
-                            else {
-                                moverMegamanDerecha = false;
-                            }
-                        }
-                        else {
-                            moverMegamanIzquierda = true;
-                        }
-                        //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
-                    //    if (megaman.body.getLinearVelocity().x > -3)
-                   //         megaman.body.applyLinearImpulse(new Vector2(-2f, 0), megaman.body.getWorldCenter(), true);
-                    }
                 }
-                //Si es el control 2, entonces zero se tiene que mover.
-                else {
-                    //Si el axiscode es 1, mover a la derecha.
-                    if (controller.getAxis(axisCode) > 0.99){
-                        if (moverZeroIzquierda){
-                            if (zero.isZeroJumping()){
-                                moverZeroIzquierda = false;
-                                moverZeroDerecha = true;
-                            }
-                            else {
-                                moverZeroIzquierda = false;
-                            }
+                //Sino, mover a la izquierda en el otro caso.
+                else if (controller.getAxis(axisCode) < -0.99) {
+                    if (moverMegamanDerecha) {
+                        if (megaman.isMegamanJumping()) {
+                            moverMegamanDerecha = false;
+                            moverMegamanIzquierda = true;
+                        } else {
+                            moverMegamanDerecha = false;
                         }
-                        else {
-                            moverZeroDerecha = true;
-                        }
-                        //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
-                  //      if (zero.body.getLinearVelocity().x < 3)
-                 //           zero.body.applyLinearImpulse(new Vector2(2f, 0), zero.body.getWorldCenter(), true);
+                    } else {
+                        moverMegamanIzquierda = true;
                     }
-                    //Sino, mover a la izquierda en el otro caso.
-                    else if (controller.getAxis(axisCode) < -0.99){
-                        if (moverZeroDerecha){
-                            if (zero.isZeroJumping()){
-                                moverZeroDerecha = false;
-                                moverZeroIzquierda = true;
-                            }
-                            else {
-                                moverZeroDerecha = false;
-                            }
-                        }
-                        else {
-                            moverZeroIzquierda = true;
-                        }
-                        //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
-                    //    if (zero.body.getLinearVelocity().x > -3)
-                    //        zero.body.applyLinearImpulse(new Vector2(-2f, 0), zero.body.getWorldCenter(), true);
-                    }
+                    //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+                    //    if (megaman.body.getLinearVelocity().x > -3)
+                    //         megaman.body.applyLinearImpulse(new Vector2(-2f, 0), megaman.body.getWorldCenter(), true);
                 }
             }
+            //Si es el control 2, entonces zero se tiene que mover.
+            else {
+                //Si el axiscode es 1, mover a la derecha.
+                if (controller.getAxis(axisCode) > 0.99) {
+                    if (moverZeroIzquierda) {
+                        if (zero.isZeroJumping()) {
+                            moverZeroIzquierda = false;
+                            moverZeroDerecha = true;
+                        } else {
+                            moverZeroIzquierda = false;
+                        }
+                    } else {
+                        moverZeroDerecha = true;
+                    }
+                    //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+                    //      if (zero.body.getLinearVelocity().x < 3)
+                    //           zero.body.applyLinearImpulse(new Vector2(2f, 0), zero.body.getWorldCenter(), true);
+                }
+                //Sino, mover a la izquierda en el otro caso.
+                else if (controller.getAxis(axisCode) < -0.99) {
+                    if (moverZeroDerecha) {
+                        if (zero.isZeroJumping()) {
+                            moverZeroDerecha = false;
+                            moverZeroIzquierda = true;
+                        } else {
+                            moverZeroDerecha = false;
+                        }
+                    } else {
+                        moverZeroIzquierda = true;
+                    }
+                    //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+                    //    if (zero.body.getLinearVelocity().x > -3)
+                    //        zero.body.applyLinearImpulse(new Vector2(-2f, 0), zero.body.getWorldCenter(), true);
+                }
+            }
+        }
 
         return false;
     }
-
-    @Override
-    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-        return false;
-    }
-
-    @Override
-    public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
-        return false;
-    }
-
-    @Override
-    public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
-        return false;
-    }
-
-    @Override
-    public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
-        return false;
-    }
+*/
 }
