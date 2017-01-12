@@ -2,6 +2,7 @@ package com.mygdx.megamangame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -47,7 +48,7 @@ public class MegamanMainClass extends Game {
 		//Creamos el assetManager.
 		assetManager = new AssetManager();
 		assetManager.load("audio/introsong.mp3", Sound.class);
-		assetManager.load("audio/topman.mp3", Sound.class);
+		assetManager.load("audio/topman.mp3", Music.class);
 		assetManager.load("audio/fall_death.wav",Sound.class);
 		assetManager.finishLoading();
 

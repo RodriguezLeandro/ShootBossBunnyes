@@ -2,6 +2,7 @@ package Screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -66,8 +67,17 @@ public class Level1Screen extends MainGameScreen{
 
         arrayListBunnySize = 0;
 
+
+        //Cambiamos la manera de poner la musica, al parecer no hay que utilizar el asset manager con los sonidos.
+        //Sera una cuestion de duracion de tiempo del sonido? Probablemente.
+        if(MegamanMainClass.assetManager.isLoaded("audio/topman.mp3")) {
+            Music music = MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class);
+            music.play();
+            music.setLooping(true);
+
+        }
         //Ponemos musica de background.
-        MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).play(0.2f);
+      //  MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).play();
 
         worldCreator = new WorldCreator(this);
 

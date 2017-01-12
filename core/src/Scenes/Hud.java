@@ -3,6 +3,7 @@ package Scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -232,6 +233,10 @@ public class Hud {
         final Table table = new Table();
         table.left().bottom();
 
+        //Dejo comentado lo anterior para probar algo nuevo.
+
+        /*
+
         textureRegion = textureAtlas.findRegion("upArrow");
 
         final Image upImage = new Image(textureRegion);
@@ -321,6 +326,97 @@ public class Hud {
         table.add(downImage).size(downImage.getWidth(),downImage.getHeight());
         table.add();
 
+         */
+
+        textureRegion = new TextureRegion(new Texture("flatdark.png"));
+
+        final Image centerImage = new Image(textureRegion);
+
+        table.addListener(new InputListener(){
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                //Cuando el jugador presiona el boton izquiero por primera vez, pregunto a donde toco.
+                //Basicamente, si el jugador toca a la izquierda, digo que toco a la izquierda.
+                //Si toca a la derecha, digo que toco a la derecha.
+
+                if (x < 112.5f){
+                    rightArrowPressed = false;
+                    leftArrowPressed = true;
+                }else if(x > 112.5f){
+                    leftArrowPressed = false;
+                    rightArrowPressed = true;
+                }
+
+                //Hay que dejar un margen de error para el eje y, ya que no queremos que nuestro
+                //Personaje salte de la nada sin intentar hacerlo.
+                if ( y < 110 - 30){
+                    upArrowPressed = false;
+                    downArrowPressed = true;
+                }else if (y > 110 + 30){
+                    downArrowPressed = false;
+                    upArrowPressed = true;
+                }
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //Cuando el jugador suelta el boton, vuelve a la posicion original.
+                centerImage.setPosition(65,50);
+                //Y tambien digo que no se esta moviendo.
+                rightArrowPressed = false;
+                leftArrowPressed = false;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+
+                //Si el jugador desplaza la imagen hacia izquierda o derecha, digo que toca para ese lado.
+                if (x - 60 < 0){
+                    centerImage.setX(0);
+                    rightArrowPressed = false;
+                    leftArrowPressed = true;
+                }
+                if (x + 60 > 200){
+                    centerImage.setX(120);
+                    leftArrowPressed = false;
+                    rightArrowPressed = true;
+                }
+                if (y - 60 < 0){
+                    centerImage.setY(0);
+                    upArrowPressed = false;
+                    downArrowPressed = true;
+                }
+                if (y + 60 > 200){
+                    centerImage.setY(120);
+                    downArrowPressed = false;
+                    upArrowPressed = true;
+                }
+
+            }
+        });
+
+        table.pad(0,60,40,0);
+        table.add();
+        table.add();
+        table.add();
+
+        table.row().pad(5,5,5,5);
+
+        table.add(centerImage).size(100,100);
+        table.add();
+        table.add();
+
+        table.row().padTop(5);
+
+        table.add();
+        table.add();
+        table.add();
+
         stage.addActor(table);
     }
 
@@ -329,6 +425,8 @@ public class Hud {
         Table table = new Table();
         table.right().bottom();
         table.setFillParent(true);
+
+        /*
 
         textureRegion = textureAtlas.findRegion("triangleButton");
 
@@ -419,6 +517,95 @@ public class Hud {
         table.add();
         table.add(downImage).size(downImage.getWidth(),downImage.getHeight());
         table.add();
+
+        */
+
+        textureRegion = new TextureRegion(new Texture("flatdark.png"));
+
+        final Image centerImage = new Image(textureRegion);
+
+        table.addListener(new InputListener(){
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                if (x < 670){
+                    rightButtonPressed = false;
+                    leftButtonPressed = true;
+                }
+                else if (x > 670){
+                    leftButtonPressed = false;
+                    rightButtonPressed = true;
+
+                }
+                //Hay que dejar un margen de error para el eje y, ya que no queremos que nuestro
+                //Personaje salte de la nada sin intentar hacerlo.
+                if ( y < 110 - 30){
+                    upButtonPressed = false;
+                    downButtonPressed = true;
+                }else if (y > 110 + 30){
+                    downButtonPressed = false;
+                    upButtonPressed = true;
+                }
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                centerImage.setPosition(615,50);
+                leftButtonPressed = false;
+                rightButtonPressed = false;
+                upButtonPressed = false;
+                downButtonPressed = false;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+
+                if (x - 60 < 550){
+                    centerImage.setX(550);
+                    rightButtonPressed = false;
+                    leftButtonPressed = true;
+                }
+                if (x + 60 > 750){
+                    centerImage.setX(700);
+                    leftButtonPressed = false;
+                    rightButtonPressed = true;
+                }
+                if (y - 60 < 0){
+                    centerImage.setY(0);
+                    upButtonPressed = false;
+                    downButtonPressed = true;
+                }
+                if (y + 60 > 200){
+                    centerImage.setY(120);
+                    downButtonPressed = false;
+                    upButtonPressed = true;
+                }
+
+            }
+        });
+
+        table.pad(0,0,40,60);
+        table.add();
+        table.add();
+        table.add();
+
+        table.row().pad(5,5,5,5);
+
+        table.add(centerImage).size(100,100);
+        table.add();
+        table.add();
+
+        table.row().padTop(5);
+
+        table.add();
+        table.add();
+        table.add();
+
+        stage.addActor(table);
 
         stage.addActor(table);
     }

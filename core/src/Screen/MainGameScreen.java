@@ -169,10 +169,6 @@ public abstract class MainGameScreen implements Screen {
 
         if (!megaman.isDead()) {
 
-            //Esto es para saber si esta siendo tocada la flecha para arriba y que salte solo una vez.
-            if (hud.isUpArrowPressed()) {
-
-            }
             //Si toca flecha izquierda impulso a izquierda.
             if (hud.isLeftArrowPressed()) {
                 if (megaman.body.getLinearVelocity().x > -3)
@@ -185,7 +181,6 @@ public abstract class MainGameScreen implements Screen {
             }
             //Si toca cuadrado pega.
             if (hud.isLeftButtonPressed()) {
-                if (Gdx.input.justTouched()) {
                     hud.setLeftButtonPressed(false);
                     if (arrayListMegamanSize < 3) {
                         megaman.setState(Megaman.State.HITTING);
@@ -200,13 +195,10 @@ public abstract class MainGameScreen implements Screen {
                             //Si mira a la izquierda, dispara hacia el otro lado.
                             arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
                         }
-                    }
                 }
             }
             //Si toca redondo slashea.
             if ( hud.isRightButtonPressed()) {
-                //Esta linea es para que solo puedo tocar una vez.
-                if (Gdx.input.justTouched()) {
                     hud.setRightButtonPressed(false);
                     //Solo puede slashear si no estaba saltando.
                     if (!megaman.isMegamanJumping()) {
@@ -220,13 +212,11 @@ public abstract class MainGameScreen implements Screen {
                             megaman.setState(Megaman.State.SLASHING);
                         }
                     }
-                 }
             }
             //Si toca x salta
-            if (hud.isDownButtonPressed()) {
+            if (hud.isUpArrowPressed()) {
                 //Solo si recien tocamos la pantalla.
-                if (Gdx.input.justTouched()) {
-                    hud.setDownButtonPressed(false);
+                    hud.setUpArrowPressed(false);
 
                     //Si estaba haciendo slash el personaje, puede saltar mas alto.
                     if (megaman.getState() == Megaman.State.SLASHING) {
@@ -237,7 +227,6 @@ public abstract class MainGameScreen implements Screen {
                         if (!megaman.isMegamanJumping())
                             megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
                     }
-                }
             }
             //Si presionamos W, el personaje salta.
             if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {

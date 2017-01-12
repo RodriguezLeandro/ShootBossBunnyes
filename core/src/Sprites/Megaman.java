@@ -1,5 +1,6 @@
 package Sprites;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -470,7 +471,7 @@ public class Megaman{
                 if (currentState == State.DYING && megamanIsDead == false) {
                     stateTimer = 0;
                     megamanIsDead = true;
-                    MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).stop();
+                    MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class).stop();
                     mainGameScreen.setZeroFightState(1);
                 }
                 textureRegion = megamanDying.getKeyFrame(stateTimer);
