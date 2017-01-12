@@ -342,10 +342,10 @@ public class Hud {
                 //Basicamente, si el jugador toca a la izquierda, digo que toco a la izquierda.
                 //Si toca a la derecha, digo que toco a la derecha.
 
-                if (x < 112.5f){
+                if (x < 135f){
                     rightArrowPressed = false;
                     leftArrowPressed = true;
-                }else if(x > 112.5f){
+                }else if(x > 135f){
                     leftArrowPressed = false;
                     rightArrowPressed = true;
                 }
@@ -376,7 +376,7 @@ public class Hud {
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
                 //Si el jugador desplaza la imagen hacia izquierda o derecha, digo que toca para ese lado.
-                if (x - 60 < 0){
+                if (x - 120 < 0){
                     centerImage.setX(0);
                     rightArrowPressed = false;
                     leftArrowPressed = true;
@@ -386,16 +386,20 @@ public class Hud {
                     leftArrowPressed = false;
                     rightArrowPressed = true;
                 }
+
+                //Dejo comentado lo del eje y:
+                //Igual pensar que no sirve porque redimensionamos el size de los controles.
+                /*
                 if (y - 60 < 0){
-                    centerImage.setY(0);
                     upArrowPressed = false;
                     downArrowPressed = true;
                 }
                 if (y + 60 > 200){
-                    centerImage.setY(120);
                     downArrowPressed = false;
                     upArrowPressed = true;
                 }
+
+                */
 
             }
         });
@@ -407,7 +411,7 @@ public class Hud {
 
         table.row().pad(5,5,5,5);
 
-        table.add(centerImage).size(100,100);
+        table.add(centerImage).size(150,150);
         table.add();
         table.add();
 
@@ -429,7 +433,7 @@ public class Hud {
         textureRegion = textureAtlas.findRegion("triangleButton");
 
         Image upImage = new Image(textureRegion);
-        upImage.setSize(50, 50);
+        upImage.setSize(75, 75);
         upImage.addListener(new InputListener() {
 
 
@@ -448,7 +452,7 @@ public class Hud {
         textureRegion = textureAtlas.findRegion("xButton");
 
         Image downImage = new Image(textureRegion);
-        downImage.setSize(50, 50);
+        downImage.setSize(75, 75);
         downImage.addListener(new InputListener() {
 
             @Override
@@ -466,7 +470,7 @@ public class Hud {
         textureRegion = textureAtlas.findRegion("squareButton");
 
         Image leftImage = new Image(textureRegion);
-        leftImage.setSize(50, 50);
+        leftImage.setSize(75, 75);
         leftImage.addListener(new InputListener() {
 
             @Override
@@ -484,7 +488,7 @@ public class Hud {
         textureRegion = textureAtlas.findRegion("circleButton");
 
         Image rightImage = new Image(textureRegion);
-        rightImage.setSize(50, 50);
+        rightImage.setSize(75, 75);
         rightImage.addListener(new InputListener() {
 
             @Override

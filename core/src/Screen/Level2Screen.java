@@ -1,6 +1,7 @@
 package Screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -37,8 +38,12 @@ public class Level2Screen extends MainGameScreen {
         //OrthogonalTiledMapRenderer se encarga del renderizado del mapa.
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / game.PixelsPerMeters);
 
-        //Ponemos musica de background.
-        MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).play(0.2f);
+        if(MegamanMainClass.assetManager.isLoaded("audio/topman.mp3")) {
+            Music music = MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class);
+            music.play();
+            music.setLooping(true);
+
+        }
 
         boss1 = new Boss1(this);
 
