@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 06/01/2017.
@@ -22,7 +22,7 @@ public class Fireball {
 
     public Body body;
 
-    private Level1Screen level1Screen;
+    private MainGameScreen mainGameScreen;
 
     protected Sprite sprite;
 
@@ -32,23 +32,23 @@ public class Fireball {
 
     public boolean destroyFireball;
 
-    public Fireball(Level1Screen level1Screen, float x, float y, boolean fireToRight, Object player) {
-        this.level1Screen = level1Screen;
+    public Fireball(MainGameScreen mainGameScreen, float x, float y, boolean fireToRight, Object player) {
+        this.mainGameScreen = mainGameScreen;
 
         this.fireToRight = fireToRight;
 
-        world = level1Screen.getWorld();
+        world = mainGameScreen.getWorld();
 
         vector2PositionFireball = new Vector2(x,y);
 
         //Si la fireball proviene del personaje principal, creamos el fireball con ciertas propiedades.
         if (player.getClass() == Megaman.class) {
-            sprite = new Sprite(level1Screen.getTextureAtlasTools().findRegion("fireball"));
+            sprite = new Sprite(mainGameScreen.getTextureAtlasTools().findRegion("fireball"));
             sprite.setBounds(x,y,12 / MegamanMainClass.PixelsPerMeters, 12 / MegamanMainClass.PixelsPerMeters);
             defineMegamanFireball();
             //Si viene del personaje enemigo, creamos otras propiedades.
         }else if(player.getClass() == Zero.class){
-            sprite = new Sprite(level1Screen.getTextureAtlasTools().findRegion("coldball"));
+            sprite = new Sprite(mainGameScreen.getTextureAtlasTools().findRegion("coldball"));
             sprite.setBounds(x,y,12 / MegamanMainClass.PixelsPerMeters, 12 / MegamanMainClass.PixelsPerMeters);
             defineZeroFireball();
         }else {

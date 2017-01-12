@@ -3,7 +3,7 @@ package Sprites;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 import Tools.InteractiveTileObject;
 
 /**
@@ -12,10 +12,10 @@ import Tools.InteractiveTileObject;
 
 public class FlyingGround extends InteractiveTileObject {
 
-    public FlyingGround(Level1Screen level1Screen, Rectangle rectangle){
+    public FlyingGround(MainGameScreen mainGameScreen, Rectangle rectangle){
 
         //Como floor es un objeto estatico y rectangulo, utilizamos super();
-        super(level1Screen,rectangle);
+        super(mainGameScreen,rectangle);
 
         //Le mandamos al user data de cada fixture la clase de objeto que es.
         fixture.setUserData(this);

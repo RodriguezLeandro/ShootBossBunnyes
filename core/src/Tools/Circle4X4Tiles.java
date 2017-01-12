@@ -4,7 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Shape2D;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 04/01/2017.
@@ -14,8 +14,8 @@ public class Circle4X4Tiles extends InteractiveTileObject {
 
     protected TiledMapTileLayer.Cell[] tiledMapTileLayersCell;
 
-    public Circle4X4Tiles(Level1Screen level1Screen, Shape2D shape2D) {
-        super(level1Screen, shape2D);
+    public Circle4X4Tiles(MainGameScreen mainGameScreen, Shape2D shape2D) {
+        super(mainGameScreen, shape2D);
 
         //Le mandamos al user data de cada fixture la clase de objeto que es.
         fixture.setUserData(this);

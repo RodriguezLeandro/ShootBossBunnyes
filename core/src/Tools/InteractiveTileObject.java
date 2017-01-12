@@ -14,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 02/01/2017.
@@ -30,19 +30,19 @@ public abstract class InteractiveTileObject {
     protected FixtureDef fixtureDef = new FixtureDef();
     protected Body body;
     protected Fixture fixture;
-    protected Level1Screen level1Screen;
+    protected MainGameScreen mainGameScreen;
 
     protected TiledMap tiledMap;
 
-    public InteractiveTileObject(Level1Screen level1Screen, Shape2D shape2D){
+    public InteractiveTileObject(MainGameScreen mainGameScreen, Shape2D shape2D){
 
-        this.level1Screen = level1Screen;
+        this.mainGameScreen = mainGameScreen;
 
         //Realizamos un Switch pero sin su forma.
         //Si el shape2d es un rectangulo, entonces ejecutamos lo primero.
         if (shape2D.getClass() == Rectangle.class) {
-            World world = level1Screen.getWorld();
-            tiledMap = level1Screen.getTiledMap();
+            World world = mainGameScreen.getWorld();
+            tiledMap = mainGameScreen.getTiledMap();
             //Tengo que guardar en memoria el mapa para cada objeto creado, ya que despues...
             //voy a poder manipular su visibilidad en pantalla.
             //Aunque se trata solo de una referencia, no es que se guarda todo en memoria.
@@ -67,8 +67,8 @@ public abstract class InteractiveTileObject {
         }
         //En cambio si el shape es un circulo, ejecutamos lo siguiente.
         else if(shape2D.getClass() == Circle.class){
-            World world = level1Screen.getWorld();
-            tiledMap = level1Screen.getTiledMap();
+            World world = mainGameScreen.getWorld();
+            tiledMap = mainGameScreen.getTiledMap();
 
             //Tengo que guardar en memoria el mapa para cada objeto creado, ya que despues...
             //voy a poder manipular su visibilidad en pantalla.

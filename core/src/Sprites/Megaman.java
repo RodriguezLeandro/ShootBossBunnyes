@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 02/01/2017.
@@ -33,7 +33,7 @@ public class Megaman{
 
     private Sprite sprite;
 
-    private Level1Screen level1Screen;
+    private MainGameScreen mainGameScreen;
 
     private TextureRegion megamanStand;
     private TextureRegion textureRegion;
@@ -54,17 +54,17 @@ public class Megaman{
     private boolean megamanIsDead;
     private boolean megamanWasDead;
 
-    public Megaman(Level1Screen level1Screen){
+    public Megaman(MainGameScreen mainGameScreen){
 
         //Obtenemos el maingamescreen para luego utilizarlo.
-        this.level1Screen = level1Screen;
+        this.mainGameScreen = mainGameScreen;
 
         //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
         //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
-        sprite = new Sprite(level1Screen.getTextureAtlasCharac().findRegion("advnt_full"));
+        sprite = new Sprite(mainGameScreen.getTextureAtlasCharac().findRegion("advnt_full"));
 
         //Obtenemos el mundo en el que el personaje principal vivira.
-        world = level1Screen.getWorld();
+        world = mainGameScreen.getWorld();
 
         //Inicializamos los estados de nuestro personaje.
         currentState = State.STANDING;
@@ -451,7 +451,7 @@ public class Megaman{
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
-                    level1Screen.dañarMegamanPersonaje(megamanDamageCuantity);
+                    mainGameScreen.dañarMegamanPersonaje(megamanDamageCuantity);
                     //Volvemos a poner el daño en default.
                     megamanDamageCuantity = 10;
                 }
@@ -471,7 +471,7 @@ public class Megaman{
                     stateTimer = 0;
                     megamanIsDead = true;
                     MegamanMainClass.assetManager.get("audio/topman.mp3", Sound.class).stop();
-                    level1Screen.setZeroFightState(1);
+                    mainGameScreen.setZeroFightState(1);
                 }
                 textureRegion = megamanDying.getKeyFrame(stateTimer);
                 break;

@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 11/01/2017.
@@ -29,19 +29,19 @@ public abstract class Enemy {
     protected Fixture fixtureSensor;
     protected FixtureDef fixtureDef;
 
-    protected Level1Screen level1Screen;
+    protected MainGameScreen mainGameScreen;
 
     protected float positionX;
     protected float positionY;
 
 
-    public Enemy(Level1Screen level1Screen, Texture texture, float positionX, float positionY, float width, float height){
+    public Enemy(MainGameScreen mainGameScreen, Texture texture, float positionX, float positionY, float width, float height){
 
-        this.level1Screen = level1Screen;
+        this.mainGameScreen = mainGameScreen;
 
         sprite = new Sprite(texture);
 
-        world = level1Screen.getWorld();
+        world = mainGameScreen.getWorld();
 
         this.positionX = positionX;
 

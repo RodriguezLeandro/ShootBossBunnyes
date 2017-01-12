@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 12/01/2017.
@@ -31,7 +31,7 @@ public class Boss1 {
     public State currentState;
     public State previousState;
 
-    private Level1Screen level1Screen;
+    private MainGameScreen mainGameScreen;
 
     private TextureRegion boss1TextureStanding;
     private TextureRegion textureRegionBoss1;
@@ -44,12 +44,12 @@ public class Boss1 {
 
     public enum State {STANDING,JUMPING};
 
-    public Boss1(Level1Screen level1Screen){
+    public Boss1(MainGameScreen mainGameScreen){
         sprite = new Sprite(new TextureRegion(new Texture("boss1jumpspritesheet.png")));
 
-        this.level1Screen = level1Screen;
+        this.mainGameScreen = mainGameScreen;
 
-        world = level1Screen.getWorld();
+        world = mainGameScreen.getWorld();
 
         currentState = State.STANDING;
 

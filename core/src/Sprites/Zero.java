@@ -19,6 +19,7 @@ import com.mygdx.megamangame.MegamanMainClass;
 import java.util.Random;
 
 import Screen.Level1Screen;
+import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 04/01/2017.
