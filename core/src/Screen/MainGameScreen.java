@@ -214,9 +214,9 @@ public abstract class MainGameScreen implements Screen {
                     }
             }
             //Si toca x salta
-            if (hud.isUpArrowPressed()) {
+            if (hud.isDownButtonPressed()) {
                 //Solo si recien tocamos la pantalla.
-                    hud.setUpArrowPressed(false);
+                    hud.setDownButtonPressed(false);
 
                     //Si estaba haciendo slash el personaje, puede saltar mas alto.
                     if (megaman.getState() == Megaman.State.SLASHING) {
