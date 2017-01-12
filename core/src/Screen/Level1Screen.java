@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class Level1Screen extends MainGameScreen{
         }
     }
 
+    @Override
     public void setZeroFightState(Integer integer) {
         zero.setZeroFightingStateNumber(integer);
     }
@@ -330,6 +332,11 @@ public class Level1Screen extends MainGameScreen{
             dispose();
         }
 
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
 

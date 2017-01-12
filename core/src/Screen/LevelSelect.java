@@ -105,7 +105,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-              //  game.setScreen(new Level2Screen((MegamanMainClass) game));
+                game.setScreen(new Level2Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
         });

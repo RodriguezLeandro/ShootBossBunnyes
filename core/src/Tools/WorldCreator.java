@@ -38,7 +38,6 @@ public class WorldCreator {
     public WorldCreator(Object screen){
 
         if (screen instanceof Level1Screen){
-            World world = ((Level1Screen)screen).getWorld();
             TiledMap tiledMap = ((Level1Screen)screen).getTiledMap();
 
             //Obtenemos los objetos floor de tiled map y los creamos mediante la clase Floor.
@@ -125,6 +124,23 @@ public class WorldCreator {
         }
         else if(screen instanceof Level2Screen){
 
+            TiledMap tiledMap = ((Level2Screen)screen).getTiledMap();
+
+            for(MapObject object : tiledMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
+                //Obtenemos cada rectangulo de tiled map.
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+                //Creamos los objetos en nuestro mundo.
+                new Floor(((Level2Screen)screen),rectangle);
+            }
+
+            for(MapObject object : tiledMap.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
+                //Obtenemos cada rectangulo de tiled map.
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+                //Creamos los objetos en nuestro mundo.
+                new FlyingGround(((Level2Screen)screen),rectangle);
+            }
         }
         else{
             //Aqui va el codigo para el level3screen y el level4screen y el levelfinalscreen.

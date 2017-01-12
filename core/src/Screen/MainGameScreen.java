@@ -4,7 +4,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -471,9 +470,7 @@ public abstract class MainGameScreen implements Screen {
         return textureAtlasCharac;
     }
 
-    public World getWorld() {
-        return world;
-    }
+    public abstract World getWorld();
 
     @Override
     public void resize(int width, int height) {
@@ -505,9 +502,14 @@ public abstract class MainGameScreen implements Screen {
         textureAtlasCharac.dispose();
     }
 
-    //Esto es un parche?
-    public abstract void setZeroFightState(Integer fightState);
-    public abstract TiledMap getTiledMap();
+    //Esto es un parche? Masomenos
+      public void setZeroFightState(Integer fightState){
+          //Esto es masomenos como un parche, pero funciona.
+          //Ademas no molesta a nadie, no obliga a implementar metodo.
+      }
+
+    //Este no es lo mismo que arriba, este molesta.
+      public abstract TiledMap getTiledMap();
 
     //Dejo comentadas las funciones de abajo, ya que sirven si queremos utilizar controles en nuestro juego.
     //Controles de ps1, sin embargo, esto hace que ande mal la app.
