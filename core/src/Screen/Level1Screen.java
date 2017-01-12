@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import Scenes.Hud;
+import Sprites.Boss1;
 import Sprites.Bunny;
 import Sprites.Fireball;
 import Sprites.Megaman;
@@ -111,6 +112,8 @@ public class Level1Screen implements Screen {
 
     private ArrayList<Bunny> arrayListBunny;
 
+    private Boss1 boss1;
+
     public Level1Screen(MegamanMainClass game,LevelSelect levelSelect) {
 
         //Le asignamos el juego a nuestro MegamanMainClass.
@@ -195,6 +198,8 @@ public class Level1Screen implements Screen {
 
         //Creamos a los bunnys.
         arrayListBunny = worldCreator.getBunnys();
+
+        boss1 = new Boss1(this);
     }
 
     public TextureAtlas getTextureAtlasCharac() {
@@ -577,6 +582,8 @@ public class Level1Screen implements Screen {
         //Updateamos la posicion del sprite del personaje enemigo y luego la animacion.
         zero.update(delta);
 
+        boss1.update(delta);
+
         //Vemos cuantos objetos tiene el arraylist de bunny.
         arrayListBunnySize = arrayListBunny.size();
 
@@ -780,6 +787,8 @@ public class Level1Screen implements Screen {
 
         //Le decimos al Sprite que se dibuje segun su correspondiente region?.
         zero.draw(game.batch);
+
+        boss1.draw(game.batch);
 
         //Dibujamos los bunnys.
         for (Bunny bunny : arrayListBunny) {

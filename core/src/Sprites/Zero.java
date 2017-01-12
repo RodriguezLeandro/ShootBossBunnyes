@@ -334,7 +334,7 @@ public class Zero{
 
         fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
 
-        //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).
+        //Creamos nuestro sensor, y decimos que el fixture se llamara mainNinja(personajePrincipal).???Me parece que no. Lo lei despues esto.
         body.createFixture(fixtureDef).setUserData(this);
 
         vertices = new Vector2[4];
