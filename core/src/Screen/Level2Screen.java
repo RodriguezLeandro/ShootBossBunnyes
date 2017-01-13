@@ -75,11 +75,6 @@ public class Level2Screen extends MainGameScreen {
             mainCamera.position.x = megaman.body.getPosition().x;
 
         } else {
-            //Dejo comentada la primera parte de la manera "estructurada de hacerlo".
-          /*  if (megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters)){
-                mainCamera.position.x = (399 / MegamanMainClass.PixelsPerMeters);
-            }
-          */
             //Logica: Si el cuerpo del personaje sale de los limites x del mundo, la camara queda fija.
             mainCamera.position.x = megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters) ? (399 / MegamanMainClass.PixelsPerMeters) : (12401 / MegamanMainClass.PixelsPerMeters);
         }
@@ -120,15 +115,9 @@ public class Level2Screen extends MainGameScreen {
 
         game.batch.begin();
 
-        megaman.draw(game.batch);
+        super.draw(game.batch);
 
         boss1.draw(game.batch);
-
-        arrayListMegamanSize = arrayListMegamanFireball.size();
-
-        for (int i = 0; i < arrayListMegamanSize; i++) {
-            arrayListMegamanFireball.get(i).draw(game.batch);
-        }
 
         game.batch.end();
 

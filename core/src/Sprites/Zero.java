@@ -1,5 +1,7 @@
 package Sprites;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import Screen.Level1Screen;
@@ -54,12 +57,18 @@ public class Zero{
 
     private Integer fightingState;
 
+    //Para ver la cantidad de objetos del arraylist del personaje enemigo.
+    private Integer arrayListZeroSize;
+
     private boolean runningRight;
     private boolean shouldBeJumping;
     private boolean zeroIsDead;
+    private boolean zeroIsDeadBy3Seconds;
     private boolean makeZeroUntouchable;
-    private boolean isZeroFighting;
     private boolean zeroShouldJump;
+    private boolean zeroInFinalBattle;
+
+    private ArrayList<Fireball> arrayListZeroFireball;
 
 
     public Zero(Level1Screen level1Screen){
@@ -115,20 +124,65 @@ public class Zero{
         //Porque el personaje enemigo debe ser tocable.
         makeZeroUntouchable = false;
 
-        //Al comienzo del juego zero no esta peleando.
-        isZeroFighting = false;
-
         //Inicializamos el estado de pelea inicial.
         fightingState = 0;
+
+        arrayListZeroFireball = new ArrayList<Fireball>();
+
+        arrayListZeroSize = 0;
+
+        zeroInFinalBattle = false;
+
+        zeroIsDeadBy3Seconds = false;
 
     }
 
     public void update(float delta){
 
-        //Zero esta peleando solo si nos encontramos en la seccion final del nivel.
-        if (isZeroFighting){
+        //Esta como que medio parcheado esto.
+        //Funciona de la siguiente manera.
+        //Cuando zero muere en state.dying, el statetimer comienza a acumular hasta que finaliza la animacion.
+        //Una vez que finaliza la animacion, el statetimer acumulado lo deposito en una funcion
+        //setdyingzero, la cual tiene un statetimer especifico para contar hasta 3 segundos.
+        //una vez que pasan 3 segundos en este statetimer, el cual va a ir sumando los diferentes
+        //statetimers de los multiples estados por los que pasará zero, pondremos el booleano
+        //zero ha muerto por 3 segundos en ok.
 
-            makeZeroFight();
+        //Al final ocurrio que no vamos a utilizar la segunda variable statetimer.
+
+        //Si zero ha estado muerto por 3 segundos, entonces ponemos la otra pantalla.
+        if (stateTimer > 3f) {
+            zeroIsDeadBy3Seconds = true;
+        }
+
+        if (zeroInFinalBattle) {
+
+            //Ya no hay zero input que permitamos
+            //   handleZeroInput(delta);
+            //    logicaMovimientoZero();
+
+            //Tenemos que updatear cada fireball de Zero lanzado.
+            arrayListZeroSize = arrayListZeroFireball.size();
+
+            //Para cada fireball de la lista, updateamos.
+            for (int i = 0; i < arrayListZeroSize; i++) {
+                arrayListZeroFireball.get(i).update(delta);
+            }
+
+            //Cada fireball de zero que sale fuera de la pantalla lo eliminamos.
+            arrayListZeroSize = arrayListZeroFireball.size();
+
+            for (int i = 0; i < arrayListZeroSize; i++) {
+                if ((arrayListZeroFireball.get(i).body.getPosition().x > level1Screen.getMainCamera().position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < level1Screen.getMainCamera().position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
+
+                    arrayListZeroFireball.get(i).dispose();
+                    arrayListZeroFireball.remove(i);
+                    arrayListZeroSize = arrayListZeroFireball.size();
+                }
+            }
+            if (!zeroIsDead)
+                //Solo si no esta muerto quiero que pelee zero.
+                makeZeroFight();
             //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
             //corresponda con la posicion del fixture(y body) de nuestro personaje.
 
@@ -140,23 +194,35 @@ public class Zero{
             if (makeZeroUntouchable) {
                 setZeroUntouchableDot5Seconds();
             }
-
         }
-        else {
-            //Aqui actualizamos la posicion de nuestro enemigo principal, para que se ...
-            //corresponda con la posicion del fixture(y body) de nuestro personaje.
+    }
 
-            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
+    public void setZeroInFinalBattle(boolean bool){
+        zeroInFinalBattle = bool;
+    }
 
-            //Tambien seleccionamos la textureregion que veremos en cada ciclo de renderizado.
-            sprite.setRegion(getTextureRegion(delta));
+    public void setZeroHitting() {
+        //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
+        //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
+        if (arrayListZeroSize < 3) {
+            setState(Zero.State.HITTING);
 
-            if (makeZeroUntouchable) {
-                setZeroUntouchableDot5Seconds();
+            //Aca tenemos que crear la bola de fuego(fireball).
+            Vector2 positionFireball = getPositionFireAttack();
+
+            //Si el personaje mira a la derecha, dispara hacia alli,
+            if (isRunningRight()) {
+                arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, true, this));
+            } else {
+                //Si mira a la izquierda, dispara hacia el otro lado.
+                arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, false, this));
             }
-
         }
+    }
 
+
+    public void dispose(){
+        arrayListZeroFireball.clear();
     }
 
     public void makeZeroFight(){
@@ -167,14 +233,14 @@ public class Zero{
                 Integer randomNumer = random.nextInt(10);
 
                 if (randomNumer == 0){
-                    level1Screen.isZeroHitting();
+                    setZeroHitting();
                 }
                 else if (randomNumer == 1){
-                    level1Screen.isZeroRunningToMegaman();
+                    isZeroRunningToMegaman();
                 }
 
                 if (zeroShouldJump){
-                    level1Screen.isZeroJumping();
+                    setZeroJumping();
                     zeroShouldJump = false;
                 }
                 break;
@@ -184,13 +250,13 @@ public class Zero{
                 Integer randomNumer2 = random2.nextInt(10);
 
                 if (randomNumer2 == 0){
-                    level1Screen.isZeroHitting();
+                    setZeroHitting();
                 }
                 else if(randomNumer2 == 1){
-                    level1Screen.isZeroRunningAwayFromMegaman();
+                    isZeroRunningAwayFromMegaman();
                 }
                 else if(randomNumer2 == 2){
-                    level1Screen.isZeroJumping();
+                    setZeroJumping();
                 }
 
                 break;
@@ -203,6 +269,34 @@ public class Zero{
 
     }
 
+    public void isZeroRunningToMegaman() {
+        if (megaman.body.getPosition().x < body.getPosition().x) {
+            if (body.getLinearVelocity().x > -3)
+                body.applyLinearImpulse(new Vector2(-1f, 0), body.getWorldCenter(), true);
+        } else {
+            if (body.getLinearVelocity().x < 3)
+                body.applyLinearImpulse(new Vector2(1f, 0), body.getWorldCenter(), true);
+        }
+    }
+
+    public void setZeroJumping() {
+        if (!isZeroJumping())
+            body.applyLinearImpulse(new Vector2(0, 10f), body.getWorldCenter(), true);
+    }
+
+    public void isZeroRunningAwayFromMegaman() {
+        if (megaman.body.getPosition().x < body.getPosition().x) {
+            if (body.getLinearVelocity().x > -3)
+                body.applyLinearImpulse(new Vector2(1f, 0), body.getWorldCenter(), true);
+        } else {
+            if (body.getLinearVelocity().x < 3)
+                body.applyLinearImpulse(new Vector2(-1f, 0), body.getWorldCenter(), true);
+        }
+    }
+
+    public Integer getArrayListZeroSize(){
+        return arrayListZeroSize;
+    }
     public void setZeroFightingStateNumber(Integer integer){
         fightingState = integer;
     }
@@ -410,9 +504,6 @@ public class Zero{
                 break;
             case GETTINGHIT:
 
-                if (previousState == State.CROUCHING){
-                    redefineZero();
-                }
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
@@ -437,14 +528,16 @@ public class Zero{
                 }
                 textureRegion = zeroDying.getKeyFrame(stateTimer);
                 if (zeroDying.isAnimationFinished(stateTimer)){
-                    level1Screen.setZeroIsDead(true);
+
                 }
                 break;
             //Realizamos lo mismo con cada uno de los estados.
             case HITTING:
-                if (previousState == State.CROUCHING){
+                //Aca tambien dejo comentado, la idea es que zero ya no se pueda agachar.
+         /*       if (previousState == State.CROUCHING){
                     redefineZero();
                 }
+                */
                 //Si no estaba pegando, reiniciamos el stateTimer.
                 if (previousState != State.HITTING) {
                     stateTimer = 0;
@@ -455,6 +548,7 @@ public class Zero{
                     currentState = State.STANDING;
                 }
                 break;
+            /*
             case CROUCHING:
                 //Si no estaba agachandose, reiniciamos el stateTimer.
                 if (previousState != State.CROUCHING) {
@@ -465,6 +559,7 @@ public class Zero{
                     shouldBeJumping = false;
                 }
                 break;
+                */
             default:
                 textureRegion = zeroStand;
                 break;
@@ -512,11 +607,19 @@ public class Zero{
     }
 
     public void draw(SpriteBatch spriteBatch){
-        sprite.draw(spriteBatch);
-    }
 
-    public void setZeroFighting(boolean bool){
-        isZeroFighting = bool;
+        if (zeroInFinalBattle) {
+            //Dibujamos el otro fireball.
+            //Tenemos que dibujar cada fireball lanzado.
+            int arrayListZeroSize = arrayListZeroFireball.size();
+
+            //Para cada fireball de la lista, dibujamos.
+            for (int i = 0; i < arrayListZeroSize; i++) {
+                arrayListZeroFireball.get(i).draw(spriteBatch);
+            }
+
+            sprite.draw(spriteBatch);
+        }
     }
 
     private void changeBodyOrientation(){
@@ -572,6 +675,162 @@ public class Zero{
             }
         }
     }
+
+    public void setZeroUntouchableDot5Seconds(){
+
+        if(untouchableCount < 1.5f){
+            untouchableCount += level1Screen.getDeltaTime();
+            makeZeroUntouchable = true;
+        }
+        else {
+            untouchableCount = 0;
+            makeZeroUntouchable = false;
+        }
+    }
+
+    public void onBodyHit() {
+        //Si no hay que pegarle no le pegamos, de lo contrario lo hacemos.
+        if (makeZeroUntouchable) {
+
+        }else {
+            setState(State.GETTINGHIT);
+        }
+    }
+
+    public Boolean isZeroDeadBy3Seconds(){
+        if (zeroIsDeadBy3Seconds){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    //Funcion que devuelve el estado de nuestro personaje.
+    public State getState(){
+
+        //deprecated?? not !! yes..
+     /*   if (currentState == State.CROUCHING){
+            return State.CROUCHING;
+        }
+        */
+        if(currentState == State.DYING){
+            return State.DYING;
+        }
+        else if (currentState == State.HITTING){
+            return State.HITTING;
+        }
+        else if (currentState == State.GETTINGHIT){
+            return State.GETTINGHIT;
+        }
+        //Si el jugador estaba saltando, aunque luego caiga devolvemos el State.Jumping.
+        else if ((body.getLinearVelocity().y > 0 && shouldBeJumping) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
+            return State.JUMPING;
+        }
+        //Si el jugador cae, devolvemos State.Falling.
+        else if (body.getLinearVelocity().y < 0){
+            shouldBeJumping = true;
+            return State.FALLING;
+        }
+        //Si el jugador camina, devolvemos State.Walking
+        else if (body.getLinearVelocity().x != 0) {
+            return State.WALKING;
+        }
+        //Si el jugador esta parado, devolvemos State.Standing.
+        else{
+            return State.STANDING;
+        }
+
+    }
+
+    public boolean isZeroJumping(){
+        if (body.getLinearVelocity().y != 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //Dejo comentada esta funcion tambien, no se para que la habre utilizado.
+    /*
+    public void logicaMovimientoZero(){
+        if (moverZeroDerecha) {
+            if (zero.body.getLinearVelocity().x < 3)
+                zero.body.applyLinearImpulse(new Vector2(0.5f, 0), zero.body.getWorldCenter(), true);
+        }
+        if (moverZeroIzquierda) {
+            if (zero.body.getLinearVelocity().x > -3)
+                zero.body.applyLinearImpulse(new Vector2(-0.5f, 0), zero.body.getWorldCenter(), true);
+        }
+    }
+    */
+
+    //Voy a dejar comentadas las funciones de abajo ya que no las vamos a utilizar.
+    //Simplemente sirven en el caso en el que zero se agache, o que un usuario utilize a zero como
+    //Si fuera el personaje principal(como a megaman).
+    /*
+    public void redefineZero(){
+
+        Vector2 vector2 = body.getPosition();
+
+        Vector2 velocidad = body.getLinearVelocity();
+
+        world.destroyBody(body);
+
+        BodyDef bodyDef = new BodyDef();
+
+        bodyDef.position.set(vector2);
+
+        bodyDef.linearVelocity.set(velocidad);
+
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+        body = world.createBody(bodyDef);
+
+        FixtureDef fixtureDef = new FixtureDef();
+
+        CircleShape circleShape = new CircleShape();
+
+        circleShape.setRadius(20 / MegamanMainClass.PixelsPerMeters);
+
+        circleShape.setPosition(new Vector2(0, 10 / MegamanMainClass.PixelsPerMeters ));
+
+        fixtureDef.shape = circleShape;
+
+        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
+
+        fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
+                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
+
+        body.createFixture(fixtureDef);
+
+        circleShape.setPosition(new Vector2(0,-32 / MegamanMainClass.PixelsPerMeters));
+
+        body.createFixture(fixtureDef);
+
+        PolygonShape polygonShape = new PolygonShape();
+
+        Vector2[] vertices = new Vector2[4];
+
+        vertices[0] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+        vertices[1] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[2] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
+        vertices[3] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
+
+        polygonShape.set(vertices);
+
+        vertices = null;
+
+        fixtureDef.shape = polygonShape;
+
+        fixtureDef.isSensor = true;
+
+        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
+
+        body.createFixture(fixtureDef).setUserData(this);
+    }
+
     public void redefineZeroCrouching(boolean orientation) {
 
         if (orientation) {
@@ -700,137 +959,70 @@ public class Zero{
         }
     }
 
-    public void setZeroUntouchableDot5Seconds(){
+    public void handleZeroInput(float delta) {
 
-        if(untouchableCount < 1.5f){
-            untouchableCount += level1Screen.getDeltaTime();
-            makeZeroUntouchable = true;
-        }
-        else {
-            untouchableCount = 0;
-            makeZeroUntouchable = false;
-        }
-    }
+        if (!isZeroDeadBy3Seconds()) {
+            //Si presionamos 8, el personaje enemigo salta.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
+                if (!isZeroJumping())
+                    body.applyLinearImpulse(new Vector2(0, 6f), body.getWorldCenter(), true);
+            }
+            //Si presionamos 4, el personaje enemigo se mueve a la izquierda.
+            if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)) {
+                if (body.getLinearVelocity().x > -3)
+                    body.applyLinearImpulse(new Vector2(-0.2f, 0), body.getWorldCenter(), true);
+            }
+            //Si presionamos 6, el personaje enemigo se mueve a la derecha.
+            if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)) {
+                if (body.getLinearVelocity().x < 3)
+                    body.applyLinearImpulse(new Vector2(0.2f, 0), body.getWorldCenter(), true);
+            }
+            //Si presionamos 7, el personaje enemigo pega.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
+                //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
+                //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
+                if (getArrayListZeroSize() < 3) {
+                    setState(Zero.State.HITTING);
 
-    public void onBodyHit() {
-        //Si no hay que pegarle no le pegamos, de lo contrario lo hacemos.
-        if (makeZeroUntouchable) {
+                    //Aca tenemos que crear la bola de fuego(fireball).
+                    Vector2 positionFireball = getPositionFireAttack();
 
-        }else {
-            setState(State.GETTINGHIT);
-        }
-    }
-
-    public void redefineZero(){
-
-        Vector2 vector2 = body.getPosition();
-
-        Vector2 velocidad = body.getLinearVelocity();
-
-        world.destroyBody(body);
-
-        BodyDef bodyDef = new BodyDef();
-
-        bodyDef.position.set(vector2);
-
-        bodyDef.linearVelocity.set(velocidad);
-
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-
-        body = world.createBody(bodyDef);
-
-        FixtureDef fixtureDef = new FixtureDef();
-
-        CircleShape circleShape = new CircleShape();
-
-        circleShape.setRadius(20 / MegamanMainClass.PixelsPerMeters);
-
-        circleShape.setPosition(new Vector2(0, 10 / MegamanMainClass.PixelsPerMeters ));
-
-        fixtureDef.shape = circleShape;
-
-        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
-
-        fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
-                MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
-
-        body.createFixture(fixtureDef);
-
-        circleShape.setPosition(new Vector2(0,-32 / MegamanMainClass.PixelsPerMeters));
-
-        body.createFixture(fixtureDef);
-
-        PolygonShape polygonShape = new PolygonShape();
-
-        Vector2[] vertices = new Vector2[4];
-
-        vertices[0] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
-        vertices[1] = new Vector2(20f / MegamanMainClass.PixelsPerMeters,30f / MegamanMainClass.PixelsPerMeters);
-        vertices[2] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters ,30f / MegamanMainClass.PixelsPerMeters);
-        vertices[3] = new Vector2(-20f / MegamanMainClass.PixelsPerMeters,-53f / MegamanMainClass.PixelsPerMeters);
-
-        polygonShape.set(vertices);
-
-        vertices = null;
-
-        fixtureDef.shape = polygonShape;
-
-        fixtureDef.isSensor = true;
-
-        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
-
-        body.createFixture(fixtureDef).setUserData(this);
-    }
-    public Boolean isDead(){
-        if (zeroIsDead){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    //Funcion que devuelve el estado de nuestro personaje.
-    public State getState(){
-
-        if (currentState == State.CROUCHING){
-            return State.CROUCHING;
-        }
-        else if(currentState == State.GETTINGHIT){
-            return State.GETTINGHIT;
-        }
-        else if (currentState == State.HITTING){
-            return State.HITTING;
-        }
-        else if (currentState == State.DYING){
-            return State.DYING;
-        }
-        //Si el jugador estaba saltando, aunque luego caiga devolvemos el State.Jumping.
-        else if ((body.getLinearVelocity().y > 0 && shouldBeJumping) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
-            return State.JUMPING;
-        }
-        //Si el jugador cae, devolvemos State.Falling.
-        else if (body.getLinearVelocity().y < 0){
-            shouldBeJumping = true;
-            return State.FALLING;
-        }
-        //Si el jugador camina, devolvemos State.Walking
-        else if (body.getLinearVelocity().x != 0) {
-            return State.WALKING;
-        }
-        //Si el jugador esta parado, devolvemos State.Standing.
-        else{
-            return State.STANDING;
+                    //Si el personaje mira a la derecha, dispara hacia alli,
+                    if (isRunningRight()) {
+                        arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, true, this));
+                    } else {
+                        //Si mira a la izquierda, dispara hacia el otro lado.
+                        arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, false, this));
+                    }
+                }
+            }
+            //Si presionamos 9, el personaje enemigo se agacha.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
+                //Si ya se estaba agachando, el personaje se para.
+                if (getState() == Zero.State.CROUCHING) {
+                    setState(Zero.State.STANDING);
+                    redefineZero();
+                }
+                //Si no estaba agachado, se para.
+                else {
+                    setState(Zero.State.CROUCHING);
+                    if (isRunningRight()) {
+                        redefineZeroCrouching(true);
+                    } else {
+                        redefineZeroCrouching(false);
+                    }
+                }
+            }
+            //Si presionamos 3, el personaje enemigo pega.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
+                setState(Zero.State.GETTINGHIT);
+            }
+            //Si presionamos 1, el personaje enemigo pega.
+            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
+                setState(Zero.State.DYING);
+            }
         }
 
     }
-
-    public boolean isZeroJumping(){
-        if (body.getLinearVelocity().y != 0){
-            return true;
-        }else{
-            return false;
-        }
-    }
+        */
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import Scenes.Hud;
 import Sprites.Fireball;
 import Sprites.Megaman;
+import Sprites.Zero;
 import Tools.WorldContactListener;
 
 /**
@@ -162,6 +164,10 @@ public abstract class MainGameScreen implements Screen {
     @Override
     public void show() {
 
+    }
+
+    public OrthographicCamera getMainCamera(){
+        return mainCamera;
     }
 
     //Funcion que se encargara de manejar los inputs que hayan en el juego.
@@ -420,8 +426,26 @@ public abstract class MainGameScreen implements Screen {
         }
     }
 
+    public void draw(SpriteBatch spriteBatch){
+        //Le decimos al Sprite que se dibuje segun su correspondiente region.
+        megaman.draw(game.batch);
+
+        //Dibujamos el fireball.
+        //Tenemos que dibujar cada fireball lanzado.
+        arrayListMegamanSize = arrayListMegamanFireball.size();
+
+        //Para cada fireball de la lista, dibujamos.
+        for (int i = 0; i < arrayListMegamanSize; i++) {
+            arrayListMegamanFireball.get(i).draw(game.batch);
+        }
+    }
+
+    //Esta tambien estaba hecha para el hijo nomas.
     public Megaman getMegaman() {
         return megaman;
+    }
+    public void setZeroFightState(Integer integer) {
+        //Esta clase esta hecha para que su hijo la utilice.
     }
 
     public float getHealthDamage() {
@@ -490,12 +514,6 @@ public abstract class MainGameScreen implements Screen {
         textureAtlasTools.dispose();
         textureAtlasCharac.dispose();
     }
-
-    //Esto es un parche? Masomenos
-      public void setZeroFightState(Integer fightState){
-          //Esto es masomenos como un parche, pero funciona.
-          //Ademas no molesta a nadie, no obliga a implementar metodo.
-      }
 
     //Este no es lo mismo que arriba, este molesta.
       public abstract TiledMap getTiledMap();

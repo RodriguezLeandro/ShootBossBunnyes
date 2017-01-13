@@ -1,9 +1,7 @@
 package Screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -14,7 +12,6 @@ import com.mygdx.megamangame.MegamanMainClass;
 import java.util.ArrayList;
 
 import Sprites.Bunny;
-import Sprites.Fireball;
 import Sprites.Megaman;
 import Sprites.Zero;
 import Tools.WorldCreator;
@@ -32,19 +29,12 @@ public class Level1Screen extends MainGameScreen{
     //Zero es el enemigo principal.
     private Zero zero;
 
-    private ArrayList<Fireball> arrayListZeroFireball;
-
-    //Para ver la cantidad de objetos del arraylist del personaje enemigo.
-    private Integer arrayListZeroSize;
-
     private ArrayList<Bunny> arrayListBunny;
 
     //Para controlar el numero de bunnys;
     private Integer arrayListBunnySize;
 
     private WorldCreator worldCreator;
-
-    private boolean zeroIsDead;
 
     public Level1Screen(MegamanMainClass game, LevelSelect levelSelect) {
         super(game, levelSelect);
@@ -63,14 +53,7 @@ public class Level1Screen extends MainGameScreen{
         //No lo queremos dañar ni bien arranca.
         dañarPersonajeProgresivamente = false;
 
-        arrayListZeroFireball = new ArrayList<Fireball>();
-
-        arrayListZeroSize = 0;
-
         arrayListBunnySize = 0;
-
-        zeroIsDead = false;
-
 
         //Cambiamos la manera de poner la musica, al parecer no hay que utilizar el asset manager con los sonidos.
         //Sera una cuestion de duracion de tiempo del sonido? Probablemente.
@@ -90,70 +73,13 @@ public class Level1Screen extends MainGameScreen{
 
     }
 
-    public void setZeroIsDead(boolean bool){
-        zeroIsDead = bool;
-    }
-
-    public void isZeroHitting() {
-        //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
-        //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
-        if (arrayListZeroSize < 3) {
-            zero.setState(Zero.State.HITTING);
-
-            //Aca tenemos que crear la bola de fuego(fireball).
-            Vector2 positionFireball = zero.getPositionFireAttack();
-
-            //Si el personaje mira a la derecha, dispara hacia alli,
-            if (zero.isRunningRight()) {
-                arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, zero));
-            } else {
-                //Si mira a la izquierda, dispara hacia el otro lado.
-                arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, zero));
-            }
-        }
-    }
-
-    public void isZeroRunningToMegaman() {
-        if (megaman.body.getPosition().x < zero.body.getPosition().x) {
-            if (zero.body.getLinearVelocity().x > -3)
-                zero.body.applyLinearImpulse(new Vector2(-1f, 0), zero.body.getWorldCenter(), true);
-        } else {
-            if (zero.body.getLinearVelocity().x < 3)
-                zero.body.applyLinearImpulse(new Vector2(1f, 0), zero.body.getWorldCenter(), true);
-        }
-    }
-
-    @Override
-    public void setZeroFightState(Integer integer) {
-        zero.setZeroFightingStateNumber(integer);
-    }
-
-    public void isZeroJumping() {
-        if (!zero.isZeroJumping())
-            zero.body.applyLinearImpulse(new Vector2(0, 10f), zero.body.getWorldCenter(), true);
-    }
-
-    public void isZeroRunningAwayFromMegaman() {
-        if (megaman.body.getPosition().x < zero.body.getPosition().x) {
-            if (zero.body.getLinearVelocity().x > -3)
-                zero.body.applyLinearImpulse(new Vector2(1f, 0), zero.body.getWorldCenter(), true);
-        } else {
-            if (zero.body.getLinearVelocity().x < 3)
-                zero.body.applyLinearImpulse(new Vector2(-1f, 0), zero.body.getWorldCenter(), true);
-        }
-    }
-
     public void update(float delta){
 
         if (stageInFinalBattle && !finalHudActivated) {
             hud.setGameIsInFinalStage();
             finalHudActivated = true;
-            zero.setZeroFighting(true);
+            zero.setZeroInFinalBattle(true);
         }
-
-        handleZeroInput(delta);
-
-        logicaMovimientoZero();
 
         //Updateamos la posicion del sprite del personaje enemigo y luego la animacion.
         zero.update(delta);
@@ -177,13 +103,7 @@ public class Level1Screen extends MainGameScreen{
             }
         }
 
-        //Tenemos que updatear cada fireball de Zero lanzado.
-        arrayListZeroSize = arrayListZeroFireball.size();
 
-        //Para cada fireball de la lista, updateamos.
-        for (int i = 0; i < arrayListZeroSize; i++) {
-            arrayListZeroFireball.get(i).update(delta);
-        }
 
         //Si estamos en la batalla final los movimientos de la camara son distintos.
         //Las restricciones son distintas tambien.
@@ -245,23 +165,16 @@ public class Level1Screen extends MainGameScreen{
             }
         }
 
-        //Cada fireball de zero que sale fuera de la pantalla lo eliminamos.
-        arrayListZeroSize = arrayListZeroFireball.size();
-
-        for (int i = 0; i < arrayListZeroSize; i++) {
-            if ((arrayListZeroFireball.get(i).body.getPosition().x > mainCamera.position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < mainCamera.position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
-
-                arrayListZeroFireball.get(i).dispose();
-                arrayListZeroFireball.remove(i);
-                arrayListZeroSize = arrayListZeroFireball.size();
-            }
-        }
-
         //Por cada renderizado de la pantalla, la camara se actualiza.
         mainCamera.update();
 
         //Queremos que solo se dibuje por pantalla lo que se puede ver en camara.
         mapRenderer.setView(mainCamera);
+    }
+
+    //Es necesario tener esta funcion aca porque conecta las clases megaman y zero.
+    public void setZeroFightState(Integer integer) {
+        zero.setZeroFightingStateNumber(integer);
     }
 
     public void dañarZeroPersonaje() {
@@ -273,15 +186,8 @@ public class Level1Screen extends MainGameScreen{
         }
     }
 
-    public void logicaMovimientoZero(){
-        if (moverZeroDerecha) {
-            if (zero.body.getLinearVelocity().x < 3)
-                zero.body.applyLinearImpulse(new Vector2(0.5f, 0), zero.body.getWorldCenter(), true);
-        }
-        if (moverZeroIzquierda) {
-            if (zero.body.getLinearVelocity().x > -3)
-                zero.body.applyLinearImpulse(new Vector2(-0.5f, 0), zero.body.getWorldCenter(), true);
-        }
+    public Zero getZero(){
+        return zero;
     }
 
     public void render(float delta){
@@ -305,35 +211,16 @@ public class Level1Screen extends MainGameScreen{
         //Nuestro batch lo iniciamos.
         game.batch.begin();
 
-        //Le decimos al Sprite que se dibuje segun su correspondiente region.
-        megaman.draw(game.batch);
+        //La clase padre, maingamescreen dibujara a megaman.
+        super.draw(game.batch);
 
-        //Le decimos al Sprite que se dibuje segun su correspondiente region?.
+        //Le decimos al Sprite que se dibuje.
         zero.draw(game.batch);
 
         //Dibujamos los bunnys.
         for (Bunny bunny : arrayListBunny) {
             bunny.draw(game.batch);
         }
-
-        //Dibujamos el fireball.
-        //Tenemos que dibujar cada fireball lanzado.
-        arrayListMegamanSize = arrayListMegamanFireball.size();
-
-        //Para cada fireball de la lista, dibujamos.
-        for (int i = 0; i < arrayListMegamanSize; i++) {
-            arrayListMegamanFireball.get(i).draw(game.batch);
-        }
-
-        //Dibujamos el otro fireball.
-        //Tenemos que dibujar cada fireball lanzado.
-        int arrayListZeroSize = arrayListZeroFireball.size();
-
-        //Para cada fireball de la lista, dibujamos.
-        for (int i = 0; i < arrayListZeroSize; i++) {
-            arrayListZeroFireball.get(i).draw(game.batch);
-        }
-
         game.batch.end();
 
         //Dibujamos el debuger para los objetos que colisionan.
@@ -351,7 +238,7 @@ public class Level1Screen extends MainGameScreen{
             dispose();
         }
 
-        if (zeroIsDead){
+        if (zero.isZeroDeadBy3Seconds()){
             MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class).stop();
             levelSelectScreen.setLastLevelPlayed(1);
             game.setScreen(new Level1WinScreen(game,levelSelectScreen));
@@ -365,72 +252,6 @@ public class Level1Screen extends MainGameScreen{
         return world;
     }
 
-
-    public void handleZeroInput(float delta) {
-
-        if (!zero.isDead()) {
-            //Si presionamos 8, el personaje enemigo salta.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
-                if (!zero.isZeroJumping())
-                    zero.body.applyLinearImpulse(new Vector2(0, 6f), zero.body.getWorldCenter(), true);
-            }
-            //Si presionamos 4, el personaje enemigo se mueve a la izquierda.
-            if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)) {
-                if (zero.body.getLinearVelocity().x > -3)
-                    zero.body.applyLinearImpulse(new Vector2(-0.2f, 0), zero.body.getWorldCenter(), true);
-            }
-            //Si presionamos 6, el personaje enemigo se mueve a la derecha.
-            if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)) {
-                if (zero.body.getLinearVelocity().x < 3)
-                    zero.body.applyLinearImpulse(new Vector2(0.2f, 0), zero.body.getWorldCenter(), true);
-            }
-            //Si presionamos 7, el personaje enemigo pega.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
-                //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
-                //Solo cambia el estado del personaje enemigo si puede tirar pelotas(estado-->animacion).
-                if (arrayListZeroSize < 3) {
-                    zero.setState(Zero.State.HITTING);
-
-                    //Aca tenemos que crear la bola de fuego(fireball).
-                    Vector2 positionFireball = zero.getPositionFireAttack();
-
-                    //Si el personaje mira a la derecha, dispara hacia alli,
-                    if (zero.isRunningRight()) {
-                        arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, zero));
-                    } else {
-                        //Si mira a la izquierda, dispara hacia el otro lado.
-                        arrayListZeroFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, zero));
-                    }
-                }
-            }
-            //Si presionamos 9, el personaje enemigo se agacha.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
-                //Si ya se estaba agachando, el personaje se para.
-                if (zero.getState() == Zero.State.CROUCHING) {
-                    zero.setState(Zero.State.STANDING);
-                    zero.redefineZero();
-                }
-                //Si no estaba agachado, se para.
-                else {
-                    zero.setState(Zero.State.CROUCHING);
-                    if (zero.isRunningRight()) {
-                        zero.redefineZeroCrouching(true);
-                    } else {
-                        zero.redefineZeroCrouching(false);
-                    }
-                }
-            }
-            //Si presionamos 3, el personaje enemigo pega.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
-                zero.setState(Zero.State.GETTINGHIT);
-            }
-            //Si presionamos 1, el personaje enemigo pega.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
-                zero.setState(Zero.State.DYING);
-            }
-        }
-    }
-
     public TiledMap getTiledMap() {
         return tiledMap;
     }
@@ -440,9 +261,8 @@ public class Level1Screen extends MainGameScreen{
         tiledMap.dispose();
         mapRenderer.dispose();
         textureAtlasCharac.dispose();
-        arrayListZeroFireball.clear();
+        zero.dispose();
         arrayListBunny.clear();
-        arrayListMegamanFireball.clear();
     }
 
 
