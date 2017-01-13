@@ -588,6 +588,7 @@ public abstract class MainGameScreen implements Screen {
         world.dispose();
         box2DDebugRenderer.dispose();
         arrayListMegamanFireball.clear();
+        arrayListMegamanRaycast.clear();
         textureAtlasTools.dispose();
         textureAtlasCharac.dispose();
     }
