@@ -1,13 +1,10 @@
 package Sprites;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import Screen.MainGameScreen;
@@ -16,30 +13,17 @@ import Screen.MainGameScreen;
  * Created by Leandro on 06/01/2017.
  */
 
-public class Fireball {
-
-    public World world;
-
-    public Body body;
-
-    private MainGameScreen mainGameScreen;
-
-    private Sprite sprite;
-
-    private Vector2 vector2PositionFireball;
+public class Fireball extends MisileObject{
 
     public boolean fireToRight;
 
     public boolean destroyFireball;
 
     public Fireball(MainGameScreen mainGameScreen, float x, float y, boolean fireToRight, Object player) {
-        this.mainGameScreen = mainGameScreen;
+
+        super(mainGameScreen,x,y);
 
         this.fireToRight = fireToRight;
-
-        world = mainGameScreen.getWorld();
-
-        vector2PositionFireball = new Vector2(x,y);
 
         //Si la fireball proviene del personaje principal, creamos el fireball con ciertas propiedades.
         if (player.getClass() == Megaman.class) {
@@ -59,10 +43,6 @@ public class Fireball {
 
     }
 
-    public void update(float delta){
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,body.getPosition().y - sprite.getWidth() / 2);
-    }
-
     public void destroy(){
         destroyFireball = true;
     }
@@ -73,7 +53,7 @@ public class Fireball {
             BodyDef bodyDef = new BodyDef();
 
             //Aqui esta la magia del posicionamiento.
-            bodyDef.position.set(vector2PositionFireball);
+            bodyDef.position.set(vector2Position);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -81,7 +61,7 @@ public class Fireball {
 
             body.setGravityScale(0);
 
-            body.applyLinearImpulse(new Vector2(5f, 0), vector2PositionFireball, true);
+            body.applyLinearImpulse(new Vector2(5f, 0), vector2Position, true);
 
             FixtureDef fixtureDef = new FixtureDef();
 
@@ -104,7 +84,7 @@ public class Fireball {
 
             //La idea es que el tamaño de sprite.getWidth * 2 sea igual o casi igual a .
             //Megaman.Sprite.getWidht * 2, pero como casi es lo mismo, lo dejamos asi.
-            bodyDef.position.set(vector2PositionFireball.x - sprite.getWidth() * 2,vector2PositionFireball.y);
+            bodyDef.position.set(vector2Position.x - sprite.getWidth() * 2,vector2Position.y);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -112,7 +92,7 @@ public class Fireball {
 
             body.setGravityScale(0);
 
-            body.applyLinearImpulse(new Vector2(-5f, 0), vector2PositionFireball, true);
+            body.applyLinearImpulse(new Vector2(-5f, 0), vector2Position, true);
 
             FixtureDef fixtureDef = new FixtureDef();
 
@@ -138,7 +118,7 @@ public class Fireball {
             BodyDef bodyDef = new BodyDef();
 
             //Aqui esta la magia del posicionamiento.
-            bodyDef.position.set(vector2PositionFireball);
+            bodyDef.position.set(vector2Position);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -146,7 +126,7 @@ public class Fireball {
 
             body.setGravityScale(0);
 
-            body.applyLinearImpulse(new Vector2(5f, 0), vector2PositionFireball, true);
+            body.applyLinearImpulse(new Vector2(5f, 0), vector2Position, true);
 
             FixtureDef fixtureDef = new FixtureDef();
 
@@ -169,7 +149,7 @@ public class Fireball {
 
             //La idea es que el tamaño de sprite.getWidth * 2 sea igual o casi igual a .
             //Megaman.Sprite.getWidht * 2, pero como casi es lo mismo, lo dejamos asi.
-            bodyDef.position.set(vector2PositionFireball.x - sprite.getWidth() * 2,vector2PositionFireball.y);
+            bodyDef.position.set(vector2Position.x - sprite.getWidth() * 2,vector2Position.y);
 
             bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -177,7 +157,7 @@ public class Fireball {
 
             body.setGravityScale(0);
 
-            body.applyLinearImpulse(new Vector2(-5f, 0), vector2PositionFireball, true);
+            body.applyLinearImpulse(new Vector2(-5f, 0), vector2Position, true);
 
             FixtureDef fixtureDef = new FixtureDef();
 
@@ -197,14 +177,5 @@ public class Fireball {
         }
     }
 
-
-
-    public void draw(SpriteBatch spriteBatch) {
-        sprite.draw(spriteBatch);
-    }
-
-    public void dispose(){
-        world.destroyBody(body);
-    }
 
 }

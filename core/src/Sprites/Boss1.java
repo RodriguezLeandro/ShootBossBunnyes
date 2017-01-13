@@ -170,11 +170,11 @@ public class Boss1 {
         //Tengo que updatear cada hair tambien creo.
 
         for(HairAttack hairAttack : arrayListHair){
-            hairAttack.update();
+            hairAttack.update(delta);
         }
 
         for(HairAttack hairAttack : arrayListSpecialHairAttack){
-            hairAttack.update();
+            hairAttack.update(delta);
         }
 
         sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import Scenes.Hud;
 import Sprites.Fireball;
 import Sprites.Megaman;
-import Sprites.Zero;
+import Sprites.RayCast;
 import Tools.WorldContactListener;
 
 /**
@@ -72,8 +72,10 @@ public abstract class MainGameScreen implements Screen {
     //Para controlar el movimiento de los personajes.
     protected boolean moverMegamanDerecha;
     protected boolean moverMegamanIzquierda;
-    protected boolean moverZeroDerecha;
-    protected boolean moverZeroIzquierda;
+
+    protected boolean realizarRayCast;
+    protected boolean vaciarRayCast;
+    protected boolean fireToRight;
 
     //Para ver el daño que hay que hacerle al personaje.
     protected float healthDamage;
@@ -87,11 +89,17 @@ public abstract class MainGameScreen implements Screen {
     //Para controlar y ver el tamaño del arraylist de fireballs.
     protected Integer arrayListMegamanSize;
 
+    protected Integer multiplicadorRaycast;
+
     //Arraylist que contendra los fireballs.
     protected ArrayList<Fireball> arrayListMegamanFireball;
 
+    protected ArrayList<RayCast> arrayListMegamanRaycast;
+
     //Para verificar si el personaje murio.
     protected boolean personajeEstaMuerto;
+
+    protected Vector2 positionRayCast;
 
     public MainGameScreen(MegamanMainClass game, LevelSelect levelSelect) {
 
@@ -145,6 +153,8 @@ public abstract class MainGameScreen implements Screen {
 
         arrayListMegamanFireball = new ArrayList<Fireball>();
 
+        arrayListMegamanRaycast = new ArrayList<RayCast>();
+
 
         //El size del array list esta vacio al comienzo.
         arrayListMegamanSize = 0;
@@ -154,6 +164,10 @@ public abstract class MainGameScreen implements Screen {
 
         //No esta activado el final hud.
         finalHudActivated = false;
+
+        realizarRayCast = false;
+
+        vaciarRayCast = false;
 
     }
 
@@ -258,7 +272,19 @@ public abstract class MainGameScreen implements Screen {
                 if (megaman.body.getLinearVelocity().x > -3)
                     megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
             }
+            //Si el jugador toca flecha arriba, el personaje tira RAY!!!
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
 
+                //El problema es que no es un for, se trata de un ataque sin limites definidos.
+                realizarRayCast = true;
+                multiplicadorRaycast = 0;
+                positionRayCast = megaman.getPositionFireAttack();
+                if (megaman.isRunningRight()){
+                    fireToRight = true;
+                }else {
+                    fireToRight = false;
+                }
+            }
             //Si el jugador toca flecha abajo, el personaje slashea.
             if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                 //Solo puede slashear si no estaba saltando.
@@ -279,10 +305,10 @@ public abstract class MainGameScreen implements Screen {
             if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
                 megaman.body.setTransform(12400 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters, megaman.body.getAngle());
             }
-            //Si presionamos Arriba, el personaje muere.
-            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            //Si presionamos Arriba, el personaje ya no muere.
+          /*  if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 megaman.setState(Megaman.State.DYING);
-            }
+            }*/
             //Si presionamos Izquierda, el personaje se agacha.
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 //Si ya se estaba agachando, el personaje se para.
@@ -400,6 +426,8 @@ public abstract class MainGameScreen implements Screen {
         arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Para cada fireball de la lista, updateamos.
+        //Recordar que el arraylistmegamanfireball.get(i).destroyfireball era un booleano para
+        //destruir fireball en casos de colisiones con otros objetos.
         for (int i = 0; i < arrayListMegamanSize; i++) {
             //Si hay que destruirlo, lo destruimos, sino, lo updateamos.
             if (arrayListMegamanFireball.get(i).destroyFireball) {
@@ -424,6 +452,52 @@ public abstract class MainGameScreen implements Screen {
                 arrayListMegamanSize = arrayListMegamanFireball.size();
             }
         }
+
+        if (realizarRayCast){
+
+            if (fireToRight) {
+                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x + multiplicadorRaycast * 30 / MegamanMainClass.PixelsPerMeters, positionRayCast.y));
+                multiplicadorRaycast++;
+                Integer lastraycast = arrayListMegamanRaycast.size();
+                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth(),arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() - multiplicadorRaycast * 2 / MegamanMainClass.PixelsPerMeters);
+            }else {
+                //notese que 50 / megamanmainclass.pixels per meters es igual a raycast.getWidth / 2.
+                //Igual uso 70 asi que no hay que darle mucha importancia.
+                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x - 70 / MegamanMainClass.PixelsPerMeters - multiplicadorRaycast * 30 / MegamanMainClass.PixelsPerMeters,positionRayCast.y));
+                multiplicadorRaycast++;
+                Integer lastraycast = arrayListMegamanRaycast.size();
+                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth(),arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() - multiplicadorRaycast * 2 / MegamanMainClass.PixelsPerMeters);
+            }
+
+            Integer lastraycast = arrayListMegamanRaycast.size();
+            //Si el cuerpo del ultimo raycast(que es un fireball) creado es mayor en el eje x, o sea esta mas adelante
+            //que la posicion de la camara en el medio + la distancia que la camara cubre.
+            //O sea, si sale de la pantalla el raycast.
+            //Nota: le doy un margen extra de 400, para que el jugador no pueda ver que se esta borrando el raycast.
+            if ((arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x > mainCamera.position.x + 800 / MegamanMainClass.PixelsPerMeters)||(arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x < mainCamera.position.x - 800 / MegamanMainClass.PixelsPerMeters)){
+                realizarRayCast = false;
+                vaciarRayCast = true;
+            }
+        }
+
+        if (vaciarRayCast){
+
+            //Si el arraylist de raycast quedo vacio, salimos de aca, de lo contrario,
+            //Frame a frame, iremos borrando los raycasts.
+            if (multiplicadorRaycast == 0){
+                vaciarRayCast = false;
+            }else {
+                arrayListMegamanRaycast.get(0).dispose();
+                arrayListMegamanRaycast.remove(0);
+                multiplicadorRaycast--;
+            }
+        }
+
+        //Notese que no borro nada, solo pruebo.
+        for (RayCast rayCast : arrayListMegamanRaycast){
+            rayCast.update(delta);
+        }
+
     }
 
     public void draw(SpriteBatch spriteBatch){
@@ -431,13 +505,16 @@ public abstract class MainGameScreen implements Screen {
         megaman.draw(game.batch);
 
         //Dibujamos el fireball.
-        //Tenemos que dibujar cada fireball lanzado.
-        arrayListMegamanSize = arrayListMegamanFireball.size();
 
         //Para cada fireball de la lista, dibujamos.
-        for (int i = 0; i < arrayListMegamanSize; i++) {
-            arrayListMegamanFireball.get(i).draw(game.batch);
+        for(Fireball fireball : arrayListMegamanFireball){
+            fireball.draw(game.batch);
         }
+
+        for (RayCast rayCast : arrayListMegamanRaycast){
+            rayCast.draw(game.batch);
+        }
+
     }
 
     //Esta tambien estaba hecha para el hijo nomas.
