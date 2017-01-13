@@ -24,9 +24,9 @@ public class Fireball {
 
     private MainGameScreen mainGameScreen;
 
-    protected Sprite sprite;
+    private Sprite sprite;
 
-    protected Vector2 vector2PositionFireball;
+    private Vector2 vector2PositionFireball;
 
     public boolean fireToRight;
 

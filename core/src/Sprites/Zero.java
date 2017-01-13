@@ -19,7 +19,6 @@ import com.mygdx.megamangame.MegamanMainClass;
 import java.util.Random;
 
 import Screen.Level1Screen;
-import Screen.MainGameScreen;
 
 /**
  * Created by Leandro on 04/01/2017.
@@ -432,12 +431,13 @@ public class Zero{
             case DYING:
 
                 //Si no estaba muriendo, reiniciamos el stateTimer.
-                if (previousState != State.DYING) {
+                if (currentState == State.DYING && zeroIsDead == false) {
                     stateTimer = 0;
+                    zeroIsDead = true;
                 }
                 textureRegion = zeroDying.getKeyFrame(stateTimer);
                 if (zeroDying.isAnimationFinished(stateTimer)){
-                    //End of the game.
+                    level1Screen.setZeroIsDead(true);
                 }
                 break;
             //Realizamos lo mismo con cada uno de los estados.

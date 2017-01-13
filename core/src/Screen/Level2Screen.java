@@ -1,8 +1,8 @@
 package Screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -54,6 +54,15 @@ public class Level2Screen extends MainGameScreen {
     public void update(float delta){
 
         boss1.update(delta);
+
+        //Si tocamos B, que el enemigo ataque con el hair(haier?);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)){
+               boss1.createHairSpecialAttack();
+        }
+        //Si tocamos V, el enemigo ataca tambien con el haier.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V)){
+            boss1.createHairAttack();
+        }
 
         if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters) {
             megaman.body.setTransform(new Vector2(10 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
@@ -130,6 +139,7 @@ public class Level2Screen extends MainGameScreen {
         hud.stage.draw();
 
         if (gameOver()) {
+            levelSelectScreen.setLastLevelPlayed(2);
             game.setScreen(new GameOverScreen(game, hud.getScore(),levelSelectScreen));
             dispose();
         }

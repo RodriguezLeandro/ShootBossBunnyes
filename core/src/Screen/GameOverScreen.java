@@ -69,15 +69,23 @@ public class GameOverScreen implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new Level1Screen((MegamanMainClass) game,levelSelectScreen));
-                dispose();
+
+                switch (levelSelectScreen.getLastLevelPlayed()){
+
+                    case 1:
+                        game.setScreen(new Level1Screen((MegamanMainClass) game,levelSelectScreen));
+                        dispose();
+
+                        break;
+                    case 2:
+                        game.setScreen(new Level2Screen((MegamanMainClass) game,levelSelectScreen));
+                        dispose();
+                    break;
+                }
                 return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
             }
+
         });
 
         backToMainMenu.addListener(new InputListener(){
@@ -89,10 +97,6 @@ public class GameOverScreen implements Screen {
                 return true;
             }
 
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-            }
         });
 
         backToLevelSelect.addListener(new InputListener(){
@@ -101,11 +105,6 @@ public class GameOverScreen implements Screen {
                 game.setScreen(levelSelectScreen);
                 dispose();
                 return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
             }
 
         });

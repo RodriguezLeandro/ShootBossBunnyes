@@ -44,6 +44,8 @@ public class Level1Screen extends MainGameScreen{
 
     private WorldCreator worldCreator;
 
+    private boolean zeroIsDead;
+
     public Level1Screen(MegamanMainClass game, LevelSelect levelSelect) {
         super(game, levelSelect);
 
@@ -67,6 +69,8 @@ public class Level1Screen extends MainGameScreen{
 
         arrayListBunnySize = 0;
 
+        zeroIsDead = false;
+
 
         //Cambiamos la manera de poner la musica, al parecer no hay que utilizar el asset manager con los sonidos.
         //Sera una cuestion de duracion de tiempo del sonido? Probablemente.
@@ -84,6 +88,10 @@ public class Level1Screen extends MainGameScreen{
         //Creamos a los bunnys.
         arrayListBunny = worldCreator.getBunnys();
 
+    }
+
+    public void setZeroIsDead(boolean bool){
+        zeroIsDead = bool;
     }
 
     public void isZeroHitting() {
@@ -338,7 +346,15 @@ public class Level1Screen extends MainGameScreen{
 
         //cuando termine de dibujar todo, preguntamos si el juego termino.
         if (gameOver()) {
+            levelSelectScreen.setLastLevelPlayed(1);
             game.setScreen(new GameOverScreen(game, hud.getScore(),levelSelectScreen));
+            dispose();
+        }
+
+        if (zeroIsDead){
+            MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class).stop();
+            levelSelectScreen.setLastLevelPlayed(1);
+            game.setScreen(new Level1WinScreen(game,levelSelectScreen));
             dispose();
         }
 

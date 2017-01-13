@@ -15,6 +15,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import Screen.MainGameScreen;
 
 /**
@@ -37,15 +40,22 @@ public class Boss1 {
     private TextureRegion textureRegionBoss1;
 
     private Animation jumpAnimation;
+    private Animation transformAnimation;
 
     private Sprite sprite;
 
+    private ArrayList<HairAttack> arrayListHair;
+
+    private ArrayList<HairAttack> arrayListSpecialHairAttack;
+
     private float stateTimer;
 
-    public enum State {STANDING,JUMPING};
+    private boolean isRunningRight;
+
+    public enum State {STANDING,JUMPING,CONJURING};
 
     public Boss1(MainGameScreen mainGameScreen){
-        sprite = new Sprite(new TextureRegion(new Texture("boss1jumpspritesheet.png")));
+        sprite = new Sprite(new TextureRegion(new Texture("boss1transform.png")));
 
         this.mainGameScreen = mainGameScreen;
 
@@ -63,6 +73,11 @@ public class Boss1 {
 
         sprite.setSize(92.66f / MegamanMainClass.PixelsPerMeters, 120.33f /MegamanMainClass.PixelsPerMeters);
 
+        arrayListHair = new ArrayList<HairAttack>();
+
+        arrayListSpecialHairAttack = new ArrayList<HairAttack>();
+
+        isRunningRight = false;
     }
 
     public void crearAnimaciones(){
@@ -85,13 +100,83 @@ public class Boss1 {
 
         textureRegionsFrames.clear();
 
+        for(int i = 0; i < 16; i++){
+
+            for (int j = 0; j < 4; j++){
+
+                if (((i == 15)&&(j == 2))||((i == 15)&(j == 3))){
+                    //No hago nada.
+                }
+                else {
+                    textureRegionsFrames.add(new TextureRegion(sprite.getTexture(),j * 354,i * 561,354,561));
+                }
+            }
+        }
+
+        transformAnimation = new Animation(0.5f,textureRegionsFrames);
+
+        textureRegionsFrames.clear();
+
+    }
+
+    public void createHairAttack(){
+
+        Vector2 positionHairAttack = getPositionHairAttack();
+
+        arrayListHair.add(new HairAttack(mainGameScreen,positionHairAttack.x,positionHairAttack.y));
+    }
+
+    public void createHairSpecialAttack(){
+
+        for (int i = 0 ; i < 10 ; i ++){
+
+            Vector2 positionHairSpecialAttack = getPositionHairAttack();
+
+            arrayListSpecialHairAttack.add(new HairAttack(mainGameScreen,positionHairSpecialAttack.x + (i * 10) / MegamanMainClass.PixelsPerMeters,positionHairSpecialAttack.y));
+        }
+
+    }
+
+    public Vector2 getPositionHairAttack(){
+
+        //Aca va a estar la magia.
+
+        Random random = new Random();
+
+        Integer randomNumber = random.nextInt(150);
+
+        return new Vector2(body.getPosition().x + randomNumber / MegamanMainClass.PixelsPerMeters,body.getPosition().y - 50 / MegamanMainClass.PixelsPerMeters + randomNumber / MegamanMainClass.PixelsPerMeters);
+    }
+
+    public boolean isRunningRight(){
+        return isRunningRight;
     }
 
     public void draw(SpriteBatch spriteBatch){
         sprite.draw(spriteBatch);
+
+        //Tengo que hacer que cada hair se dibuje tambien.
+        for (HairAttack hairAttack : arrayListHair){
+            hairAttack.draw(spriteBatch);
+        }
+
+        for (HairAttack hairAttack : arrayListSpecialHairAttack){
+            hairAttack.draw(spriteBatch);
+        }
     }
 
     public void update(float delta){
+
+        //Tengo que updatear cada hair tambien creo.
+
+        for(HairAttack hairAttack : arrayListHair){
+            hairAttack.update();
+        }
+
+        for(HairAttack hairAttack : arrayListSpecialHairAttack){
+            hairAttack.update();
+        }
+
         sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
 
         sprite.setRegion(getTextureRegion(delta));
@@ -100,7 +185,7 @@ public class Boss1 {
     public TextureRegion getTextureRegion(float delta){
         stateTimer += delta;
 
-        return jumpAnimation.getKeyFrame(stateTimer,true);
+        return transformAnimation.getKeyFrame(stateTimer);
     }
 
     public void defineBoss1(){
@@ -109,7 +194,7 @@ public class Boss1 {
 
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        bodyDef.position.set(300 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(13000 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters);
 
         body = world.createBody(bodyDef);
 

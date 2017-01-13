@@ -51,6 +51,15 @@ public class LevelSelect implements Screen {
 
     private LevelSelect thisLevelSelect;
 
+    private Integer lastLevelPlayed;
+
+    private Boolean firstLevelWon;
+    private Boolean secondLevelWon;
+    private Boolean thirdLevelWon;
+    private Boolean fourthLevelWon;
+    private Boolean lastLevelWon;
+
+
     public LevelSelect(MegamanMainClass mainGameScreen){
 
         game = mainGameScreen;
@@ -66,6 +75,12 @@ public class LevelSelect implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         createHud();
+
+        firstLevelWon = false;
+        secondLevelWon= false;
+        thirdLevelWon = false;
+        fourthLevelWon= false;
+        lastLevelWon = false;
     }
 
     public void createHud(){
@@ -95,6 +110,8 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //Si todavia no cruzo el primer nivel, entonces que lo juegue.
+                if (!firstLevelWon)
                 game.setScreen(new Level1Screen((MegamanMainClass) game , thisLevelSelect));
                 return true;
             }
@@ -105,6 +122,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (!secondLevelWon){}
                 game.setScreen(new Level2Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
@@ -115,6 +133,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (!thirdLevelWon){}
              //   game.setScreen(new Level3Screen((MegamanMainClass) game));
                 return true;
             }
@@ -125,6 +144,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (!fourthLevelWon){}
          //       game.setScreen(new Level4Screen((MegamanMainClass) game));
                 return true;
             }
@@ -135,6 +155,11 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //Si ya gano todo.
+                //ENtonces hacemos magia y cambiamos la imagen del medio o algo asi.
+                //Por ej.
+              //  finalLabel.setText("ACA LA IMAGEN FINAL POR EJ");
+                if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
               //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
 
                 return true;
@@ -160,6 +185,33 @@ public class LevelSelect implements Screen {
     public void show() {
 
         Gdx.input.setInputProcessor(stage);
+
+    }
+
+    public void setLastLevelPlayed(Integer integer){
+        lastLevelPlayed = integer;
+    }
+
+    public Integer getLastLevelPlayed(){
+        return lastLevelPlayed;
+    }
+
+    public void setWonLevel(WinScreen winScreen){
+        if (winScreen.getClass() == Level1WinScreen.class){
+            firstLevelWon = true;
+        }
+        //Aca abajo tendria que poner: Level2Winscreen.class, level3winscreen.class,  y asi con los restantes.
+        else if (winScreen.getClass() == Level1WinScreen.class){
+            //SECONDLEVELWON = TRUE;
+        }else if (winScreen.getClass() == Level1WinScreen.class){
+            //THIRDLEVELWON = TRUE, ETC.
+        }
+        else if (winScreen.getClass() == Level1WinScreen.class){
+
+        }
+        else {
+
+        }
     }
 
     @Override
