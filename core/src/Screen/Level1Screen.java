@@ -224,7 +224,7 @@ public class Level1Screen extends MainGameScreen{
         game.batch.end();
 
         //Dibujamos el debuger para los objetos que colisionan.
-        box2DDebugRenderer.render(world, mainCamera.combined);
+     //   box2DDebugRenderer.render(world, mainCamera.combined);
 
         //Establecemos la projeccion de la matriz de la camara hud.
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);

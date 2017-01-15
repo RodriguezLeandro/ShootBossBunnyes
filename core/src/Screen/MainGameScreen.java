@@ -101,6 +101,8 @@ public abstract class MainGameScreen implements Screen {
 
     protected Vector2 positionRayCast;
 
+    protected Vector2 positionInitialRaycast;
+
     public MainGameScreen(MegamanMainClass game, LevelSelect levelSelect) {
 
         //Le asignamos el juego a nuestro MegamanMainClass.
@@ -288,6 +290,7 @@ public abstract class MainGameScreen implements Screen {
             realizarRayCast = true;
             multiplicadorRaycast = 0;
             positionRayCast = megaman.getPositionFireAttack();
+            positionInitialRaycast = new Vector2(megaman.body.getPosition().x,megaman.body.getPosition().y);
             if (megaman.isRunningRight()){
                 fireToRight = true;
             }else {
@@ -487,25 +490,26 @@ public abstract class MainGameScreen implements Screen {
         if (realizarRayCast){
 
             if (fireToRight) {
-                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x + multiplicadorRaycast * 30 / MegamanMainClass.PixelsPerMeters, positionRayCast.y));
+                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x  + 40 / MegamanMainClass.PixelsPerMeters + multiplicadorRaycast * 12 / MegamanMainClass.PixelsPerMeters, positionRayCast.y));
                 multiplicadorRaycast++;
                 Integer lastraycast = arrayListMegamanRaycast.size();
-                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth(),arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() - multiplicadorRaycast * 2 / MegamanMainClass.PixelsPerMeters);
+                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth() ,arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight()+ multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters );
             }else {
-                //notese que 50 / megamanmainclass.pixels per meters es igual a raycast.getWidth / 2.
-                //Igual uso 70 asi que no hay que darle mucha importancia.
-                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x - 70 / MegamanMainClass.PixelsPerMeters - multiplicadorRaycast * 30 / MegamanMainClass.PixelsPerMeters,positionRayCast.y));
+                //Dejo anotado masomenos que hace o que hago con cada valor.
+                //Multiplico primero la posicion de cada sprite, siendo que si achico mas la posicion entre cada sprite, se ve mucho mejor pero pierdo rendimiento.
+                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x - 100 / MegamanMainClass.PixelsPerMeters - multiplicadorRaycast * 12 / MegamanMainClass.PixelsPerMeters,positionRayCast.y));
                 multiplicadorRaycast++;
                 Integer lastraycast = arrayListMegamanRaycast.size();
-                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth(),arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() - multiplicadorRaycast * 2 / MegamanMainClass.PixelsPerMeters);
+                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth(),arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() + multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters);
             }
 
             Integer lastraycast = arrayListMegamanRaycast.size();
-            //Si el cuerpo del ultimo raycast(que es un fireball) creado es mayor en el eje x, o sea esta mas adelante
-            //que la posicion de la camara en el medio + la distancia que la camara cubre.
-            //O sea, si sale de la pantalla el raycast.
-            //Nota: le doy un margen extra de 400, para que el jugador no pueda ver que se esta borrando el raycast.
-            if ((arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x > mainCamera.position.x + 800 / MegamanMainClass.PixelsPerMeters)||(arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x < mainCamera.position.x - 800 / MegamanMainClass.PixelsPerMeters)){
+
+            //Mejor no, le damos un limite al raycast, decimos que cuando supera por cierta cantidad de distancia la posicion inicial de lanzamiento,
+            //se empiece a borrar.
+            //El algoritmo funciona asi: si el ultimo sprite que agregamos, super por 500/600 en el eje x al primer sprite agregado,
+            //entonces comenzamos a eliminar los sprites uno por uno.
+            if ((arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x > positionInitialRaycast.x + 800 / MegamanMainClass.PixelsPerMeters)||(arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x < positionInitialRaycast.x - 800 / MegamanMainClass.PixelsPerMeters)){
                 realizarRayCast = false;
                 vaciarRayCast = true;
             }
@@ -524,7 +528,7 @@ public abstract class MainGameScreen implements Screen {
             }
         }
 
-        //Notese que no borro nada, solo pruebo.
+        //Updateo los raycast.
         for (RayCast rayCast : arrayListMegamanRaycast){
             rayCast.update(delta);
         }

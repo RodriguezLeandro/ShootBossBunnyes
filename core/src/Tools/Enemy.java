@@ -78,8 +78,7 @@ public abstract class Enemy {
 
         fixtureDef.filter.categoryBits = MegamanMainClass.DEFAULT_BIT;
 
-        fixtureDef.filter.maskBits = MegamanMainClass.LAVA_BIT |
-                MegamanMainClass.FLOOR_BIT | MegamanMainClass.MEGAMAN_SENSOR_BIT |
+        fixtureDef.filter.maskBits = MegamanMainClass.MEGAMAN_SENSOR_BIT |
                 MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT | MegamanMainClass.ENEMY_BIT;
 
         fixture =  body.createFixture(fixtureDef);

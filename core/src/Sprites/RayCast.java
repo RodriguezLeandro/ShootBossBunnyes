@@ -22,7 +22,7 @@ public class RayCast extends MisileObject{
 
         sprite = new Sprite(new TextureRegion(new Texture("fireball.png")));
 
-        sprite.setSize(101 / MegamanMainClass.PixelsPerMeters,98 / MegamanMainClass.PixelsPerMeters);
+        sprite.setSize(128 / MegamanMainClass.PixelsPerMeters,128 / MegamanMainClass.PixelsPerMeters);
 
         defineRaycast();
 
