@@ -184,133 +184,152 @@ public abstract class MainGameScreen implements Screen {
         return mainCamera;
     }
 
-    //Funcion que se encargara de manejar los inputs que hayan en el juego.
-    public void handleMegamanInput(float delta) {
+    public void handleMegamanInputAndroid(){
+        //Si toca flecha izquierda impulso a izquierda.
+        if (hud.isLeftArrowPressed()) {
+            if (megaman.body.getLinearVelocity().x > -3)
+                megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
+        }
+        //Si toca flecha derecha impulso a derecha.
+        if (hud.isRightArrowPressed()) {
+            if (megaman.body.getLinearVelocity().x < 3)
+                megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
+        }
+        //Si toca cuadrado pega.
+        if (hud.isLeftButtonPressed()) {
+            hud.setLeftButtonPressed(false);
+            if (arrayListMegamanSize < 3) {
+                megaman.setState(Megaman.State.HITTING);
 
-        if (!megaman.isDead()) {
+                //Aca tenemos que crear la bola de fuego(fireball).
+                Vector2 positionFireball = megaman.getPositionFireAttack();
 
-            //Si toca flecha izquierda impulso a izquierda.
-            if (hud.isLeftArrowPressed()) {
-                if (megaman.body.getLinearVelocity().x > -3)
-                    megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
-            }
-            //Si toca flecha derecha impulso a derecha.
-            if (hud.isRightArrowPressed()) {
-                if (megaman.body.getLinearVelocity().x < 3)
-                    megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
-            }
-            //Si toca cuadrado pega.
-            if (hud.isLeftButtonPressed()) {
-                    hud.setLeftButtonPressed(false);
-                    if (arrayListMegamanSize < 3) {
-                        megaman.setState(Megaman.State.HITTING);
-
-                        //Aca tenemos que crear la bola de fuego(fireball).
-                        Vector2 positionFireball = megaman.getPositionFireAttack();
-
-                        //Si el personaje mira a la derecha, dispara hacia alli,
-                        if (megaman.isRunningRight()) {
-                            arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, megaman));
-                        } else {
-                            //Si mira a la izquierda, dispara hacia el otro lado.
-                            arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
-                        }
-                }
-            }
-            //Si toca redondo slashea.
-            if ( hud.isRightButtonPressed()) {
-                    hud.setRightButtonPressed(false);
-                    //Solo puede slashear si no estaba saltando.
-                    if (!megaman.isMegamanJumping()) {
-                        if (megaman.isRunningRight()) {
-                            if (megaman.body.getLinearVelocity().x < 5)
-                                megaman.body.applyLinearImpulse(new Vector2(4f, 0), megaman.body.getWorldCenter(), true);
-                            megaman.setState(Megaman.State.SLASHING);
-                        } else {
-                            if (megaman.body.getLinearVelocity().x > -5)
-                                megaman.body.applyLinearImpulse(new Vector2(-5, 0), megaman.body.getWorldCenter(), true);
-                            megaman.setState(Megaman.State.SLASHING);
-                        }
-                    }
-            }
-            //Si toca x salta
-            if (hud.isDownButtonPressed()) {
-                //Solo si recien tocamos la pantalla.
-                    hud.setDownButtonPressed(false);
-
-                    //Si estaba haciendo slash el personaje, puede saltar mas alto.
-                    if (megaman.getState() == Megaman.State.SLASHING) {
-                        if (!megaman.isMegamanJumping())
-                            megaman.body.applyLinearImpulse(new Vector2(0, 8f), megaman.body.getWorldCenter(), true);
-                    } else {
-                        //Solo salta si no estaba saltando o volando en el aire.
-                        if (!megaman.isMegamanJumping())
-                            megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
-                    }
-            }
-            //Si presionamos W, el personaje salta.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-                //Si estaba haciendo slash el personaje, puede saltar mas alto.
-                if (megaman.getState() == Megaman.State.SLASHING) {
-                    if (!megaman.isMegamanJumping())
-                        megaman.body.applyLinearImpulse(new Vector2(0, 8f), megaman.body.getWorldCenter(), true);
+                //Si el personaje mira a la derecha, dispara hacia alli,
+                if (megaman.isRunningRight()) {
+                    arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, megaman));
                 } else {
-                    //Solo salta si no estaba saltando o volando en el aire.
-                    if (!megaman.isMegamanJumping())
-                        megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
+                    //Si mira a la izquierda, dispara hacia el otro lado.
+                    arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
                 }
             }
-            //Si presionamos D, el personaje se mueve a la derecha.
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
-                if (megaman.body.getLinearVelocity().x < 3)
-                    megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
+        }
+        //Si toca redondo slashea.
+        if ( hud.isRightButtonPressed()) {
+            hud.setRightButtonPressed(false);
+            //Solo puede slashear si no estaba saltando.
+            if (!megaman.isMegamanJumping()) {
+                if (megaman.isRunningRight()) {
+                    if (megaman.body.getLinearVelocity().x < 5)
+                        megaman.body.applyLinearImpulse(new Vector2(4f, 0), megaman.body.getWorldCenter(), true);
+                    megaman.setState(Megaman.State.SLASHING);
+                } else {
+                    if (megaman.body.getLinearVelocity().x > -5)
+                        megaman.body.applyLinearImpulse(new Vector2(-5, 0), megaman.body.getWorldCenter(), true);
+                    megaman.setState(Megaman.State.SLASHING);
+                }
             }
-            //Si presionamos A, el personaje se mueve a la izquierda.
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
-                if (megaman.body.getLinearVelocity().x > -3)
-                    megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
-            }
-            //Si el jugador toca flecha arriba, el personaje tira RAY!!!
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+        }
+        //Si toca x salta
+        if (hud.isDownButtonPressed()) {
+            //Solo si recien tocamos la pantalla.
+            hud.setDownButtonPressed(false);
 
-                //El problema es que no es un for, se trata de un ataque sin limites definidos.
-                realizarRayCast = true;
-                multiplicadorRaycast = 0;
-                positionRayCast = megaman.getPositionFireAttack();
-                if (megaman.isRunningRight()){
-                    fireToRight = true;
+            //Si estaba haciendo slash el personaje, puede saltar mas alto.
+            if (megaman.getState() == Megaman.State.SLASHING) {
+                if (!megaman.isMegamanJumping())
+                    megaman.body.applyLinearImpulse(new Vector2(0, 8f), megaman.body.getWorldCenter(), true);
+            } else {
+                //Solo salta si no estaba saltando o volando en el aire.
+                if (!megaman.isMegamanJumping())
+                    megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
+            }
+        }
+    }
+
+    public void handleMegamanInputDesktop(){
+        //Si presionamos W, el personaje salta.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            //Si el personaje estaba deslizandose(SLIDING) en una pared, puede saltar hacia afuera.
+            if (megaman.getState() == Megaman.State.SLIDING){
+                if (megaman.isRunningRight()) {
+                    //Que divertido, el impulso es hacia el eje x contrario.
+                    //Si desliza a la derecha, el impulso es a la izquierda, y viceversa.
+                    megaman.body.applyLinearImpulse(new Vector2(-3f,6f),megaman.body.getWorldCenter(),true);
                 }else {
-                    fireToRight = false;
+                    megaman.body.applyLinearImpulse(new Vector2(3f,6f),megaman.body.getWorldCenter(),true);
                 }
             }
-            //Si el jugador toca flecha abajo, el personaje slashea.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                //Solo puede slashear si no estaba saltando.
-                if (!megaman.isMegamanJumping()) {
-                    if (megaman.isRunningRight()) {
-                        if (megaman.body.getLinearVelocity().x < 5)
-                            megaman.body.applyLinearImpulse(new Vector2(4f, 0), megaman.body.getWorldCenter(), true);
-                        megaman.setState(Megaman.State.SLASHING);
-                    } else {
-                        if (megaman.body.getLinearVelocity().x > -5)
-                            megaman.body.applyLinearImpulse(new Vector2(-5, 0), megaman.body.getWorldCenter(), true);
-                        megaman.setState(Megaman.State.SLASHING);
-                    }
-                }
+            //Si estaba haciendo slash el personaje, puede saltar mas alto.
+            if (megaman.getState() == Megaman.State.SLASHING) {
+                if (!megaman.isMegamanJumping())
+                    megaman.body.applyLinearImpulse(new Vector2(0, 8f), megaman.body.getWorldCenter(), true);
+            } else {
+                //Solo salta si no estaba saltando o volando en el aire.
+                if (!megaman.isMegamanJumping())
+                    megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
             }
+        }
+        //Si presionamos D, el personaje se mueve a la derecha.
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+            if (megaman.body.getLinearVelocity().x < 3)
+                megaman.body.applyLinearImpulse(new Vector2(0.2f, 0), megaman.body.getWorldCenter(), true);
+        }
+        //Si presionamos A, el personaje se mueve a la izquierda.
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            //Solo Si la velocidad actual del personaje es menor a 3 aplicamos el impulso.
+            if (megaman.body.getLinearVelocity().x > -3)
+                megaman.body.applyLinearImpulse(new Vector2(-0.2f, 0), megaman.body.getWorldCenter(), true);
+        }
+        //Si el jugador toca flecha arriba, el personaje tira RAY!!!
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
 
-            //Si presionamos M, el personaje se traslada a una posicion cercana al final.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-                megaman.body.setTransform(12400 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters, megaman.body.getAngle());
+            //El problema es que no es un for, se trata de un ataque sin limites definidos.
+            realizarRayCast = true;
+            multiplicadorRaycast = 0;
+            positionRayCast = megaman.getPositionFireAttack();
+            if (megaman.isRunningRight()){
+                fireToRight = true;
+            }else {
+                fireToRight = false;
             }
-            //Si presionamos Arriba, el personaje ya no muere.
+        }
+        //Si el jugador toca flecha abajo, el personaje slashea.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            //Solo puede slashear si no estaba saltando.
+            if (!megaman.isMegamanJumping()) {
+                if (megaman.isRunningRight()) {
+                    if (megaman.body.getLinearVelocity().x < 5)
+                        megaman.body.applyLinearImpulse(new Vector2(4f, 0), megaman.body.getWorldCenter(), true);
+                    megaman.setState(Megaman.State.SLASHING);
+                } else {
+                    if (megaman.body.getLinearVelocity().x > -5)
+                        megaman.body.applyLinearImpulse(new Vector2(-5, 0), megaman.body.getWorldCenter(), true);
+                    megaman.setState(Megaman.State.SLASHING);
+                }
+            }
+        }
+
+        //Si presionamos M, el personaje se traslada a una posicion cercana al final.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            megaman.body.setTransform(12400 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters, megaman.body.getAngle());
+        }
+        //Si presionamos Arriba, el personaje ya no muere.
           /*  if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 megaman.setState(Megaman.State.DYING);
             }*/
-            //Si presionamos Izquierda, el personaje se agacha.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        //Si presionamos Izquierda, el personaje se agacha.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            //Segundo bug que me encuentro, si me agacho mientras me deslizo, se bugea.
+            //Lo voy a solucionar sencillamente, no permitiendo agacharse si estoy deslizando.
+            if (megaman.getState() == Megaman.State.SLIDING){
+                //No hago nada, ya que se bugea.
+            }
+            else if(megaman.getState() == Megaman.State.HITTING){
+                //Al parecer se bugea otra vez, si el jugador se agacha cuando esta deslizando y disparando.
+                //Entonces, decimos que no se pueda agachar mientras esta disparando.
+                //El bug tendra que ver con los bodys en box2d? Probablemente.
+            }else {
                 //Si ya se estaba agachando, el personaje se para.
                 if (megaman.getState() == Megaman.State.CROUCHING) {
                     megaman.setState(Megaman.State.STANDING);
@@ -326,45 +345,57 @@ public abstract class MainGameScreen implements Screen {
                     }
                 }
             }
-            //Si presionamos derecha, el personaje pega.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
-                //Solo cambia el estado de megaman si puede tirar pelotas(estado-->animacion).
-                if (arrayListMegamanSize < 3) {
-                    megaman.setState(Megaman.State.HITTING);
+        }
+        //Si presionamos derecha, el personaje pega.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            //Solo creamos una pelota nueva si el size del arraylist actual es menor a 3.
+            //Solo cambia el estado de megaman si puede tirar pelotas(estado-->animacion).
+            if (arrayListMegamanSize < 3) {
+                megaman.setState(Megaman.State.HITTING);
 
-                    //Aca tenemos que crear la bola de fuego(fireball).
-                    Vector2 positionFireball = megaman.getPositionFireAttack();
+                //Aca tenemos que crear la bola de fuego(fireball).
+                Vector2 positionFireball = megaman.getPositionFireAttack();
 
-                    //Si el personaje mira a la derecha, dispara hacia alli,
-                    if (megaman.isRunningRight()) {
-                        arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, megaman));
-                    } else {
-                        //Si mira a la izquierda, dispara hacia el otro lado.
-                        arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
-                    }
+                //Si el personaje mira a la derecha, dispara hacia alli,
+                if (megaman.isRunningRight()) {
+                    arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, true, megaman));
+                } else {
+                    //Si mira a la izquierda, dispara hacia el otro lado.
+                    arrayListMegamanFireball.add(new Fireball(this, positionFireball.x, positionFireball.y, false, megaman));
                 }
             }
-            //Si presionamos Q, el personaje es lastimado.
-            if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-                megaman.setState(Megaman.State.GETTINGHIT);
-            }
-            //Si presionamos P, el personaje pierde vida.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-                dañarMegamanPersonaje(10);
-            }
-            //Si presionamos O, el personaje pierde mana.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-                hud.gastarMana(30);
-            }
-            //Si presionamos L, el personaje gana vida.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-                hud.curarPersonaje(30);
-            }
-            //Si presionamos K, el personaje gana mana.
-            if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-                hud.recuperarMana(30);
-            }
+        }
+        //Si presionamos Q, el personaje es lastimado.
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            megaman.setState(Megaman.State.GETTINGHIT);
+        }
+        //Si presionamos P, el personaje pierde vida.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            dañarMegamanPersonaje(10);
+        }
+        //Si presionamos O, el personaje pierde mana.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            hud.gastarMana(30);
+        }
+        //Si presionamos L, el personaje gana vida.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            hud.curarPersonaje(30);
+        }
+        //Si presionamos K, el personaje gana mana.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            hud.recuperarMana(30);
+        }
+
+    }
+
+    //Funcion que se encargara de manejar los inputs que hayan en el juego.
+    public void handleMegamanInput(float delta) {
+
+        if (!megaman.isDead()) {
+
+            handleMegamanInputAndroid();
+            handleMegamanInputDesktop();
+
         }
     }
 

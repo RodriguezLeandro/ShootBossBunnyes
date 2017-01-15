@@ -21,7 +21,7 @@ public class FlyingGround extends InteractiveTileObject {
         fixture.setUserData(this);
 
         //Establecemos el filtro de cada objeto que creamos.
-        setCategoryFilter(MegamanMainClass.FLYINGGROUND_BIT);
+        setCategoryFilter(MegamanMainClass.WALL_BIT);
     }
 
     @Override

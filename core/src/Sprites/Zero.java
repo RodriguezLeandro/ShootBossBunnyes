@@ -1,7 +1,5 @@
 package Sprites;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -228,15 +226,21 @@ public class Zero{
     public void makeZeroFight(){
 
         switch(fightingState){
+            //Case 0 es cuando peleamos con zero normalmente.
             case 0:
                 Random random = new Random();
-                Integer randomNumer = random.nextInt(10);
+                Integer randomNumber = random.nextInt(10);
+                //Utilizo otro numero random para que no salte con tanta frecuencia.
+                Integer randomNumber2 = random.nextInt(200);
 
-                if (randomNumer == 0){
+                if (randomNumber == 0){
                     setZeroHitting();
                 }
-                else if (randomNumer == 1){
+                else if (randomNumber == 1){
                     isZeroRunningToMegaman();
+                }else if(randomNumber2 == 0){
+                    setZeroJumping();
+                    zeroShouldJump = false;
                 }
 
                 if (zeroShouldJump){
@@ -245,6 +249,7 @@ public class Zero{
                 }
                 break;
 
+            //Case 1 es cuando zero nos mato.
             case 1:
                 Random random2 = new Random();
                 Integer randomNumer2 = random2.nextInt(10);
@@ -261,6 +266,7 @@ public class Zero{
 
                 break;
 
+            //Case 2 cuando es?.
             case 2:
 
                 break;
@@ -383,7 +389,7 @@ public class Zero{
 
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT |
-                MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                 MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
@@ -800,7 +806,7 @@ public class Zero{
         fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                 MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
         body.createFixture(fixtureDef);
@@ -863,7 +869,7 @@ public class Zero{
             fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                     MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
@@ -925,7 +931,7 @@ public class Zero{
             fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_BIT;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                     MegamanMainClass.MEGAMAN_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
             body.createFixture(fixtureDef);

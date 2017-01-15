@@ -134,6 +134,9 @@ public class Level1Screen extends MainGameScreen{
 
             //Si el personaje cruza el limite derecho de la pantalla antes de la batalla final, actualizamos la camara.
             if (megaman.body.getPosition().x > 12800 / MegamanMainClass.PixelsPerMeters) {
+                //Added on 15 / 01 / 2017, tambien cambiamos la posicion del personaje, para que no quede
+                //atrapado entre las paredes.
+                megaman.body.setTransform(new Vector2(13000 / MegamanMainClass.PixelsPerMeters,megaman.body.getPosition().y),megaman.body.getAngle());
                 mainCamera.position.x = 13200 / MegamanMainClass.PixelsPerMeters;
                 stageInFinalBattle = true;
             }

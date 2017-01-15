@@ -28,7 +28,7 @@ public class Megaman{
 
     public World world;
     public Body body;
-    public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING, SLASHING};
+    public enum State {STANDING, WALKING, CROUCHING, FALLING, GETTINGHIT, JUMPING, HITTING, DYING, SLASHING, SLIDING};
     public State currentState;
     public State previousState;
 
@@ -39,6 +39,7 @@ public class Megaman{
     private TextureRegion megamanStand;
     private TextureRegion textureRegion;
     private TextureRegion megamanSlashing;
+    private TextureRegion megamanSliding;
 
     private Animation megamanWalking;
     private Animation megamanCrouching;
@@ -96,6 +97,9 @@ public class Megaman{
 
         //Creamos el textureregion de megamanSlashing.
         megamanSlashing = new TextureRegion(sprite.getTexture(),354,68,32,64);
+
+        //Creamos el textureregion de megamanSliding.
+        megamanSliding = new TextureRegion(sprite.getTexture(),354,193,32,64);
 
         //Definimos la posicion inicial de nuestro personaje.
         //En realidad, en update esto deberia de sobreescribirse siempre, no deberia ser necesario.
@@ -160,11 +164,13 @@ public class Megaman{
         }
         megamanDying = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
+
     }
 
     public void update(float delta){
 
         if (!megamanIsDead) {
+
             //Aqui actualizamos la posicion de nuestro personaje principal, para que se ...
             //corresponda con la posicion del fixture(y body) de nuestro personaje.
             sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2 + 7 / MegamanMainClass.PixelsPerMeters);
@@ -188,6 +194,9 @@ public class Megaman{
 
     }
 
+    public void setLinearDamping(float linearDamping){
+        body.setLinearDamping(linearDamping);
+    }
     public void redefineMegamanCrouching(boolean rightOrientation) {
 
         if (rightOrientation) {
@@ -223,7 +232,7 @@ public class Megaman{
             fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
+                    | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
             body.createFixture(fixtureDef);
 
@@ -251,7 +260,7 @@ public class Megaman{
             fixtureDef.isSensor = true;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                     MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
                     | MegamanMainClass.ENEMY_BIT;
 
@@ -289,7 +298,7 @@ public class Megaman{
             fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                     MegamanMainClass.ZERO_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.ENEMY_BIT;
 
             body.createFixture(fixtureDef);
@@ -318,7 +327,7 @@ public class Megaman{
             fixtureDef.isSensor = true;
 
             fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                    | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                    | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                     MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
                     | MegamanMainClass.ENEMY_BIT;
 
@@ -359,7 +368,7 @@ public class Megaman{
         fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_BIT;
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
+                | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
         body.createFixture(fixtureDef);
 
@@ -385,7 +394,7 @@ public class Megaman{
         fixtureDef.isSensor = true;
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                 MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
                 | MegamanMainClass.ENEMY_BIT;
 
@@ -428,6 +437,29 @@ public class Megaman{
                 //Si esta callendo, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
                 break;
+            case SLIDING:
+                //Si estaba agachado, hay que cambiar la forma del cuerpo.
+                if (previousState == State.CROUCHING){
+                    redefineMegaman();
+                }
+                if (previousState != State.SLIDING){
+                    stateTimer = 0;
+                    //El problema con cargar la textura asi, es que siempre se carga mirando
+                    //para la derecha, ahora mismo lo solucionamos.
+                    //Ocurre exactamente lo mismo cuando utilizamos la textura de megamanStand.
+                    //Solo que no nos damos cuenta, ya que siempre esta en la misma posicion.
+                    //Con slashing pasa lo mismo?
+                    //Si, pasa lo mismo, solo que controlo la posicion en el input.
+                    textureRegion = megamanSliding;
+
+                    if ((runningRight && textureRegion.isFlipX())||(!runningRight && !textureRegion.isFlipX())){
+                        textureRegion.flip(true,false);
+                    }
+                }
+
+                break;
+            //Nota, siempre y cuando no modifique manualmente el sentido del personaje(megaman),
+            //entonces no me tengo que preocupar de si esta viendo hacia la derecha o hacia la izquierda.
             case SLASHING:
                 //Si estaba agachado, hay que cambiar la forma del cuerpo.
                 if (previousState == State.CROUCHING){
@@ -448,6 +480,7 @@ public class Megaman{
             case STANDING:
                 //Si esta en standing, mostramos la animacion de Standing.
                 textureRegion = megamanStand;
+
                 break;
             case GETTINGHIT:
                 if (previousState == State.CROUCHING){
@@ -511,6 +544,7 @@ public class Megaman{
                 break;
         }
 
+
         //Nota: podriamos combinar esta seccion de codigo con la de abajo, la de cambiar
         //la orientacion del spritesheet, pero para no complicar visualmente el codigo, no lo hacemos.
         //Si cambia la orientacion del cuerpo.
@@ -524,14 +558,21 @@ public class Megaman{
         //Verificamos para que lado esta mirando el personaje y si nuestra imagen ve para el mismo lado...
         //De no ser asi, damos vuelta las imagenes de nuestro animacion para que se vea en el lado correcto.
         if ((body.getLinearVelocity().x < 0 || !runningRight) && (!textureRegion.isFlipX())){
-            textureRegion.flip(true,false);
-            //Acordarse que si cambiamos la orientacion, hay que cambiar el booleano tambien.
-            runningRight = false;
+            //Tenemos que agregar este condicional debido a que no queremos que cuando megaman este deslizandose,
+            //pueda cambiar de orientacion.
+            //Cuando realizo manualmente la posicion del sprite es mas dificil.
+            if (currentState != State.SLIDING) {
+                textureRegion.flip(true, false);
+                //Acordarse que si cambiamos la orientacion, hay que cambiar el booleano tambien.
+                runningRight = false;
+            }
         }
         //Lo mismo que arriba.
         else if((body.getLinearVelocity().x > 0 || runningRight) &&(textureRegion.isFlipX())){
-            textureRegion.flip(true,false);
-            runningRight = true;
+            if (currentState != State.SLIDING) {
+                textureRegion.flip(true, false);
+                runningRight = true;
+            }
         }
 
         //Si no hemos cambiado de estado, entonces le agregamos tiempo a la animacion...
@@ -545,6 +586,32 @@ public class Megaman{
 
     public void draw(SpriteBatch spriteBatch){
         sprite.draw(spriteBatch);
+    }
+
+    public void setRunningRight(boolean bool){
+        //Tengo que preguntar si bool es verdadero o falso, y si tengo que cambiar la posicion
+        //del sprite o no.
+        if (bool) {
+            if (runningRight) {
+                //Si megaman tiene que mirar a la derecha y esta mirando a la derecha, no hacemos nada.
+                //No hacemos nada X2.
+            } else {
+                //Si megaman tiene que mirar a la derecha y esta mirando a la izquierda, cumplimos nuestro deber.
+                runningRight = true;
+                textureRegion.flip(true, false);
+            }
+        }
+        else{
+            if (runningRight){
+                //De lo contrario, si el personaje tiene que mirar a la izquierda y esta mirando a la derecha...
+                runningRight = false;
+                textureRegion.flip(true, false);
+            }
+            else{
+                //No hacemos nada, recordar luego borrar estos 2 elses innecesarios.
+            }
+        }
+
     }
 
     public boolean isRunningRight(){
@@ -652,6 +719,9 @@ public class Megaman{
         else if (currentState == State.SLASHING){
             return State.SLASHING;
         }
+        else if (currentState == State.SLIDING){
+            return State.SLIDING;
+        }
         //Si el jugador estaba saltando, aunque luego caiga devolvemos el State.Jumping.
         else if ((body.getLinearVelocity().y > 0 && shouldBeJumping) || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)){
             return State.JUMPING;
@@ -705,7 +775,7 @@ public class Megaman{
 
         //Agregamos el filtro de mascara(a quien puede colisionar nuestro personaje).
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
+                | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
         //Creamos el fixture de nuestro body(con el fixturedef).
         body.createFixture(fixtureDef);
@@ -751,7 +821,7 @@ public class Megaman{
         fixtureDef.filter.categoryBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT
-                | MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                | MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                 MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT
                 | MegamanMainClass.ENEMY_BIT;
 

@@ -26,7 +26,7 @@ public class MegamanMainClass extends Game {
 	public final static short DEFAULT_BIT = 1;
 	public final static short FLOOR_BIT = 2;
 	public final static short MEGAMAN_BIT = 4;
-	public final static short FLYINGGROUND_BIT = 8;
+	public final static short WALL_BIT = 8;
 	public final static short COIN_BIT = 16;
 	public final static short DESTROYED_BIT = 32;
 	public final static short ZERO_BIT = 64;

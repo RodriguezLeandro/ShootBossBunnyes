@@ -211,7 +211,7 @@ public class Boss1 {
         fixtureDef.filter.categoryBits = MegamanMainClass.BOSS_BIT;
 
         fixtureDef.filter.maskBits = MegamanMainClass.DEFAULT_BIT | MegamanMainClass.COIN_BIT |
-                MegamanMainClass.FLYINGGROUND_BIT | MegamanMainClass.FLOOR_BIT |
+                MegamanMainClass.WALL_BIT | MegamanMainClass.FLOOR_BIT |
                 MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.LAVA_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
 
         body.createFixture(fixtureDef);

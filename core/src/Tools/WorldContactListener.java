@@ -109,12 +109,32 @@ public class WorldContactListener implements ContactListener {
                 }
                 break;
 
-            case MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT| MegamanMainClass.ENEMY_BIT:
+            case MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT | MegamanMainClass.ENEMY_BIT:
 
                 fixtureBody = fixtureA.getUserData().getClass() == Fireball.class ? fixtureA: fixtureB;
                 fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
                 ((Enemy) fixtureObject.getUserData()).onBodyHit();
                 ((Fireball)fixtureBody.getUserData()).destroy();
+
+                break;
+
+            case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.WALL_BIT:
+                fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+                //Ponemos el damping en 10 cuando megaman esta deslizando(creo que damping seria como rozamiento).
+                ((Megaman)fixtureBody.getUserData()).setLinearDamping(10);
+                ((Megaman)fixtureBody.getUserData()).setState(Megaman.State.SLIDING);
+
+                //Ahora tenemos que obligar a megaman a deslizar contra la pared, mirando hacia la pared.
+                //No podemos permitir lo contrario.
+                //Si el cuerpo de megaman esta a la izquierda del cuerpo del objeto, decimos que megaman mire a la derecha.
+                if (((Megaman)fixtureBody.getUserData()).body.getPosition().x < ((InteractiveTileObject)fixtureObject.getUserData()).body.getPosition().x){
+                    ((Megaman)fixtureBody.getUserData()).setRunningRight(true);
+                }else {
+                    //De lo contrario, que mire a la izquierda.
+                    ((Megaman)fixtureBody.getUserData()).setRunningRight(false);
+                }
+
 
                 break;
 
@@ -148,6 +168,15 @@ public class WorldContactListener implements ContactListener {
                 if (fixtureObject.getUserData() instanceof  InteractiveTileObject){
                     ((Lava) fixtureObject.getUserData()).onBodyStopHit();
                 }
+                break;
+
+            case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.WALL_BIT:
+                fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+                //Cuando megaman termina de deslizar, volvemos a poner el damping en 0.
+                ((Megaman)fixtureBody.getUserData()).setLinearDamping(0);
+                ((Megaman)fixtureBody.getUserData()).setState(Megaman.State.STANDING);
+
                 break;
 
             default:
