@@ -285,6 +285,10 @@ public class Zero{
         }
     }
 
+    public ArrayList<Fireball> getArrayListZeroFireball(){
+        return arrayListZeroFireball;
+    }
+
     public void setZeroJumping() {
         if (!isZeroJumping())
             body.applyLinearImpulse(new Vector2(0, 10f), body.getWorldCenter(), true);

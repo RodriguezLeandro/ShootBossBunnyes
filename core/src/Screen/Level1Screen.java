@@ -12,6 +12,7 @@ import com.mygdx.megamangame.MegamanMainClass;
 import java.util.ArrayList;
 
 import Sprites.Bunny;
+import Sprites.Fireball;
 import Sprites.Megaman;
 import Sprites.Zero;
 import Tools.WorldCreator;
@@ -224,6 +225,7 @@ public class Level1Screen extends MainGameScreen{
         game.batch.end();
 
         //Dibujamos el debuger para los objetos que colisionan.
+        //Lo dejo comentado, recordar que es importante activarlo al programar.
      //   box2DDebugRenderer.render(world, mainCamera.combined);
 
         //Establecemos la projeccion de la matriz de la camara hud.
@@ -245,6 +247,45 @@ public class Level1Screen extends MainGameScreen{
             dispose();
         }
 
+    }
+
+    public void setGravityModifyOn(){
+
+        //Hacemos que a megaman no le afecte la gravedad.
+        megaman.body.setGravityScale(0);
+
+        //Hacemos que a megaman vuelva a afectarle la gravedad.
+        //El problema es que ahora tampoco le afecta la gravedad en el eje y.
+        //Lo vamos a solucionar aplicandole una fuerza a megaman hacia abajo.
+        megaman.body.applyForce(new Vector2(0,-10f),megaman.body.getWorldCenter(),true);
+
+        //Hacemos que a los conejos los afecte la gravedad.
+        for(Bunny bunny : arrayListBunny){
+            bunny.body.setGravityScale(1);
+        }
+
+        //Hacemos que a los fireballs de zero les afecte la gravedad.
+        //A zero no hace falta modificarlo, porque la gravedad ya le afecta.
+        for(Fireball fireball : zero.getArrayListZeroFireball()){
+            fireball.body.setGravityScale(1);
+        }
+
+    }
+
+    public void setGravityModifyOff(){
+
+        megaman.body.setGravityScale(1);
+
+        //Hacemos que a los conejos no los afecte la gravedad.
+        for(Bunny bunny : arrayListBunny){
+            bunny.body.setGravityScale(0);
+        }
+
+        //Hacemos que a los fireballs de zero no les afecte la gravedad.
+        //A zero no hace falta modificarlo, porque la gravedad ya le afecta.
+        for(Fireball fireball : zero.getArrayListZeroFireball()){
+            fireball.body.setGravityScale(0);
+        }
     }
 
     @Override

@@ -542,6 +542,9 @@ public class Hud {
     public void setUpButtonPressed(boolean bool){
         upButtonPressed = bool;
     }
+    public float getMana(){
+        return manaBarMegaman.getStyle().knob.getMinWidth();
+    }
 
     public boolean dañarMegamanPersonaje(float health){
 

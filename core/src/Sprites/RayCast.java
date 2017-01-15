@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import Screen.MainGameScreen;
@@ -17,22 +19,38 @@ import Screen.MainGameScreen;
 
 public class RayCast extends MisileObject{
 
-    public RayCast(MainGameScreen mainGameScreen, float x, float y) {
+    public RayCast(MainGameScreen mainGameScreen, float x, float y, boolean makeBody) {
         super(mainGameScreen, x, y);
 
         sprite = new Sprite(new TextureRegion(new Texture("fireball.png")));
 
         sprite.setSize(128 / MegamanMainClass.PixelsPerMeters,128 / MegamanMainClass.PixelsPerMeters);
 
-        defineRaycast();
-
+        //Solo creo cuerpo si eso es lo que me piden.
+        if (makeBody) {
+            defineRaycast();
+        }
     }
 
     public void update(float delta){
 
-        body.setActive(true);
+        if (body != null) {
+            //Si tengo un body creado, realizo todo "normalmente".
+            //En realidad no, el chiste es ese, si cree un body es porque tengo que cambiar el mundo.
+            //Se supone que el raycast este es de gravedad, por lo que tengo que cambiar la gravedad del mundo aca.
+            body.setActive(true);
+            //Es muy interesante la coincidencia? de que hay que ponerle un vector a la gravedad,
+            //y que mejor vector que el posicion del cuerpo que creamos. Es perfecto.
+            world.setGravity(new Vector2(10f,-30f));
+            mainGameScreen.setGravityModifyOn();
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+        }else {
+            sprite.setPosition(vector2Position.x - sprite.getWidth() / 2,vector2Position.y - sprite.getHeight() / 2);
+        }
+    }
 
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,body.getPosition().y - sprite.getHeight() / 2);
+    public Vector2 getPosition(){
+        return vector2Position;
     }
 
     public void defineRaycast(){
@@ -53,13 +71,20 @@ public class RayCast extends MisileObject{
 
         FixtureDef fixtureDef = new FixtureDef();
 
-        CircleShape circleShape = new CircleShape();
+        PolygonShape polygonShape = new PolygonShape();
 
-        circleShape.setRadius(6 / MegamanMainClass.PixelsPerMeters);
+        Vector2[] vertices = new Vector2[4];
 
-        circleShape.setPosition(new Vector2(0, 0));
+        vertices[0] = new Vector2(0 / MegamanMainClass.PixelsPerMeters,-43f / MegamanMainClass.PixelsPerMeters);
+        vertices[1] = new Vector2(0 / MegamanMainClass.PixelsPerMeters,43f / MegamanMainClass.PixelsPerMeters);
+        vertices[2] = new Vector2(-43f / MegamanMainClass.PixelsPerMeters ,43f / MegamanMainClass.PixelsPerMeters);
+        vertices[3] = new Vector2(-43f / MegamanMainClass.PixelsPerMeters,-43f / MegamanMainClass.PixelsPerMeters);
 
-        fixtureDef.shape = circleShape;
+        polygonShape.set(vertices);
+
+        vertices = null;
+
+        fixtureDef.shape = polygonShape;
 
         //Por el momento lo dejamos como enemy bit, luego veremos.
         fixtureDef.filter.categoryBits = MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT;
@@ -71,6 +96,13 @@ public class RayCast extends MisileObject{
 
     public Sprite getSprite(){
         return sprite;
+    }
+
+    public void dispose(){
+        //Aca tenemos que poner la gravedad en normal tambien.
+        world.setGravity(new Vector2(0,-10f));
+        mainGameScreen.setGravityModifyOff();
+        world.destroyBody(body);
     }
 
 }

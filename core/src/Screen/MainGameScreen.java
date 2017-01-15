@@ -75,6 +75,7 @@ public abstract class MainGameScreen implements Screen {
 
     protected boolean realizarRayCast;
     protected boolean vaciarRayCast;
+    protected boolean vaciarSpritesRayCast;
     protected boolean fireToRight;
 
     //Para ver el daño que hay que hacerle al personaje.
@@ -171,6 +172,8 @@ public abstract class MainGameScreen implements Screen {
 
         vaciarRayCast = false;
 
+        vaciarSpritesRayCast = false;
+
     }
 
     public TextureAtlas getTextureAtlasTools() {
@@ -235,7 +238,16 @@ public abstract class MainGameScreen implements Screen {
         if (hud.isDownButtonPressed()) {
             //Solo si recien tocamos la pantalla.
             hud.setDownButtonPressed(false);
-
+            //Si el personaje estaba deslizandose(SLIDING) en una pared, puede saltar hacia afuera.
+            if (megaman.getState() == Megaman.State.SLIDING){
+                if (megaman.isRunningRight()) {
+                    //Que divertido, el impulso es hacia el eje x contrario.
+                    //Si desliza a la derecha, el impulso es a la izquierda, y viceversa.
+                    megaman.body.applyLinearImpulse(new Vector2(-3f,6f),megaman.body.getWorldCenter(),true);
+                }else {
+                    megaman.body.applyLinearImpulse(new Vector2(3f,6f),megaman.body.getWorldCenter(),true);
+                }
+            }
             //Si estaba haciendo slash el personaje, puede saltar mas alto.
             if (megaman.getState() == Megaman.State.SLASHING) {
                 if (!megaman.isMegamanJumping())
@@ -245,6 +257,31 @@ public abstract class MainGameScreen implements Screen {
                 if (!megaman.isMegamanJumping())
                     megaman.body.applyLinearImpulse(new Vector2(0, 6f), megaman.body.getWorldCenter(), true);
             }
+        }
+        //Si toca triangulo hace raycast.
+        if (hud.isUpButtonPressed()){
+            hud.setUpButtonPressed(false);
+
+            //Solo puedo realizar el raycast si tengo el mana suficiente.
+            if (hud.getMana() > 50) {
+                //Solo puedo realizar un raycast si ya termino el anterior.
+                if (arrayListMegamanRaycast.isEmpty()) {
+                    //Si estamos realizando el ataque, perdemos mucho mana, porque es muy fuerte este ataque.
+                    hud.gastarMana(100);
+                    //El problema es que no es un for, se trata de un ataque sin limites definidos.
+                    //Ya no se trata de un problema jeje.
+                    realizarRayCast = true;
+                    multiplicadorRaycast = 0;
+                    positionRayCast = megaman.getPositionFireAttack();
+                    positionInitialRaycast = new Vector2(megaman.body.getPosition().x, megaman.body.getPosition().y);
+                    if (megaman.isRunningRight()) {
+                        fireToRight = true;
+                    } else {
+                        fireToRight = false;
+                    }
+                }
+            }
+
         }
     }
 
@@ -286,15 +323,24 @@ public abstract class MainGameScreen implements Screen {
         //Si el jugador toca flecha arriba, el personaje tira RAY!!!
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
 
-            //El problema es que no es un for, se trata de un ataque sin limites definidos.
-            realizarRayCast = true;
-            multiplicadorRaycast = 0;
-            positionRayCast = megaman.getPositionFireAttack();
-            positionInitialRaycast = new Vector2(megaman.body.getPosition().x,megaman.body.getPosition().y);
-            if (megaman.isRunningRight()){
-                fireToRight = true;
-            }else {
-                fireToRight = false;
+            //Solo puedo realizar el raycast si tengo el mana suficiente.
+            if (hud.getMana() > 50) {
+                //Solo puedo realizar un raycast si ya termino el anterior.
+                if (arrayListMegamanRaycast.isEmpty()) {
+                    //Si estamos realizando el ataque, perdemos mucho mana, porque es muy fuerte este ataque.
+                    hud.gastarMana(100);
+                    //El problema es que no es un for, se trata de un ataque sin limites definidos.
+                    //Ya no se trata de un problema jeje.
+                    realizarRayCast = true;
+                    multiplicadorRaycast = 0;
+                    positionRayCast = megaman.getPositionFireAttack();
+                    positionInitialRaycast = new Vector2(megaman.body.getPosition().x, megaman.body.getPosition().y);
+                    if (megaman.isRunningRight()) {
+                        fireToRight = true;
+                    } else {
+                        fireToRight = false;
+                    }
+                }
             }
         }
         //Si el jugador toca flecha abajo, el personaje slashea.
@@ -489,18 +535,41 @@ public abstract class MainGameScreen implements Screen {
 
         if (realizarRayCast){
 
+            //Notese que es muy importante que solo creo cuerpo para el primer body, de esa manera.
+            //Puedo utilizar infinidad de sprites y conseguir un rendimiento excepcional sin crear tantos cuerpos inservibles.
             if (fireToRight) {
-                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x  + 40 / MegamanMainClass.PixelsPerMeters + multiplicadorRaycast * 12 / MegamanMainClass.PixelsPerMeters, positionRayCast.y));
-                multiplicadorRaycast++;
-                Integer lastraycast = arrayListMegamanRaycast.size();
-                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth() ,arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight()+ multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters );
+                //Si es el primer sprite que creo, le pongo body, de lo contrario no.
+                if (arrayListMegamanRaycast.isEmpty()){
+                    //Nota, por ahora dejo la distancia entre los sprites en 6, queda muy lindo visualmente.
+                    //Pero tengo que ver si funciona bien en celulares, de ser asi, lo dejo en 6, de lo contrario, lo vuelvo a subir a 12.
+                    //Finalmente lo subo a 12.
+                    arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x + 40 / MegamanMainClass.PixelsPerMeters + multiplicadorRaycast * 16 / MegamanMainClass.PixelsPerMeters, positionRayCast.y,true));
+                    multiplicadorRaycast++;
+                    Integer lastraycast = arrayListMegamanRaycast.size();
+                    arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getWidth(), arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() + multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters);
+                }
+                else {
+                    //Cada vez que añadimos un sprite, tenemos que agrandar el cuerpo de nuestro voidAttack.
+                    //Tenemos que hacerlo, pero lo dejo pendiente porque tengo que estudiar quimica.
+                    arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x + 40 / MegamanMainClass.PixelsPerMeters + multiplicadorRaycast * 16 / MegamanMainClass.PixelsPerMeters, positionRayCast.y,false));
+                    multiplicadorRaycast++;
+                    Integer lastraycast = arrayListMegamanRaycast.size();
+                    arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getWidth(), arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() + multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters);
+                }
             }else {
-                //Dejo anotado masomenos que hace o que hago con cada valor.
-                //Multiplico primero la posicion de cada sprite, siendo que si achico mas la posicion entre cada sprite, se ve mucho mejor pero pierdo rendimiento.
-                arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x - 100 / MegamanMainClass.PixelsPerMeters - multiplicadorRaycast * 12 / MegamanMainClass.PixelsPerMeters,positionRayCast.y));
-                multiplicadorRaycast++;
-                Integer lastraycast = arrayListMegamanRaycast.size();
-                arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast-1).getSprite().getWidth(),arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() + multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters);
+                if (arrayListMegamanRaycast.isEmpty()){
+                    arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x - 100 / MegamanMainClass.PixelsPerMeters - multiplicadorRaycast * 16 / MegamanMainClass.PixelsPerMeters, positionRayCast.y, true));
+                    multiplicadorRaycast++;
+                    Integer lastraycast = arrayListMegamanRaycast.size();
+                    arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getWidth(), arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() + multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters);
+                }else {
+                    //Dejo anotado masomenos que hace o que hago con cada valor.
+                    //Multiplico primero la posicion de cada sprite, siendo que si achico mas la posicion entre cada sprite, se ve mucho mejor pero pierdo rendimiento.
+                    arrayListMegamanRaycast.add(new RayCast(this, positionRayCast.x - 100 / MegamanMainClass.PixelsPerMeters - multiplicadorRaycast * 16 / MegamanMainClass.PixelsPerMeters, positionRayCast.y, false));
+                    multiplicadorRaycast++;
+                    Integer lastraycast = arrayListMegamanRaycast.size();
+                    arrayListMegamanRaycast.get(lastraycast - 1).getSprite().setSize(arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getWidth(), arrayListMegamanRaycast.get(lastraycast - 1).getSprite().getHeight() + multiplicadorRaycast * 5 / MegamanMainClass.PixelsPerMeters);
+                }
             }
 
             Integer lastraycast = arrayListMegamanRaycast.size();
@@ -509,7 +578,7 @@ public abstract class MainGameScreen implements Screen {
             //se empiece a borrar.
             //El algoritmo funciona asi: si el ultimo sprite que agregamos, super por 500/600 en el eje x al primer sprite agregado,
             //entonces comenzamos a eliminar los sprites uno por uno.
-            if ((arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x > positionInitialRaycast.x + 800 / MegamanMainClass.PixelsPerMeters)||(arrayListMegamanRaycast.get(lastraycast - 1).body.getPosition().x < positionInitialRaycast.x - 800 / MegamanMainClass.PixelsPerMeters)){
+            if ((arrayListMegamanRaycast.get(lastraycast - 1).getPosition().x > positionInitialRaycast.x + 800 / MegamanMainClass.PixelsPerMeters)||(arrayListMegamanRaycast.get(lastraycast - 1).getPosition().x < positionInitialRaycast.x - 800 / MegamanMainClass.PixelsPerMeters)){
                 realizarRayCast = false;
                 vaciarRayCast = true;
             }
@@ -520,11 +589,26 @@ public abstract class MainGameScreen implements Screen {
             //Si el arraylist de raycast quedo vacio, salimos de aca, de lo contrario,
             //Frame a frame, iremos borrando los raycasts.
             if (multiplicadorRaycast == 0){
+                //Comento la logica ya que la tengo fresca.
+                //con el booleano que utilizo lineas mas abajo, entro una sola vez a disposear al unico body de la tanda de sprites.
+                //Luego, activo el booleano para ya solo ir borrando los sprites.
+                //Multiplicadorraycast es como si fuera un contador i en un for, ej for(i = 0; i < ...).
+                //Cuando finalizo de hacer todo, reinicio los valores por defecto y funciona!.
                 vaciarRayCast = false;
+                vaciarSpritesRayCast = false;
             }else {
-                arrayListMegamanRaycast.get(0).dispose();
-                arrayListMegamanRaycast.remove(0);
-                multiplicadorRaycast--;
+                //Utilizo un booleano para solo entrar una vez a eliminar el unico cuerpo que hay.
+                if (vaciarSpritesRayCast){
+                    arrayListMegamanRaycast.remove(0);
+                    multiplicadorRaycast--;
+                }else{
+                    arrayListMegamanRaycast.get(0).dispose();
+                    arrayListMegamanRaycast.remove(0);
+                    multiplicadorRaycast --;
+                    vaciarSpritesRayCast = true;
+                }
+                //Como solo existe un body, solo haremos el dispose 1 sola vez, y luego limpiamos los sprites(prefiero limpiar los sprites de a 1, queda mas lindo).
+
             }
         }
 
@@ -534,6 +618,13 @@ public abstract class MainGameScreen implements Screen {
         }
 
     }
+
+    //En esta funcion, tenemos que modificar los cuerpos del juego para que sean afectados
+    //por la gravedad, dependiendo de si se utilizo el ataque especial de gravedad o no.
+    public abstract void setGravityModifyOn();
+
+    //En esta funcion, tenemos que volver todo lo modificado anteriormente a la normalidad.
+    public abstract void setGravityModifyOff();
 
     public void draw(SpriteBatch spriteBatch){
         //Le decimos al Sprite que se dibuje segun su correspondiente region.

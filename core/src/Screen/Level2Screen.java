@@ -97,6 +97,16 @@ public class Level2Screen extends MainGameScreen {
     }
 
     @Override
+    public void setGravityModifyOn() {
+
+    }
+
+    @Override
+    public void setGravityModifyOff() {
+
+    }
+
+    @Override
     public void show() {
 
     }
