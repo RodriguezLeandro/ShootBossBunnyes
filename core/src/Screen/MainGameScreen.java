@@ -544,13 +544,17 @@ public abstract class MainGameScreen implements Screen {
         }
     }
 
-    public void dañarPersonajeProgresivamente(float health) {
-        setHealthDamage(health);
-        dañarPersonajeProgresivamente = true;
-    }
-
-    public void dejarDañoPersonajeProgresivo(boolean bool) {
-        dañarPersonajeProgresivamente = false;
+    public void dañarPersonajeProgresivamente(float health, boolean bool) {
+        //Si hay que dañarlo al personaje, o sea si bool = true.
+        if (bool) {
+            //Lo dañamos, ingresando el daño solicitado.
+            setHealthDamage(health);
+            dañarPersonajeProgresivamente = true;
+        }
+        //De lo contrario, si hay que dejar de dañarlo, lo dejamos de dañar.
+        else {
+            dañarPersonajeProgresivamente = false;
+        }
     }
 
     @Override

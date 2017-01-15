@@ -429,6 +429,10 @@ public class Megaman{
                 textureRegion = megamanStand;
                 break;
             case SLASHING:
+                //Si estaba agachado, hay que cambiar la forma del cuerpo.
+                if (previousState == State.CROUCHING){
+                    redefineMegaman();
+                }
                 if (previousState != State.SLASHING){
                     stateTimer = 0;
                 }

@@ -28,11 +28,12 @@ public class Lava extends InteractiveTileObject {
 
     @Override
     public void onBodyHit() {
-        mainGameScreen.dañarPersonajeProgresivamente(1);
+        mainGameScreen.dañarPersonajeProgresivamente(1,true);
     }
 
     public void onBodyStopHit(){
-        mainGameScreen.dejarDañoPersonajeProgresivo(false);
+        //Notese que el 1 que mandamos es inservible, podriamos no mandar nada.
+        mainGameScreen.dañarPersonajeProgresivamente(1,false);
     }
 
 }

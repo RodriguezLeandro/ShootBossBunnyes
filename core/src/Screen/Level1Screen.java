@@ -70,7 +70,6 @@ public class Level1Screen extends MainGameScreen{
 
         //Creamos a los bunnys.
         arrayListBunny = worldCreator.getBunnys();
-
     }
 
     public void update(float delta){
@@ -102,8 +101,6 @@ public class Level1Screen extends MainGameScreen{
                 }
             }
         }
-
-
 
         //Si estamos en la batalla final los movimientos de la camara son distintos.
         //Las restricciones son distintas tambien.

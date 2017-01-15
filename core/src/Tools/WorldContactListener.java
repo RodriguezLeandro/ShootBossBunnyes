@@ -135,6 +135,16 @@ public class WorldContactListener implements ContactListener {
         switch(categoryDefinition){
 
             case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.LAVA_BIT :
+
+                //El bug ocurria porque faltaban estas dos lineas de abajo.
+                //No preguntabamos quien era la lava y quien era megaman.
+                //Siempre suponiamos que el objeto era la lava, sin estar seguros de ello.
+                //Por eso, nunca terminaba el contacto entre la lava y el personaje.
+                //Este es el primer bug que tuvo el juego, interesante resolucion.
+
+                fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
+                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+
                 if (fixtureObject.getUserData() instanceof  InteractiveTileObject){
                     ((Lava) fixtureObject.getUserData()).onBodyStopHit();
                 }
