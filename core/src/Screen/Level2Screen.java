@@ -107,6 +107,11 @@ public class Level2Screen extends MainGameScreen {
     }
 
     @Override
+    public void setAddScore(Integer score) {
+
+    }
+
+    @Override
     public void show() {
 
     }

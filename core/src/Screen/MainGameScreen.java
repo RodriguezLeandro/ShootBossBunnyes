@@ -626,6 +626,9 @@ public abstract class MainGameScreen implements Screen {
     //En esta funcion, tenemos que volver todo lo modificado anteriormente a la normalidad.
     public abstract void setGravityModifyOff();
 
+    //Esta funcion es para añadir puntaje cuando eliminamos un enemigo.
+    public abstract void setAddScore(Integer score);
+
     public void draw(SpriteBatch spriteBatch){
         //Le decimos al Sprite que se dibuje segun su correspondiente region.
         megaman.draw(game.batch);

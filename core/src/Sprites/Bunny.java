@@ -114,6 +114,7 @@ public class Bunny extends Enemy {
 
     public void dispose(){
         world.destroyBody(body);
+        mainGameScreen.setAddScore(100);
     }
 
 }

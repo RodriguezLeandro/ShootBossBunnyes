@@ -243,10 +243,14 @@ public class Level1Screen extends MainGameScreen{
         if (zero.isZeroDeadBy3Seconds()){
             MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class).stop();
             levelSelectScreen.setLastLevelPlayed(1);
-            game.setScreen(new Level1WinScreen(game,levelSelectScreen));
+            game.setScreen(new Level1WinScreen(game,hud.getScore(),levelSelectScreen));
             dispose();
         }
 
+    }
+
+    public void setAddScore(Integer score){
+        hud.addScore(score);
     }
 
     public void setGravityModifyOn(){

@@ -34,13 +34,18 @@ public class WinScreen implements Screen {
     protected Label youWinLabel;
     protected Label goToLevelSelect;
     protected Label goToMainMenu;
+    protected Label scoreLabel;
+
+    protected Integer scoreDataInteger;
 
 
-    public WinScreen(final MegamanMainClass game, final LevelSelect levelSelect){
+    public WinScreen(final MegamanMainClass game,Integer scoreDataInteger, final LevelSelect levelSelect){
 
         this.game = game;
 
         this.levelSelect = levelSelect;
+
+        this.scoreDataInteger = scoreDataInteger;
 
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
@@ -61,10 +66,12 @@ public class WinScreen implements Screen {
         youWinLabel = new Label("YOU WIN !!",labelStyle);
         goToLevelSelect = new Label("SELECT LEVEL",labelStyle);
         goToMainMenu = new Label("MAIN MENU",labelStyle);
+        scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
 
         youWinLabel.setFontScale(1.5f);
         goToLevelSelect.setFontScale(1.5f);
         goToMainMenu.setFontScale(1.5f);
+        scoreLabel.setFontScale(1.5f);
 
 
         goToLevelSelect.addListener(new InputListener(){
@@ -91,6 +98,10 @@ public class WinScreen implements Screen {
 
         table.row().padTop(80);
         table.add(youWinLabel).expandX();
+
+        table.row().padTop(80);
+
+        table.add(scoreLabel);
 
         table.row().padTop(120);
 

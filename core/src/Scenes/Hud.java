@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import Tools.InteractiveTileObject;
+
 /**
  * Created by Leandro on 04/01/2017.
  */
@@ -568,6 +570,11 @@ public class Hud {
             //Tenemos que avisar que, lamentablemente, el personaje murio.
             return true;
         }
+    }
+
+    public void addScore(Integer score){
+        this.score = this.score + score;
+        scoreNumberLabel.setText("000"+this.score);
     }
 
     public boolean dañarZeroPersonaje(){
