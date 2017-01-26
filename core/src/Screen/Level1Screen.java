@@ -236,7 +236,6 @@ public class Level1Screen extends MainGameScreen{
         //cuando termine de dibujar todo, preguntamos si el juego termino.
         if (gameOver()) {
             levelSelectScreen.setLastLevelPlayed(1);
-            levelSelectScreen.setWonLevel(1);
             game.setScreen(new GameOverScreen(game, hud.getScore(),levelSelectScreen));
             dispose();
         }
@@ -244,6 +243,7 @@ public class Level1Screen extends MainGameScreen{
         if (zero.isZeroDeadBy3Seconds()){
             MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class).stop();
             levelSelectScreen.setLastLevelPlayed(1);
+            levelSelectScreen.setWonLevel(1);
             game.setScreen(new Level1WinScreen(game,hud.getScore(),levelSelectScreen));
             dispose();
         }

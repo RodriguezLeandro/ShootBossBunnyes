@@ -241,9 +241,8 @@ public class Boss1 {
         }
 
         //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
-        if ((body.getPosition().y + distance < 150 / MegamanMainClass.PixelsPerMeters)||(body.getPosition().y + distance > 600 / MegamanMainClass.PixelsPerMeters)){
+        if ((body.getPosition().y + distance < 180 / MegamanMainClass.PixelsPerMeters)||(body.getPosition().y + distance > 600 / MegamanMainClass.PixelsPerMeters)){
             //No hacemos nada,
-
         }else{
             //Si se encuentra dentro del mapa, teletransportamos.
             body.setTransform(new Vector2(body.getPosition().x,body.getPosition().y+distance),body.getAngle());

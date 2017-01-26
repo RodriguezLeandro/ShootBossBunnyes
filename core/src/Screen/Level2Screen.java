@@ -211,7 +211,6 @@ public class Level2Screen extends MainGameScreen {
         }
 
         if (stateTimer > 3){
-
             music.stop();
             levelSelectScreen.setLastLevelPlayed(2);
             levelSelectScreen.setWonLevel(2);
