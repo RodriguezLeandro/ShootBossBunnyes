@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import Sprites.Asteroid;
 import Sprites.Boss1;
 import Sprites.Fireball;
 import Sprites.HairAttack;
@@ -89,6 +90,9 @@ public class WorldContactListener implements ContactListener {
                 }
                 else if (fixtureObject.getUserData().getClass() == HairAttack.class){
                     //Si se trata de un hair attack.
+                    ((Megaman) fixtureBody.getUserData()).onBodyHit();
+                }
+                else if(fixtureObject.getUserData().getClass() == Asteroid.class){
                     ((Megaman) fixtureBody.getUserData()).onBodyHit();
                 }
 

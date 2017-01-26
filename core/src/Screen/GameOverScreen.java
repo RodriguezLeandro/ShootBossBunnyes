@@ -80,7 +80,11 @@ public class GameOverScreen implements Screen {
                     case 2:
                         game.setScreen(new Level2Screen((MegamanMainClass) game,levelSelectScreen));
                         dispose();
-                    break;
+                        break;
+                    case 3:
+                        game.setScreen(new Level3Screen((MegamanMainClass)game,levelSelectScreen));
+                        dispose();
+                        break;
                 }
                 return true;
 

@@ -9,13 +9,14 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import java.util.ArrayList;
 
 import Screen.Level1Screen;
 import Screen.Level2Screen;
+import Screen.Level3Screen;
+import Sprites.Asteroid;
 import Sprites.Bat;
 import Sprites.Bunny;
 import Sprites.Floor;
@@ -34,6 +35,8 @@ public class WorldCreator {
     private ArrayList<Bunny> arrayListBunny;
 
     private ArrayList<Bat> arrayListBat;
+
+    private ArrayList<Asteroid> arrayListAsteroid;
 
     //Nota, borre los circle 2 x 2 and 4 x 4 porque son innecesarios?
 
@@ -196,7 +199,86 @@ public class WorldCreator {
                 new GreenCircle(((Level2Screen)screen),circle);
             }
         }
-        else{
+        else if (screen instanceof Level3Screen){
+
+            TiledMap tiledMap = ((Level3Screen)screen).getTiledMap();
+
+            for(MapObject object : tiledMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
+                //Obtenemos cada rectangulo de tiled map.
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+                //Creamos los objetos en nuestro mundo.
+                new Floor(((Level3Screen)screen),rectangle);
+            }
+
+            for(MapObject object : tiledMap.getLayers().get(3).getObjects().getByType(EllipseMapObject.class)){
+
+                //Obtenemos cada elipse de tiled map.
+                Ellipse ellipse = ((EllipseMapObject) object).getEllipse();
+
+                //Convertimos la elipse en un circulo.
+
+                Circle circle = new Circle();
+                circle.setRadius(ellipse.width / 2);
+                circle.setPosition(new Vector2(ellipse.x,ellipse.y));
+
+                //Liberamos la memoria de la ellipse.
+                ellipse = null;
+
+                //Creamos los objetos en nuestro mundo.
+                new RedCircle(((Level3Screen)screen),circle);
+            }
+
+
+
+            //Borrados los circle 4 x 4 dejo comentado.
+
+            for(MapObject object : tiledMap.getLayers().get(4).getObjects().getByType(EllipseMapObject.class)){
+
+                //Obtenemos cada elipse de tiled map.
+                Ellipse ellipse = ((EllipseMapObject) object).getEllipse();
+
+                //Convertimos la elipse en un circulo.
+
+                Circle circle = new Circle();
+                circle.setRadius(ellipse.width / 2);
+                circle.setPosition(new Vector2(ellipse.x,ellipse.y));
+
+                //Liberamos la memoria de la ellipse.
+                ellipse = null;
+
+                //Creamos los objetos en nuestro mundo.
+                new GreenCircle(((Level3Screen)screen),circle);
+            }
+
+            for(MapObject object : tiledMap.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
+                //Obtenemos cada rectangulo de tiled map.
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+                //Creamos los objetos en nuestro mundo.
+                new FlyingGround(((Level3Screen)screen),rectangle);
+            }
+
+            arrayListAsteroid = new ArrayList<Asteroid>();
+            for(MapObject object : tiledMap.getLayers().get(6).getObjects().getByType(EllipseMapObject.class)){
+                //Obtenemos cada elipse de tiled map.
+                Ellipse ellipse = ((EllipseMapObject) object).getEllipse();
+
+                //Convertimos la elipse en un circulo.
+
+                Circle circle = new Circle();
+                circle.setRadius(ellipse.width / 2);
+                circle.setPosition(new Vector2(ellipse.x,ellipse.y));
+
+                //Liberamos la memoria de la ellipse.
+                ellipse = null;
+
+                //Creamos los objetos en nuestro mundo.
+                arrayListAsteroid.add(new Asteroid(((Level3Screen)screen),circle.x / MegamanMainClass.PixelsPerMeters,circle.y / MegamanMainClass.PixelsPerMeters));
+            }
+
+        }
+        else {
             //Aqui va el codigo para el level3screen y el level4screen y el levelfinalscreen.
             //else if(screen instanceof Level3Screen),etc.
         }
@@ -209,5 +291,9 @@ public class WorldCreator {
 
     public ArrayList<Bat> getBats(){
         return arrayListBat;
+    }
+
+    public ArrayList<Asteroid> getAsteroids(){
+        return  arrayListAsteroid;
     }
 }
