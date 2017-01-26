@@ -154,6 +154,47 @@ public class WorldCreator {
                 //Creamos los objetos en nuestro mundo.
                 arrayListBat.add(new Bat(((Level2Screen)screen),rectangle.x / MegamanMainClass.PixelsPerMeters,rectangle.y / MegamanMainClass.PixelsPerMeters,rectangle.getWidth() / MegamanMainClass.PixelsPerMeters, rectangle.getHeight() / MegamanMainClass.PixelsPerMeters));
             }
+
+
+            for(MapObject object : tiledMap.getLayers().get(5).getObjects().getByType(EllipseMapObject.class)){
+
+                //Obtenemos cada elipse de tiled map.
+                Ellipse ellipse = ((EllipseMapObject) object).getEllipse();
+
+                //Convertimos la elipse en un circulo.
+
+                Circle circle = new Circle();
+                circle.setRadius(ellipse.width / 2);
+                circle.setPosition(new Vector2(ellipse.x,ellipse.y));
+
+                //Liberamos la memoria de la ellipse.
+                ellipse = null;
+
+                //Creamos los objetos en nuestro mundo.
+                new RedCircle(((Level2Screen)screen),circle);
+            }
+
+
+
+            //Borrados los circle 4 x 4 dejo comentado.
+
+            for(MapObject object : tiledMap.getLayers().get(6).getObjects().getByType(EllipseMapObject.class)){
+
+                //Obtenemos cada elipse de tiled map.
+                Ellipse ellipse = ((EllipseMapObject) object).getEllipse();
+
+                //Convertimos la elipse en un circulo.
+
+                Circle circle = new Circle();
+                circle.setRadius(ellipse.width / 2);
+                circle.setPosition(new Vector2(ellipse.x,ellipse.y));
+
+                //Liberamos la memoria de la ellipse.
+                ellipse = null;
+
+                //Creamos los objetos en nuestro mundo.
+                new GreenCircle(((Level2Screen)screen),circle);
+            }
         }
         else{
             //Aqui va el codigo para el level3screen y el level4screen y el levelfinalscreen.
