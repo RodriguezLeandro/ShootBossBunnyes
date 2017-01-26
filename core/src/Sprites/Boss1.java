@@ -194,7 +194,7 @@ public class Boss1 {
 
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        bodyDef.position.set(13000 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(13600 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters);
 
         body = world.createBody(bodyDef);
 

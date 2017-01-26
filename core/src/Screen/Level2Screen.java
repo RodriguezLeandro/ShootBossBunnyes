@@ -64,31 +64,42 @@ public class Level2Screen extends MainGameScreen {
             boss1.createHairAttack();
         }
 
-        if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters) {
-            megaman.body.setTransform(new Vector2(10 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
-        }
+        //Si la pelea no se encuentra en la recta final.
+        if (!stageInFinalBattle) {
+            //Si el personaje sale de los limites izquierdos, no lo dejamos.
+            if (megaman.body.getPosition().x < 10 / MegamanMainClass.PixelsPerMeters) {
+                megaman.body.setTransform(new Vector2(10 / MegamanMainClass.PixelsPerMeters, megaman.body.getPosition().y), megaman.body.getAngle());
+            }
 
-        //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
-        if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters) && (megaman.body.getPosition().x <= 12400 / MegamanMainClass.PixelsPerMeters)) {
+            //Si el personaje se encuentra dentro de los limites del mundo, la camara lo sigue.
+            if ((megaman.body.getPosition().x >= 400 / MegamanMainClass.PixelsPerMeters) && (megaman.body.getPosition().x <= 12525 / MegamanMainClass.PixelsPerMeters)) {
 
-            //Hacemos que la camara tenga en el centro a nuestro personaje principal.
-            mainCamera.position.x = megaman.body.getPosition().x;
+                //Hacemos que la camara tenga en el centro a nuestro personaje principal.
+                mainCamera.position.x = megaman.body.getPosition().x;
 
-        } else {
-            //Logica: Si el cuerpo del personaje sale de los limites x del mundo, la camara queda fija.
-            mainCamera.position.x = megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters) ? (399 / MegamanMainClass.PixelsPerMeters) : (12401 / MegamanMainClass.PixelsPerMeters);
-        }
+            } else {
+                //Logica: Si el cuerpo del personaje sale de los limites x del mundo, la camara queda fija.
+                mainCamera.position.x = megaman.body.getPosition().x < (400 / MegamanMainClass.PixelsPerMeters) ? (399 / MegamanMainClass.PixelsPerMeters) : (12526 / MegamanMainClass.PixelsPerMeters);
+               // stageInFinalBattle = true;
+            }
 
-        //De la misma manera deberiamos comprobar si el personaje sale del limite inferior del mapa...
-        //y de esa manera eliminarlo(setToDead).
-        if (megaman.body.getPosition().y <= 0) {
-            megaman.setState(Megaman.State.DYING);
-        }
+            //Si megaman sale de los limites derechos de la pantalla, entramos en la batalla final.
+            if (megaman.body.getPosition().x > 12896 / MegamanMainClass.PixelsPerMeters){
+                megaman.body.setTransform(new Vector2(13100 / MegamanMainClass.PixelsPerMeters,megaman.body.getPosition().y),megaman.body.getAngle());
+                mainCamera.position.x = 13332;
+                stageInFinalBattle = true;
+            }
 
-        //Si el personaje cruza el limite derecho de la pantalla antes de la batalla final, actualizamos la camara.
-        if (megaman.body.getPosition().x > 12800 / MegamanMainClass.PixelsPerMeters) {
-            mainCamera.position.x = 13200 / MegamanMainClass.PixelsPerMeters;
-            stageInFinalBattle = true;
+            //De la misma manera deberiamos comprobar si el personaje sale del limite inferior del mapa...
+            //y de esa manera eliminarlo(setToDead).
+            if (megaman.body.getPosition().y <= 0) {
+                megaman.setState(Megaman.State.DYING);
+            }
+
+        }else {
+            //Si estamos en la batalla final.
+            mainCamera.position.x = 13332 / MegamanMainClass.PixelsPerMeters;
+
         }
 
         mainCamera.update();
