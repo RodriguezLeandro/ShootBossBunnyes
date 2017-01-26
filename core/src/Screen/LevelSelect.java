@@ -122,7 +122,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!secondLevelWon){}
+                if (!secondLevelWon)
                 game.setScreen(new Level2Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
@@ -196,21 +196,22 @@ public class LevelSelect implements Screen {
         return lastLevelPlayed;
     }
 
-    public void setWonLevel(WinScreen winScreen){
-        if (winScreen.getClass() == Level1WinScreen.class){
+    public void setWonLevel(Integer levelWon){
+
+        if (levelWon == 1){
             firstLevelWon = true;
         }
-        //Aca abajo tendria que poner: Level2Winscreen.class, level3winscreen.class,  y asi con los restantes.
-        else if (winScreen.getClass() == Level1WinScreen.class){
-            //SECONDLEVELWON = TRUE;
-        }else if (winScreen.getClass() == Level1WinScreen.class){
-            //THIRDLEVELWON = TRUE, ETC.
+        else if(levelWon == 2){
+            secondLevelWon = true;
         }
-        else if (winScreen.getClass() == Level1WinScreen.class){
-
+        else if(levelWon == 3){
+            thirdLevelWon = true;
         }
-        else {
-
+        else if(levelWon == 4){
+            fourthLevelWon = true;
+        }
+        else if (levelWon == 5){
+            //final level won. Last screen?
         }
     }
 

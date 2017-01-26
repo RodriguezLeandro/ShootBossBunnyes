@@ -58,8 +58,6 @@ public class WinScreen implements Screen {
         table.top();
         table.setFillParent(true);
 
-        levelSelect.setWonLevel(this);
-
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
 

@@ -614,6 +614,30 @@ public class Hud {
         }
     }
 
+    public boolean dañarZeroPersonaje(float damage){
+
+        //Vemos cuanta vida tiene el personaje.
+        float healthAnterior = healthBarZero.getStyle().knob.getMinHeight();
+
+        //Le restamos el numero que llega a la vida que teniamos.
+        float healthNuevo = healthAnterior - damage;
+
+        if (healthNuevo > 0) {
+            //Hacemos que la barra pierda vida(haciendo desaparecer al knob).
+            healthBarZero.getStyle().knob.setMinHeight(healthNuevo);
+
+            //Como la vida es superior a 0, devolvemos false.
+            //Porque el personaje no murio.
+            return false;
+        }else{
+            //Tenemos que dejar la barra de vida del personaje en 0.
+            healthBarZero.getStyle().knob.setMinHeight(0);
+
+            //Tenemos que avisar que, lamentablemente, el personaje murio.
+            return true;
+        }
+    }
+
     public void curarPersonaje(float health){
 
         float healthAnterior = healthBarMegaman.getStyle().knob.getMinWidth();

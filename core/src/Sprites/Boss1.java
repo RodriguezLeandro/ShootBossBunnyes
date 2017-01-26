@@ -18,7 +18,7 @@ import com.mygdx.megamangame.MegamanMainClass;
 import java.util.ArrayList;
 import java.util.Random;
 
-import Screen.MainGameScreen;
+import Screen.Level2Screen;
 
 /**
  * Created by Leandro on 12/01/2017.
@@ -34,7 +34,7 @@ public class Boss1 {
     public State currentState;
     public State previousState;
 
-    private MainGameScreen mainGameScreen;
+    private Level2Screen level2Screen;
 
     private TextureRegion boss1TextureStanding;
     private TextureRegion textureRegionBoss1;
@@ -51,15 +51,18 @@ public class Boss1 {
     private float stateTimer;
 
     private boolean isRunningRight;
+    private boolean boss1InFinalBattle;
+    public boolean isBoss1Dead;
+
 
     public enum State {STANDING,JUMPING,CONJURING};
 
-    public Boss1(MainGameScreen mainGameScreen){
+    public Boss1(Level2Screen level2Screen){
         sprite = new Sprite(new TextureRegion(new Texture("boss1transform.png")));
 
-        this.mainGameScreen = mainGameScreen;
+        this.level2Screen = level2Screen;
 
-        world = mainGameScreen.getWorld();
+        world = level2Screen.getWorld();
 
         currentState = State.STANDING;
 
@@ -78,6 +81,10 @@ public class Boss1 {
         arrayListSpecialHairAttack = new ArrayList<HairAttack>();
 
         isRunningRight = false;
+
+        boss1InFinalBattle = false;
+
+        isBoss1Dead = false;
     }
 
     public void crearAnimaciones(){
@@ -123,7 +130,7 @@ public class Boss1 {
 
         Vector2 positionHairAttack = getPositionHairAttack();
 
-        arrayListHair.add(new HairAttack(mainGameScreen,positionHairAttack.x,positionHairAttack.y));
+        arrayListHair.add(new HairAttack(level2Screen,positionHairAttack.x,positionHairAttack.y));
     }
 
     public void createHairSpecialAttack(){
@@ -132,7 +139,7 @@ public class Boss1 {
 
             Vector2 positionHairSpecialAttack = getPositionHairAttack();
 
-            arrayListSpecialHairAttack.add(new HairAttack(mainGameScreen,positionHairSpecialAttack.x + (i * 10) / MegamanMainClass.PixelsPerMeters,positionHairSpecialAttack.y));
+            arrayListSpecialHairAttack.add(new HairAttack(level2Screen,positionHairSpecialAttack.x + (i * 10) / MegamanMainClass.PixelsPerMeters,positionHairSpecialAttack.y));
         }
 
     }
@@ -167,19 +174,80 @@ public class Boss1 {
 
     public void update(float delta){
 
-        //Tengo que updatear cada hair tambien creo.
+        if (boss1InFinalBattle){
+            //Tengo que updatear cada hair tambien creo.
 
-        for(HairAttack hairAttack : arrayListHair){
-            hairAttack.update(delta);
+            for (HairAttack hairAttack : arrayListHair) {
+                hairAttack.update(delta);
+            }
+
+            for (HairAttack hairAttack : arrayListSpecialHairAttack) {
+                hairAttack.update(delta);
+            }
+
+            if (!isBoss1Dead){
+                makeBoss1Fight();
+            }
+
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+
+            sprite.setRegion(getTextureRegion(delta));
+
+        }
+        else {
+            sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+            sprite.setRegion(getTextureRegion(delta));
+        }
+    }
+
+    public void makeBoss1Fight(){
+        Random random = new Random();
+
+        Integer randomNumber = random.nextInt(50);
+
+        Integer randomNumber2 = random.nextInt(500);
+
+        if (randomNumber == 0){
+            createHairAttack();
+        }
+        else if(randomNumber == 1){
+            setTeleTransport();
+        }
+        if (randomNumber2 == 0){
+            createHairSpecialAttack();
         }
 
-        for(HairAttack hairAttack : arrayListSpecialHairAttack){
-            hairAttack.update(delta);
+    }
+
+    public void setTeleTransport(){
+
+        Random random = new Random();
+        float distance = random.nextInt(200) / MegamanMainClass.PixelsPerMeters;
+
+        Random random2 = new Random();
+        boolean increase = random2.nextBoolean();
+
+        //Si increase es falso, realizamos la teletransportacion a la izquierda.
+        if (!increase){
+            distance = -distance;
         }
 
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+        //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
+        if ((body.getPosition().x + distance < 12996 / MegamanMainClass.PixelsPerMeters) || (body.getPosition().x + distance > 13650 / MegamanMainClass.PixelsPerMeters)){
+            //We do nothing.
+        }
+        else {
+            body.setTransform(new Vector2(body.getPosition().x + distance,body.getPosition().y),body.getAngle());
+        }
 
-        sprite.setRegion(getTextureRegion(delta));
+        //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
+        if ((body.getPosition().y + distance < 150 / MegamanMainClass.PixelsPerMeters)||(body.getPosition().y + distance > 600 / MegamanMainClass.PixelsPerMeters)){
+            //No hacemos nada,
+
+        }else{
+            //Si se encuentra dentro del mapa, teletransportamos.
+            body.setTransform(new Vector2(body.getPosition().x,body.getPosition().y+distance),body.getAngle());
+        }
     }
 
     public TextureRegion getTextureRegion(float delta){
@@ -188,13 +256,26 @@ public class Boss1 {
         return transformAnimation.getKeyFrame(stateTimer);
     }
 
+    public void setBoss1InFinalBattle(boolean bool){
+        if (bool) {
+            boss1InFinalBattle = true;
+        }
+        else {
+            boss1InFinalBattle = false;
+        }
+    }
+
+    public void onBodyHit(){
+        level2Screen.dañarBoss1Personaje();
+    }
+
     public void defineBoss1(){
 
         BodyDef bodyDef = new BodyDef();
 
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        bodyDef.position.set(13600 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters);
+        bodyDef.position.set(13600 / MegamanMainClass.PixelsPerMeters, 150 / MegamanMainClass.PixelsPerMeters);
 
         body = world.createBody(bodyDef);
 
@@ -237,13 +318,15 @@ public class Boss1 {
 
         fixtureDef.isSensor = true;
 
-        fixtureDef.filter.categoryBits = MegamanMainClass.BOSS_BIT;
+        fixtureDef.filter.categoryBits = MegamanMainClass.ZERO_SENSOR_BIT;
 
         body.createFixture(fixtureDef).setUserData(this);
 
     }
 
     public void dispose(){
+        arrayListHair.clear();
+        arrayListSpecialHairAttack.clear();
         world.destroyBody(body);
     }
 

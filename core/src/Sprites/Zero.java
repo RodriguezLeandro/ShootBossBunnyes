@@ -237,7 +237,7 @@ public class Zero{
                     setZeroHitting();
                 }
                 else if (randomNumber == 1){
-                    isZeroRunningToMegaman();
+                    setZeroRunningToMegaman();
                 }else if(randomNumber2 == 0){
                     setZeroJumping();
                     zeroShouldJump = false;
@@ -258,7 +258,7 @@ public class Zero{
                     setZeroHitting();
                 }
                 else if(randomNumer2 == 1){
-                    isZeroRunningAwayFromMegaman();
+                    setZeroRunningAwayFromMegaman();
                 }
                 else if(randomNumer2 == 2){
                     setZeroJumping();
@@ -275,7 +275,7 @@ public class Zero{
 
     }
 
-    public void isZeroRunningToMegaman() {
+    public void setZeroRunningToMegaman() {
         if (megaman.body.getPosition().x < body.getPosition().x) {
             if (body.getLinearVelocity().x > -3)
                 body.applyLinearImpulse(new Vector2(-1f, 0), body.getWorldCenter(), true);
@@ -294,7 +294,7 @@ public class Zero{
             body.applyLinearImpulse(new Vector2(0, 10f), body.getWorldCenter(), true);
     }
 
-    public void isZeroRunningAwayFromMegaman() {
+    public void setZeroRunningAwayFromMegaman() {
         if (megaman.body.getPosition().x < body.getPosition().x) {
             if (body.getLinearVelocity().x > -3)
                 body.applyLinearImpulse(new Vector2(1f, 0), body.getWorldCenter(), true);

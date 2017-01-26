@@ -226,7 +226,7 @@ public class Level1Screen extends MainGameScreen{
 
         //Dibujamos el debuger para los objetos que colisionan.
         //Lo dejo comentado, recordar que es importante activarlo al programar.
-     //   box2DDebugRenderer.render(world, mainCamera.combined);
+        box2DDebugRenderer.render(world, mainCamera.combined);
 
         //Establecemos la projeccion de la matriz de la camara hud.
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -236,6 +236,7 @@ public class Level1Screen extends MainGameScreen{
         //cuando termine de dibujar todo, preguntamos si el juego termino.
         if (gameOver()) {
             levelSelectScreen.setLastLevelPlayed(1);
+            levelSelectScreen.setWonLevel(1);
             game.setScreen(new GameOverScreen(game, hud.getScore(),levelSelectScreen));
             dispose();
         }

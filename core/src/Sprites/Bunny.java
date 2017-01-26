@@ -15,8 +15,6 @@ import Tools.Enemy;
 
 public class Bunny extends Enemy {
 
-    private TextureRegion bunnyTexture;
-
     private Integer vidaDeBunny;
 
     public boolean destroyBunny;

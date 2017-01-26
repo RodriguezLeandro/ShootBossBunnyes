@@ -83,7 +83,7 @@ public class HairAttack extends MisileObject{
             fixtureDef.shape = circleShape;
 
             //Por el momento lo dejamos como enemy bit, luego veremos.
-            fixtureDef.filter.categoryBits = MegamanMainClass.DESTROYED_BIT;
+            fixtureDef.filter.categoryBits = MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT;
 
             fixtureDef.filter.maskBits = MegamanMainClass.MEGAMAN_SENSOR_BIT;
 

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import Screen.Level1Screen;
 import Screen.Level2Screen;
+import Sprites.Bat;
 import Sprites.Bunny;
 import Sprites.Floor;
 import Sprites.FlyingGround;
@@ -31,6 +32,8 @@ public class WorldCreator {
 
     //Creamos el arraylist que contendra a los bunnys.
     private ArrayList<Bunny> arrayListBunny;
+
+    private ArrayList<Bat> arrayListBat;
 
     //Nota, borre los circle 2 x 2 and 4 x 4 porque son innecesarios?
 
@@ -141,6 +144,16 @@ public class WorldCreator {
                 //Creamos los objetos en nuestro mundo.
                 new FlyingGround(((Level2Screen)screen),rectangle);
             }
+
+            arrayListBat = new ArrayList<Bat>();
+
+            for(MapObject object : tiledMap.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
+                //Obtenemos cada rectangulo de tiled map.
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+
+                //Creamos los objetos en nuestro mundo.
+                arrayListBat.add(new Bat(((Level2Screen)screen),rectangle.x / MegamanMainClass.PixelsPerMeters,rectangle.y / MegamanMainClass.PixelsPerMeters,rectangle.getWidth() / MegamanMainClass.PixelsPerMeters, rectangle.getHeight() / MegamanMainClass.PixelsPerMeters));
+            }
         }
         else{
             //Aqui va el codigo para el level3screen y el level4screen y el levelfinalscreen.
@@ -151,5 +164,9 @@ public class WorldCreator {
 
     public ArrayList<Bunny> getBunnys(){
         return arrayListBunny;
+    }
+
+    public ArrayList<Bat> getBats(){
+        return arrayListBat;
     }
 }

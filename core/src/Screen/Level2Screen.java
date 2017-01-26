@@ -11,6 +11,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.megamangame.MegamanMainClass;
 
 
+import java.util.ArrayList;
+
+import Sprites.Bat;
 import Sprites.Boss1;
 import Sprites.Megaman;
 import Tools.WorldCreator;
@@ -29,6 +32,13 @@ public class Level2Screen extends MainGameScreen {
 
     private Boss1 boss1;
 
+    private ArrayList<Bat> arrayListBat;
+
+    private Integer arrayListBatSize;
+
+    private float stateTimer;
+
+    private Music music;
 
     public Level2Screen(MegamanMainClass game, LevelSelect levelSelect){
         super(game,levelSelect);
@@ -39,7 +49,7 @@ public class Level2Screen extends MainGameScreen {
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / game.PixelsPerMeters);
 
         if(MegamanMainClass.assetManager.isLoaded("audio/topman.mp3")) {
-            Music music = MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class);
+            music = MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class);
             music.play();
             music.setLooping(true);
 
@@ -47,13 +57,45 @@ public class Level2Screen extends MainGameScreen {
 
         boss1 = new Boss1(this);
 
+        arrayListBatSize = 0;
+
         worldCreator = new WorldCreator(this);
 
+        stateTimer = 0;
+
+        arrayListBat = worldCreator.getBats();
+
+    }
+
+    public void dañarBoss1Personaje(){
+        personajeEstaMuerto = hud.dañarZeroPersonaje(10);
     }
 
     public void update(float delta){
 
+        if (stageInFinalBattle && !finalHudActivated) {
+            hud.setGameIsInFinalStage();
+            finalHudActivated = true;
+            boss1.setBoss1InFinalBattle(true);
+        }
+
         boss1.update(delta);
+
+        arrayListBatSize = arrayListBat.size();
+
+        for (int i = 0; i < arrayListBatSize; i ++){
+            if (arrayListBat.get(i).destroyBat){
+                arrayListBat.get(i).dispose();
+                arrayListBat.remove(i);
+                arrayListBatSize = arrayListBat.size();
+            }
+            else {
+                arrayListBat.get(i).update(delta);
+                if (arrayListBat.get(i).getPositionX() < megaman.body.getPosition().x + 500 / MegamanMainClass.PixelsPerMeters) {
+                    arrayListBat.get(i).body.setActive(true);
+                }
+            }
+        }
 
         //Si tocamos B, que el enemigo ataque con el hair(haier?);
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)){
@@ -102,6 +144,12 @@ public class Level2Screen extends MainGameScreen {
 
         }
 
+        //Si el personaje muere arrancamos el statetimer.
+        if (personajeEstaMuerto){
+            stateTimer += delta;
+            boss1.isBoss1Dead = true;
+        }
+
         mainCamera.update();
 
         mapRenderer.setView(mainCamera);
@@ -119,7 +167,7 @@ public class Level2Screen extends MainGameScreen {
 
     @Override
     public void setAddScore(Integer score) {
-
+        hud.addScore(score);
     }
 
     @Override
@@ -145,6 +193,9 @@ public class Level2Screen extends MainGameScreen {
 
         boss1.draw(game.batch);
 
+        for (Bat bat : arrayListBat){
+            bat.draw(game.batch);
+        }
         game.batch.end();
 
         box2DDebugRenderer.render(world, mainCamera.combined);
@@ -159,6 +210,15 @@ public class Level2Screen extends MainGameScreen {
             dispose();
         }
 
+        if (stateTimer > 3){
+
+            music.stop();
+            levelSelectScreen.setLastLevelPlayed(2);
+            levelSelectScreen.setWonLevel(2);
+            game.setScreen(new Level2WinScreen(game,hud.getScore(),levelSelectScreen));
+            dispose();
+        }
+
     }
 
     public World getWorld(){
@@ -168,7 +228,11 @@ public class Level2Screen extends MainGameScreen {
 
     @Override
     public void dispose() {
-
+        music.dispose();
+        tiledMap.dispose();
+        mapRenderer.dispose();
+        boss1.dispose();
+        world.dispose();
     }
 
     @Override

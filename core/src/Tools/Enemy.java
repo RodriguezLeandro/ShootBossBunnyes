@@ -103,15 +103,5 @@ public abstract class Enemy {
         return body.getPosition().x;
     }
 
-    public void setCategoryBits(short categoryBits){
-        Filter filter = new Filter();
-
-        filter.categoryBits = categoryBits;
-
-        filter.maskBits = fixtureDef.filter.maskBits;
-
-        fixture.setFilterData(filter);
-    }
-
     public abstract void onBodyHit();
 }

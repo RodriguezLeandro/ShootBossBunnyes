@@ -7,7 +7,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.megamangame.MegamanMainClass;
 
+import Sprites.Boss1;
 import Sprites.Fireball;
+import Sprites.HairAttack;
 import Sprites.Lava;
 import Sprites.Megaman;
 import Sprites.Zero;
@@ -55,26 +57,41 @@ public class WorldContactListener implements ContactListener {
 
             case MegamanMainClass.ZERO_SENSOR_BIT | MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT:
 
-                fixtureBody = fixtureA.getUserData().getClass() == Zero.class ? fixtureA: fixtureB;
-                fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
+                //Aca se repetiria el mismo codigo cinco veces, luego se puede pensar una manera para optimizar.
+                if (fixtureA.getUserData().getClass() == Zero.class) {
+                    fixtureBody = fixtureA.getUserData().getClass() == Zero.class ? fixtureA : fixtureB;
+                    fixtureObject = fixtureBody == fixtureA ? fixtureB : fixtureA;
+                }
+                else if (fixtureA.getUserData().getClass() == Boss1.class) {
+                    fixtureBody = fixtureA.getUserData().getClass() == Boss1.class ? fixtureA : fixtureB;
+                    fixtureObject = fixtureBody == fixtureA ? fixtureB : fixtureA;
+                }
 
-                //Basicamente, si la bola de fuego va hacia la derecha manda true, sino false.
-                ((Zero) fixtureBody.getUserData()).onBodyHit();
-                //Luego, que la bola no puedo volver a pegarle por unos 3 segundos.
-                ((Zero)fixtureBody.getUserData()).setZeroUntouchableDot5Seconds();
-
+                //Vemos si se trata de zero o boss 1.
+                if (fixtureBody.getUserData().getClass() == Zero.class) {
+                    ((Zero) fixtureBody.getUserData()).onBodyHit();
+                    //Luego, que la bola no puedo volver a pegarle por unos 3 segundos.
+                    ((Zero) fixtureBody.getUserData()).setZeroUntouchableDot5Seconds();
+                }
+                else if (fixtureBody.getUserData().getClass() == Boss1.class){
+                    ((Boss1) fixtureBody.getUserData()).onBodyHit();
+                }
                 break;
 
             case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.FIREBALL_ZERO_SENSOR_BIT:
                 fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
                 fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
 
-                //Basicamente, si la bola de fuego va hacia la derecha manda true, sino false.
-                if (((Fireball)fixtureObject.getUserData()).fireToRight) {
-                    ((Megaman) fixtureBody.getUserData()).onBodyHit();
-                }else{
+                //Si se trata de un fireball de zero, o si se trata de otro ataque.
+                if (fixtureObject.getUserData().getClass() == Fireball.class){
+                    //Basicamente, si la bola de fuego va hacia la derecha manda true, sino false.
                     ((Megaman) fixtureBody.getUserData()).onBodyHit();
                 }
+                else if (fixtureObject.getUserData().getClass() == HairAttack.class){
+                    //Si se trata de un hair attack.
+                    ((Megaman) fixtureBody.getUserData()).onBodyHit();
+                }
+
                 break;
 
             case MegamanMainClass.FIREBALL_MEGAMAN_SENSOR_BIT | MegamanMainClass.ZERO_SENSOR_BIT_2:
@@ -93,6 +110,7 @@ public class WorldContactListener implements ContactListener {
                 break;
 
             case MegamanMainClass.MEGAMAN_SENSOR_BIT | MegamanMainClass.ENEMY_BIT:
+
 
                 fixtureBody = fixtureA.getUserData().getClass() == Megaman.class ? fixtureA: fixtureB;
                 fixtureObject = fixtureBody == fixtureA ? fixtureB: fixtureA;
