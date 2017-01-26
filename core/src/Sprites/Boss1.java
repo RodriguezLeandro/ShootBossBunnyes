@@ -264,6 +264,17 @@ public class Boss1 {
         }
     }
 
+    public ArrayList<HairAttack> getArrayListHairAttack(){
+
+        return  arrayListHair;
+    }
+
+    public ArrayList<HairAttack> getArrayListSpecialHairAttack(){
+
+        return  arrayListSpecialHairAttack;
+    }
+
+
     public void onBodyHit(){
         level2Screen.dañarBoss1Personaje();
     }

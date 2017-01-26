@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import Sprites.Bat;
 import Sprites.Boss1;
+import Sprites.HairAttack;
 import Sprites.Megaman;
 import Tools.WorldCreator;
 
@@ -158,10 +159,41 @@ public class Level2Screen extends MainGameScreen {
     @Override
     public void setGravityModifyOn() {
 
+        megaman.body.setGravityScale(0);
+
+        megaman.body.applyForce(new Vector2(0,-10f),megaman.body.getWorldCenter(),true);
+
+        for(Bat bat : arrayListBat){
+            bat.body.setGravityScale(1);
+        }
+
+        for(HairAttack hairAttack : boss1.getArrayListHairAttack()){
+            hairAttack.body.setGravityScale(1);
+        }
+
+        for(HairAttack hairAttack : boss1.getArrayListSpecialHairAttack()){
+            hairAttack.body.setGravityScale(1);
+        }
     }
 
     @Override
     public void setGravityModifyOff() {
+        megaman.body.setGravityScale(1);
+
+        //Hacemos que a los conejos no los afecte la gravedad.
+        for(Bat bat : arrayListBat){
+            bat.body.setGravityScale(0);
+        }
+
+        //Hacemos que a los fireballs de zero no les afecte la gravedad.
+        //A zero no hace falta modificarlo, porque la gravedad ya le afecta.
+        for(HairAttack hairAttack : boss1.getArrayListHairAttack()){
+            hairAttack.body.setGravityScale(0);
+        }
+
+        for(HairAttack hairAttack : boss1.getArrayListSpecialHairAttack()){
+            hairAttack.body.setGravityScale(0);
+        }
 
     }
 

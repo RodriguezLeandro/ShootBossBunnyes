@@ -41,8 +41,6 @@ public abstract class Circle2X2Tiles extends InteractiveTileObject {
         }
         //Liberamos la memoria que ocupaba el array.
         tiledMapTileLayersCell = null;
-
-        mainGameScreen.restoreMegamanHp(60);
     }
     //Esta funcion solo sirve para nuestra clase CirculoPequeño.
     //Sin embargo, esta clase puede obtener cualquier objeto circular.
@@ -54,21 +52,36 @@ public abstract class Circle2X2Tiles extends InteractiveTileObject {
 
         //Creamos un array que contendra las celdas a eliminar.
         TiledMapTileLayer.Cell[] tiledMapTileLayersCell = new TiledMapTileLayer.Cell[4];
+        //Si el tile es de 32 por 32, borramos de una manera, si es de 16 x 16, borramos de otra.
+        if ((layer.getTileWidth() == 32)&&(layer.getTileHeight() == 32)){
 
-        //Llenamos las celdas rodeando al circulo en (sentido horario ?).
-        //Recordar que solo sirve para esta clase de circulos, para otros circulos puede dar errores.
+            //Llenamos las celdas rodeando al circulo en (sentido horario ?).
+            //Recordar que solo sirve para esta clase de circulos, para otros circulos puede dar errores.
 
-        tiledMapTileLayersCell[0] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32 - 1),
-                (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32 + 1));
+            tiledMapTileLayersCell[0] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32 - 1),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32 + 1));
 
-        tiledMapTileLayersCell[1] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32),
-                (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32 + 1));
+            tiledMapTileLayersCell[1] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32 + 1));
 
-        tiledMapTileLayersCell[2] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32 - 1),
-                (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32));
+            tiledMapTileLayersCell[2] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32 - 1),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32));
 
-        tiledMapTileLayersCell[3] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32),
-                (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32));
+            tiledMapTileLayersCell[3] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 32),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 32));
+        }
+        else if ((layer.getTileWidth() == 16)&&(layer.getTileHeight() == 16)){
+
+            tiledMapTileLayersCell[0] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 16 - 2),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 16 - 1));
+            tiledMapTileLayersCell[1] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 16 - 2),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 16 + 1));
+            tiledMapTileLayersCell[2] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 16),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 16 - 1));
+            tiledMapTileLayersCell[3] = layer.getCell((int)(body.getPosition().x * MegamanMainClass.PixelsPerMeters / 16 ),
+                    (int)(body.getPosition().y * MegamanMainClass.PixelsPerMeters / 16 + 1));
+        }
+
 
         //Devolvemos el array cargado con las celdas a eliminar.
         return tiledMapTileLayersCell;

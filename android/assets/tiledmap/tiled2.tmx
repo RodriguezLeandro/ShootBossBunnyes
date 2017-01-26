@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="870" height="40" tilewidth="16" tileheight="16" nextobjectid="133">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="870" height="40" tilewidth="16" tileheight="16" nextobjectid="135">
  <tileset firstgid="1" name="TiledTmx1" tilewidth="32" tileheight="32" spacing="2" margin="1" tilecount="1056" columns="44">
   <image source="tilesheet_complete_guttered.png" width="1496" height="816"/>
  </tileset>
@@ -145,10 +145,10 @@
   <object id="126" x="3983" y="127" width="36" height="36">
    <ellipse/>
   </object>
-  <object id="128" x="8206.42" y="398" width="36" height="36">
+  <object id="129" x="12767.3" y="334.25" width="36" height="36">
    <ellipse/>
   </object>
-  <object id="129" x="12767.3" y="334.25" width="36" height="36">
+  <object id="133" x="8208.25" y="400.25" width="33" height="33">
    <ellipse/>
   </object>
  </objectgroup>

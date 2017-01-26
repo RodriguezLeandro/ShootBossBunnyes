@@ -451,6 +451,9 @@ public abstract class MainGameScreen implements Screen {
     public void restoreMegamanHp(float health) {
         hud.curarPersonaje(health);
     }
+    public void restoreMegamanMana(float mana) {
+        hud.recuperarMana(mana);
+    }
 
     //Para ver si el jugador esta muerto desde hace mas de 3 segundos.
     public boolean gameOver() {

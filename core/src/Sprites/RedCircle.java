@@ -22,4 +22,9 @@ public class RedCircle extends Circle2X2Tiles{
         setCategoryFilter(MegamanMainClass.COIN_BIT);
     }
 
+    public void onBodyHit(){
+        super.onBodyHit();
+        mainGameScreen.restoreMegamanHp(60);
+    }
+
 }

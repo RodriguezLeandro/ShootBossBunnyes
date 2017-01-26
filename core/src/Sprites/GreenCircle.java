@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.Circle;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import Screen.MainGameScreen;
-import Tools.Circle4X4Tiles;
+import Tools.Circle2X2Tiles;
 
 /**
  * Created by Leandro on 03/01/2017.
  */
 
-public class GreenCircle extends Circle4X4Tiles {
+public class GreenCircle extends Circle2X2Tiles {
 
     public GreenCircle(MainGameScreen mainGameScreen, Circle circle){
         super(mainGameScreen,circle);
@@ -21,6 +21,11 @@ public class GreenCircle extends Circle4X4Tiles {
         //Establecemos el filtro de cada objeto que creamos.
         setCategoryFilter(MegamanMainClass.COIN_BIT);
 
+    }
+
+    public void onBodyHit(){
+        super.onBodyHit();
+        mainGameScreen.restoreMegamanMana(60);
     }
 
 }
