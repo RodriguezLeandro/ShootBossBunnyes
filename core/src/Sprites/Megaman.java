@@ -141,19 +141,19 @@ public class Megaman{
         textureRegionFrames.clear();
 
         for (int i = 10; i < 13; i++){
-            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 65, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 68, 32, 64));
         }
         megamanGettingHit = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
         for (int i = 17; i < 20; i++){
-            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 65, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32, 68, 32, 64));
         }
         megamanJumping = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
 
         for (int i = 17; i < 20; i++){
-            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32 + 4, 129, 32, 64));
+            textureRegionFrames.add(new TextureRegion(sprite.getTexture(),i * 32 + 4, 132, 32, 64));
         }
         megamanHitting = new Animation(0.1f,textureRegionFrames);
         textureRegionFrames.clear();
