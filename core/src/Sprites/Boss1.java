@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import Screen.Level2Screen;
+import Screen.Level4Screen;
 
 /**
  * Created by Leandro on 12/01/2017.
@@ -35,6 +36,7 @@ public class Boss1 {
     public State previousState;
 
     private Level2Screen level2Screen;
+    private Level4Screen level4Screen;
 
     private TextureRegion boss1TextureStanding;
     private TextureRegion textureRegionBoss1;
@@ -54,8 +56,10 @@ public class Boss1 {
     private boolean boss1InFinalBattle;
     public boolean isBoss1Dead;
 
+    private boolean isBoss1InLevel2;
 
-    public enum State {STANDING,JUMPING,CONJURING};
+
+    public enum State {STANDING};
 
     public Boss1(Level2Screen level2Screen){
         sprite = new Sprite(new TextureRegion(new Texture("boss1transform.png")));
@@ -85,11 +89,47 @@ public class Boss1 {
         boss1InFinalBattle = false;
 
         isBoss1Dead = false;
+
+        isBoss1InLevel2 = true;
+    }
+
+    public Boss1(Level4Screen level4Screen){
+        sprite = new Sprite(new TextureRegion(new Texture("boss1transform.png")));
+
+        this.level4Screen = level4Screen;
+
+        world = level4Screen.getWorld();
+
+        currentState = State.STANDING;
+
+        previousState = State.STANDING;
+
+        crearAnimaciones();
+
+        defineBoss1();
+
+        stateTimer = 0;
+
+        sprite.setSize(92.66f / MegamanMainClass.PixelsPerMeters, 120.33f /MegamanMainClass.PixelsPerMeters);
+
+        arrayListHair = new ArrayList<HairAttack>();
+
+        arrayListSpecialHairAttack = new ArrayList<HairAttack>();
+
+        isRunningRight = false;
+
+        boss1InFinalBattle = false;
+
+        isBoss1Dead = false;
+
+        isBoss1InLevel2 = false;
     }
 
     public void crearAnimaciones(){
         Array<TextureRegion> textureRegionsFrames = new Array<TextureRegion>();
 
+        //Dejo comentado ya que no utilize la animacion de salto.
+        /*
         for (int i = 0; i < 5; i++){
 
             for(int j = 0 ; j < 4; j++){
@@ -106,6 +146,8 @@ public class Boss1 {
         jumpAnimation = new Animation(0.1f,textureRegionsFrames);
 
         textureRegionsFrames.clear();
+
+        */
 
         for(int i = 0; i < 16; i++){
 
@@ -130,7 +172,11 @@ public class Boss1 {
 
         Vector2 positionHairAttack = getPositionHairAttack();
 
-        arrayListHair.add(new HairAttack(level2Screen,positionHairAttack.x,positionHairAttack.y));
+        if (isBoss1InLevel2) {
+            arrayListHair.add(new HairAttack(level2Screen, positionHairAttack.x, positionHairAttack.y));
+        }else {
+            arrayListHair.add(new HairAttack(level4Screen, positionHairAttack.x, positionHairAttack.y));
+        }
     }
 
     public void createHairSpecialAttack(){
@@ -139,7 +185,11 @@ public class Boss1 {
 
             Vector2 positionHairSpecialAttack = getPositionHairAttack();
 
-            arrayListSpecialHairAttack.add(new HairAttack(level2Screen,positionHairSpecialAttack.x + (i * 10) / MegamanMainClass.PixelsPerMeters,positionHairSpecialAttack.y));
+            if (isBoss1InLevel2) {
+                arrayListSpecialHairAttack.add(new HairAttack(level2Screen, positionHairSpecialAttack.x + (i * 10) / MegamanMainClass.PixelsPerMeters, positionHairSpecialAttack.y));
+            }else {
+                arrayListSpecialHairAttack.add(new HairAttack(level4Screen, positionHairSpecialAttack.x + (i * 10) / MegamanMainClass.PixelsPerMeters, positionHairSpecialAttack.y));
+            }
         }
 
     }
@@ -232,20 +282,37 @@ public class Boss1 {
             distance = -distance;
         }
 
-        //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
-        if ((body.getPosition().x + distance < 12996 / MegamanMainClass.PixelsPerMeters) || (body.getPosition().x + distance > 13650 / MegamanMainClass.PixelsPerMeters)){
-            //We do nothing.
-        }
-        else {
-            body.setTransform(new Vector2(body.getPosition().x + distance,body.getPosition().y),body.getAngle());
-        }
+        //Para ver si puede teletransportarse, debemos ver en que nivel se encuentra el boss1.
+        if (isBoss1InLevel2) {
+            //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
+            if ((body.getPosition().x + distance < 12996 / MegamanMainClass.PixelsPerMeters) || (body.getPosition().x + distance > 13650 / MegamanMainClass.PixelsPerMeters)) {
+                //We do nothing.
+            } else {
+                body.setTransform(new Vector2(body.getPosition().x + distance, body.getPosition().y), body.getAngle());
+            }
 
-        //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
-        if ((body.getPosition().y + distance < 180 / MegamanMainClass.PixelsPerMeters)||(body.getPosition().y + distance > 600 / MegamanMainClass.PixelsPerMeters)){
-            //No hacemos nada,
-        }else{
-            //Si se encuentra dentro del mapa, teletransportamos.
-            body.setTransform(new Vector2(body.getPosition().x,body.getPosition().y+distance),body.getAngle());
+            //Si luego de teletransportarse, se encuentra dentro del mapa, lo realizamos.
+            if ((body.getPosition().y + distance < 180 / MegamanMainClass.PixelsPerMeters) || (body.getPosition().y + distance > 600 / MegamanMainClass.PixelsPerMeters)) {
+                //No hacemos nada,
+            } else {
+                //Si se encuentra dentro del mapa, teletransportamos.
+                body.setTransform(new Vector2(body.getPosition().x, body.getPosition().y + distance), body.getAngle());
+            }
+        }else {
+            //En el eje x tenemos que modificar el rango de teletransportacion para el nivel 4.
+            if ((body.getPosition().x + distance < 13232 / MegamanMainClass.PixelsPerMeters) || (body.getPosition().x + distance > 13886 / MegamanMainClass.PixelsPerMeters)) {
+                //We do nothing.
+            } else {
+                body.setTransform(new Vector2(body.getPosition().x + distance, body.getPosition().y), body.getAngle());
+            }
+
+            //En el eje y no deberiamos tener que modificar nada.
+            if ((body.getPosition().y + distance < 180 / MegamanMainClass.PixelsPerMeters) || (body.getPosition().y + distance > 600 / MegamanMainClass.PixelsPerMeters)) {
+                //No hacemos nada,
+            } else {
+                //Si se encuentra dentro del mapa, teletransportamos.
+                body.setTransform(new Vector2(body.getPosition().x, body.getPosition().y + distance), body.getAngle());
+            }
         }
     }
 
@@ -276,7 +343,11 @@ public class Boss1 {
 
 
     public void onBodyHit(){
-        level2Screen.dañarBoss1Personaje();
+        if(isBoss1InLevel2) {
+            level2Screen.dañarBoss1Personaje();
+        }else{
+            level4Screen.dañarJefes();
+        }
     }
 
     public void defineBoss1(){

@@ -47,7 +47,7 @@ public class InitGameScreen implements Screen {
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        nameGameLabel = new Label("Geometry-Man",labelStyle);
+        nameGameLabel = new Label("Punch-Man",labelStyle);
         newGameLabel = new Label("New Game",labelStyle);
         controlsLabel = new Label("Controls",labelStyle);
         exitLabel = new Label("Exit",labelStyle);
@@ -165,7 +165,7 @@ public class InitGameScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //Hay que enviar al usuario a la pantalla de controles..
-                game.setScreen(new ControlsScreen((MegamanMainClass) game));
+                game.setScreen(new ControlsScreen((MegamanMainClass) game,levelSelect));
                 dispose();
 
                 return true;
@@ -221,7 +221,7 @@ public class InitGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0.51f,1.02f,1);
+        Gdx.gl.glClearColor(0.51f, 0.51f, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.draw();

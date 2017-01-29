@@ -6,10 +6,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -88,24 +91,13 @@ public class LevelSelect implements Screen {
         table.top().left();
         table.setFillParent(true);
 
-        labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        Image imageMegaman = new Image(new TextureRegion(new Texture("LevelSelectImages/Megaman.png")));
+        Image imageZero = new Image(new TextureRegion(new Texture("LevelSelectImages/Zero.png")));
+        Image imageBoss1 = new Image(new TextureRegion(new Texture("LevelSelectImages/Boss1.png")));
+        Image imageBoss2 = new Image(new TextureRegion(new Texture("LevelSelectImages/Boss2.png")));
+        Image imageWho = new Image(new TextureRegion(new Texture("LevelSelectImages/Who.png")));
 
-        level1Label = new Label("LEVEL 1",labelStyle);
-        level2Label = new Label("LEVEL 2",labelStyle);
-        level3Label = new Label("LEVEL 3",labelStyle);
-        level4Label = new Label("LEVEL 4",labelStyle);
-        finalLabel = new Label("FINAL LEVEL",labelStyle);
-
-
-        level1Label.setFontScale(1.5f);
-        level2Label.setFontScale(1.5f);
-        level3Label.setFontScale(1.5f);
-        level4Label.setFontScale(1.5f);
-        finalLabel.setFontScale(1.5f);
-
-
-
-        level1Label.addListener(new InputListener(){
+        imageZero.addListener(new InputListener(){
 
 
             @Override
@@ -117,7 +109,7 @@ public class LevelSelect implements Screen {
             }
         });
 
-        level2Label.addListener(new InputListener(){
+        imageBoss1.addListener(new InputListener(){
 
 
             @Override
@@ -128,7 +120,7 @@ public class LevelSelect implements Screen {
             }
         });
 
-        level3Label.addListener(new InputListener(){
+        imageBoss2.addListener(new InputListener(){
 
 
             @Override
@@ -139,44 +131,46 @@ public class LevelSelect implements Screen {
             }
         });
 
-        level4Label.addListener(new InputListener(){
+        imageWho.addListener(new InputListener(){
 
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!fourthLevelWon){}
-         //       game.setScreen(new Level4Screen((MegamanMainClass) game));
+                //Solo se puede jugar el cuarto nivel si cruzamos los anteriores.
+                if (firstLevelWon && secondLevelWon && thirdLevelWon)
+                game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
         });
 
-        finalLabel.addListener(new InputListener(){
+        imageMegaman.addListener(new InputListener(){
 
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //Al final no, ya que no tuve ganas de hacer el ultimo y quinto nivel.
                 //Si ya gano todo.
                 //ENtonces hacemos magia y cambiamos la imagen del medio o algo asi.
                 //Por ej.
               //  finalLabel.setText("ACA LA IMAGEN FINAL POR EJ");
-                if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
+          //    if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
               //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
 
                 return true;
             }
         });
 
-        table.add(level1Label).pad(30,30,0,0);
+        table.add(imageZero).pad(15,30,0,0);
         table.add();
-        table.add(level2Label).pad(30,200,0,30);
+        table.add(imageBoss1).pad(15,100,0,15);
         table.row();
         table.add();
-        table.add(finalLabel).pad(210,210,0,0);
+        table.add(imageMegaman).pad(105,250,0,150);
         table.add();
         table.row();
-        table.add(level3Label).pad(200,30,30,0);
+        table.add(imageBoss2).pad(100,30,50,0);
         table.add();
-        table.add(level4Label).pad(200,200,30,30);
+        table.add(imageWho).pad(100,100,50,15);
 
         stage.addActor(table);
     }
@@ -245,6 +239,6 @@ public class LevelSelect implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

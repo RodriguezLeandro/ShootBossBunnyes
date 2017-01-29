@@ -262,6 +262,7 @@ public class Level2Screen extends MainGameScreen {
         music.dispose();
         tiledMap.dispose();
         mapRenderer.dispose();
+        arrayListBat.clear();
         boss1.dispose();
         world.dispose();
     }

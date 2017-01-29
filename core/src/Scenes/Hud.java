@@ -638,6 +638,19 @@ public class Hud {
         }
     }
 
+    public boolean isZeroBarNull(){
+        if (healthBarZero == null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public float getHpBar(){
+
+        return healthBarZero.getStyle().knob.getMinHeight();
+    }
+
     public void curarPersonaje(float health){
 
         float healthAnterior = healthBarMegaman.getStyle().knob.getMinWidth();

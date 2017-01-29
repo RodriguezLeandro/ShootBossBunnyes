@@ -8,7 +8,9 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.megamangame.MegamanMainClass;
 
 import Sprites.Asteroid;
+import Sprites.BlackFireball;
 import Sprites.Boss1;
+import Sprites.Boss2;
 import Sprites.Fireball;
 import Sprites.HairAttack;
 import Sprites.Lava;
@@ -67,6 +69,10 @@ public class WorldContactListener implements ContactListener {
                     fixtureBody = fixtureA.getUserData().getClass() == Boss1.class ? fixtureA : fixtureB;
                     fixtureObject = fixtureBody == fixtureA ? fixtureB : fixtureA;
                 }
+                else if (fixtureA.getUserData().getClass() == Boss2.class){
+                    fixtureBody = fixtureA.getUserData().getClass() == Boss2.class ? fixtureA : fixtureB;
+                    fixtureObject = fixtureBody == fixtureA ? fixtureB : fixtureA;
+                }
 
                 //Vemos si se trata de zero o boss 1.
                 if (fixtureBody.getUserData().getClass() == Zero.class) {
@@ -76,6 +82,9 @@ public class WorldContactListener implements ContactListener {
                 }
                 else if (fixtureBody.getUserData().getClass() == Boss1.class){
                     ((Boss1) fixtureBody.getUserData()).onBodyHit();
+                }
+                else if (fixtureBody.getUserData().getClass() == Boss2.class){
+                    ((Boss2) fixtureBody.getUserData()).onBodyHit();
                 }
                 break;
 
@@ -93,6 +102,9 @@ public class WorldContactListener implements ContactListener {
                     ((Megaman) fixtureBody.getUserData()).onBodyHit();
                 }
                 else if(fixtureObject.getUserData().getClass() == Asteroid.class){
+                    ((Megaman) fixtureBody.getUserData()).onBodyHit();
+                }
+                else if(fixtureObject.getUserData().getClass() == BlackFireball.class){
                     ((Megaman) fixtureBody.getUserData()).onBodyHit();
                 }
 

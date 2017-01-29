@@ -17,29 +17,28 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
 /**
- * Created by Leandro on 13/01/2017.
+ * Created by Leandro on 29/01/2017.
  */
 
-public class WinScreen implements Screen {
+public class GameWinScreen implements Screen{
 
-    protected Game game;
-    protected Viewport viewport;
-    protected Stage stage;
-    protected LevelSelect levelSelect;
+    private Game game;
+    private Viewport viewport;
+    private Stage stage;
+    private LevelSelect levelSelect;
 
-    protected Table table;
+    private Label.LabelStyle labelStyle;
 
-    protected Label.LabelStyle labelStyle;
+    private Label youWinLabel;
+    private Label playAgain;
+    private Label exitGame;
+    private Label scoreLabel;
 
-    protected Label youWinLabel;
-    protected Label goToLevelSelect;
-    protected Label goToMainMenu;
-    protected Label scoreLabel;
+    private Integer scoreDataInteger;
 
-    protected Integer scoreDataInteger;
+    private Table table;
 
-
-    public WinScreen(final MegamanMainClass game,Integer scoreDataInteger, final LevelSelect levelSelect){
+    public GameWinScreen(final MegamanMainClass game, Integer scoreDataInteger, final LevelSelect levelSelect) {
 
         this.game = game;
 
@@ -60,34 +59,34 @@ public class WinScreen implements Screen {
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-
-        youWinLabel = new Label("YOU WIN !!",labelStyle);
-        goToLevelSelect = new Label("SELECT LEVEL",labelStyle);
-        goToMainMenu = new Label("MAIN MENU",labelStyle);
+        youWinLabel = new Label("You won the game, congratulations!!",labelStyle);
+        playAgain = new Label("Play again",labelStyle);
+        exitGame = new Label("EXIT",labelStyle);
         scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
 
         youWinLabel.setFontScale(1.5f);
-        goToLevelSelect.setFontScale(1.5f);
-        goToMainMenu.setFontScale(1.5f);
+        playAgain.setFontScale(1.5f);
+        exitGame.setFontScale(1.5f);
         scoreLabel.setFontScale(1.5f);
 
-
-        goToLevelSelect.addListener(new InputListener(){
+        playAgain.addListener(new InputListener(){
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(levelSelect);
+               //Borramos todos los datos y comenzamos de nuevo.
+                levelSelect.dispose();
+                game.setScreen(new LevelSelect(game));
                 dispose();
                 return true;
             }
 
         });
 
-        goToMainMenu.addListener(new InputListener(){
+        exitGame.addListener(new InputListener(){
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new InitGameScreen(game,levelSelect));
+                Gdx.app.exit();
                 dispose();
                 return true;
             }
@@ -103,11 +102,11 @@ public class WinScreen implements Screen {
 
         table.row().padTop(120);
 
-        table.add(goToLevelSelect).expandX();
+        table.add(playAgain).expandX();
 
         table.row().padTop(60);
 
-        table.add(goToMainMenu).expandX();
+        table.add(exitGame).expandX();
 
         stage.addActor(table);
 
@@ -121,11 +120,11 @@ public class WinScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        //Limpiamos la pantalla
-        Gdx.gl.glClearColor(0.51f, 0.51f, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            //Limpiamos la pantalla
+            Gdx.gl.glClearColor(0.25f, 0.51f, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.draw();
+            stage.draw();
     }
 
     @Override

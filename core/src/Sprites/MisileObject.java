@@ -36,6 +36,7 @@ public abstract class MisileObject {
     public void update(float delta){
         sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,body.getPosition().y - sprite.getHeight() / 2);
     }
+
     public void draw(SpriteBatch spriteBatch) {
         sprite.draw(spriteBatch);
     }

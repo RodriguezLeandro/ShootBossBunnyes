@@ -18,8 +18,6 @@ import Screen.MainGameScreen;
 
 public class Asteroid extends MisileObject {
 
-    private Sprite sprite;
-
     private boolean destroyAsteroid;
 
     private boolean justOnce;
@@ -110,7 +108,4 @@ public class Asteroid extends MisileObject {
         return destroyAsteroid;
     }
 
-    public void draw(SpriteBatch spriteBatch){
-        sprite.draw(spriteBatch);
-    }
 }

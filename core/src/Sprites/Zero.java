@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import Screen.Level1Screen;
+import Screen.Level4Screen;
 
 /**
  * Created by Leandro on 04/01/2017.
@@ -30,6 +31,7 @@ public class Zero{
     public World world;
     public Body body;
     private Level1Screen level1Screen;
+    private Level4Screen level4Screen;
     private Megaman megaman;
 
     private Sprite sprite;
@@ -65,6 +67,8 @@ public class Zero{
     private boolean makeZeroUntouchable;
     private boolean zeroShouldJump;
     private boolean zeroInFinalBattle;
+
+    private boolean isZeroInLevel1;
 
     private ArrayList<Fireball> arrayListZeroFireball;
 
@@ -133,6 +137,77 @@ public class Zero{
 
         zeroIsDeadBy3Seconds = false;
 
+        isZeroInLevel1 = true;
+
+    }
+
+    public Zero(Level4Screen level4Screen){
+
+        //Supuestamente con esto seleccionamos la region de nuestro MegamanAndEnemies SpriteSheet.
+        //En realidad, deberiamos agarrar la region solo del ninja?(No estaria funcionando?).
+        sprite = new Sprite(level4Screen.getTextureAtlasCharac().findRegion("advnt_full"));
+
+        //Obtenemos el maingamescreen.
+        this.level4Screen = level4Screen;
+
+        //Obtenemos el mundo en el que el enemigo principal vivira.
+        world = level4Screen.getWorld();
+
+        //Traemos la referencia de megaman.
+        megaman = level4Screen.getMegaman();
+
+        //Inicializamos los estados de nuestro personaje.
+        currentState = State.STANDING;
+
+        //Inicializamos tambien el estado previo.
+        previousState = State.STANDING;
+
+        //Inicializamos el timer del estado de las animaciones.
+        stateTimer = 0;
+
+        //Decimos que zero no esta muerto al iniciar el juego.
+        zeroIsDead = false;
+
+        //Decimos que cuando arranca el juego el personaje mira a la izquierda.
+        //Nota: como es el enemigo, debe estar mirando siempre hacia donde esta nuestro mc(main character).
+        runningRight = false;
+
+        //Creamos las animaciones de el malvado personaje contrario.
+        crearAnimaciones();
+
+        //Definimos y creamos las caracteristicas del body del enemigo.
+        defineZero();
+
+        //Buscamos la textura inicial, en la que nuestro enemigo se encuentra en Standing.
+        zeroStand = new TextureRegion(sprite.getTexture(),1,1,32,64);
+
+        //Definimos la posicion inicial de nuestro personaje enemigo.
+        //En realidad, en update esto deberia de sobreescribirse siempre, no deberia ser necesario.
+        sprite.setBounds(0,0,64 / MegamanMainClass.PixelsPerMeters ,128 / MegamanMainClass.PixelsPerMeters);
+
+        //Con el metodo setRegion se dibujara nuestro personaje.
+        sprite.setRegion(zeroStand);
+
+        //Establecemos el valor inicial del contador en 0.
+        untouchableCount = 0;
+
+        //Porque el personaje enemigo debe ser tocable.
+        makeZeroUntouchable = false;
+
+        //Inicializamos el estado de pelea inicial.
+        fightingState = 0;
+
+        arrayListZeroFireball = new ArrayList<Fireball>();
+
+        arrayListZeroSize = 0;
+
+        zeroInFinalBattle = false;
+
+        zeroIsDeadBy3Seconds = false;
+
+        //Because he is in level 4.
+        isZeroInLevel1 = false;
+
     }
 
     public void update(float delta){
@@ -170,14 +245,28 @@ public class Zero{
             //Cada fireball de zero que sale fuera de la pantalla lo eliminamos.
             arrayListZeroSize = arrayListZeroFireball.size();
 
-            for (int i = 0; i < arrayListZeroSize; i++) {
-                if ((arrayListZeroFireball.get(i).body.getPosition().x > level1Screen.getMainCamera().position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < level1Screen.getMainCamera().position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
+            //Aqui hacemos lo mismo con respecto a en que nivel esta zero.
 
-                    arrayListZeroFireball.get(i).dispose();
-                    arrayListZeroFireball.remove(i);
-                    arrayListZeroSize = arrayListZeroFireball.size();
+            if (isZeroInLevel1) {
+                for (int i = 0; i < arrayListZeroSize; i++) {
+                    if ((arrayListZeroFireball.get(i).body.getPosition().x > level1Screen.getMainCamera().position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < level1Screen.getMainCamera().position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
+
+                        arrayListZeroFireball.get(i).dispose();
+                        arrayListZeroFireball.remove(i);
+                        arrayListZeroSize = arrayListZeroFireball.size();
+                    }
+                }
+            }else {
+                for (int i = 0; i < arrayListZeroSize; i++) {
+                    if ((arrayListZeroFireball.get(i).body.getPosition().x > level4Screen.getMainCamera().position.x + 400 / MegamanMainClass.PixelsPerMeters) || (arrayListZeroFireball.get(i).body.getPosition().x < level4Screen.getMainCamera().position.x - 400 / MegamanMainClass.PixelsPerMeters)) {
+
+                        arrayListZeroFireball.get(i).dispose();
+                        arrayListZeroFireball.remove(i);
+                        arrayListZeroSize = arrayListZeroFireball.size();
+                    }
                 }
             }
+
             if (!zeroIsDead)
                 //Solo si no esta muerto quiero que pelee zero.
                 makeZeroFight();
@@ -210,10 +299,19 @@ public class Zero{
 
             //Si el personaje mira a la derecha, dispara hacia alli,
             if (isRunningRight()) {
-                arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, true, this));
+                //Si zero viene de level 1, mandamos level1 screen, si viene de lvl 4, mandamos lvl 4 screen.
+                if (isZeroInLevel1) {
+                    arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, true, this));
+                }else{
+                    arrayListZeroFireball.add(new Fireball(level4Screen, positionFireball.x, positionFireball.y, true, this));
+                }
             } else {
-                //Si mira a la izquierda, dispara hacia el otro lado.
-                arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, false, this));
+                if (isZeroInLevel1) {
+                    //Si mira a la izquierda, dispara hacia el otro lado.
+                    arrayListZeroFireball.add(new Fireball(level1Screen, positionFireball.x, positionFireball.y, false, this));
+                }else {
+                    arrayListZeroFireball.add(new Fireball(level4Screen, positionFireball.x, positionFireball.y, false, this));
+                }
             }
         }
     }
@@ -517,7 +615,12 @@ public class Zero{
                 //Si no estaba siendo golpeado, reiniciamos el stateTimer.
                 if (previousState != State.GETTINGHIT) {
                     stateTimer = 0;
-                    level1Screen.dañarZeroPersonaje();
+                    if (isZeroInLevel1) {
+                        level1Screen.dañarZeroPersonaje();
+                    }
+                    else{
+                        level4Screen.dañarJefes();
+                    }
                 }
                 //Si esta siendo lastimado, mostramos la animacion de IsGettingHit.
                 textureRegion = zeroGettingHit.getKeyFrame(stateTimer);
@@ -689,7 +792,10 @@ public class Zero{
     public void setZeroUntouchableDot5Seconds(){
 
         if(untouchableCount < 1.5f){
+            if (isZeroInLevel1)
             untouchableCount += level1Screen.getDeltaTime();
+            else
+            untouchableCount += level4Screen.getDeltaTime();
             makeZeroUntouchable = true;
         }
         else {

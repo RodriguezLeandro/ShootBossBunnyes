@@ -85,6 +85,10 @@ public class GameOverScreen implements Screen {
                         game.setScreen(new Level3Screen((MegamanMainClass)game,levelSelectScreen));
                         dispose();
                         break;
+                    case 4:
+                        game.setScreen(new Level4Screen((MegamanMainClass)game,levelSelectScreen));
+                        dispose();
+                        break;
                 }
                 return true;
 
@@ -142,7 +146,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void render(float delta) {
         //Limpiamos la pantalla
-        Gdx.gl.glClearColor(0.25f, 0.51f, 0, 1);
+        Gdx.gl.glClearColor(0.51f, 0.51f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.draw();
