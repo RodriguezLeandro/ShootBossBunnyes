@@ -223,6 +223,7 @@ public class Boss2 {
 
         if (randomNumber == 1){
             setBlackFireballAttack();
+            currentState = State.ATTACKING;
         }
 
         moverBoss2HaciaMegaman();

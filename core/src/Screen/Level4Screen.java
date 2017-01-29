@@ -368,7 +368,7 @@ public class Level4Screen extends MainGameScreen {
 
         game.batch.end();
 
-        box2DDebugRenderer.render(world, mainCamera.combined);
+      //  box2DDebugRenderer.render(world, mainCamera.combined);
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
