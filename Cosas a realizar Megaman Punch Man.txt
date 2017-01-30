@@ -1,0 +1,21 @@
+Cosas a realizar--
+
+No permitir en android que el personaje pueda deslizarse mas de 1 vez.
+
+Establecer transiciones en la parte baja del mapa.
+
+Crear escaleras y realizar el script que le permita al personaje principal bajarlas y subirlas.
+
+Crear musica correcta(sin copyright) para implementar a nuestro juego.
+
+Recordar que la clase background no esta cumpliendo ninguna funciona actualmente, finalmente decidimos pintar el background como tiles en tiledmap.
+
+Se me ocurrio que el personaje principal pueda caer de las plataformas, y en vez de morir, caiga varios pisos, lo que alargaria el juego.
+
+Se me ocurrio tambien el algoritmo importante para aplicarle a los conejos en el movimiento:
+(Que los conejos salten y se dirijan en cierta direccion con cierto patron, y que cuando se encuentren cerca de uno de los sensores de las paredes del suelo, den la vuelta.)
+(Podriamos crear sensores de paredes del suelo, lo que permitiria que el conejo "choque" con lo invisible, y de la vuelta.
+
+Cuando utilizo el ataque de gravedad, eliminar enemigos o aumentar score?
+
+Hacer que si ingresamos desde android, muestre los botones correspondientes a android, y si ingresamos por desktop, muestre los botones correspondientes a desktop.
