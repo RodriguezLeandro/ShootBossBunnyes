@@ -6,6 +6,7 @@
 hs_err_pid*
 
 ## Robovm
+robovm-build/
 
 ## GWT
 war/
