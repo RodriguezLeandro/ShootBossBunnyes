@@ -359,10 +359,14 @@ public abstract class MainGameScreen implements Screen {
             }
         }
 
+        //Esto lo dejamos comentado, ya que es un atajo, y no queremos que se pueda realizar.
+        /*
         //Si presionamos M, el personaje se traslada a una posicion cercana al final.
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             megaman.body.setTransform(12400 / MegamanMainClass.PixelsPerMeters, 200 / MegamanMainClass.PixelsPerMeters, megaman.body.getAngle());
         }
+        */
+        //Antes si presionabamos arriba, el personaje moria.
         //Si presionamos Arriba, el personaje ya no muere.
           /*  if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 megaman.setState(Megaman.State.DYING);
@@ -414,6 +418,8 @@ public abstract class MainGameScreen implements Screen {
                 }
             }
         }
+        //Lo dejamos comentado tambien ,y lo de abajo tambien, son cheats.
+        /*
         //Si presionamos Q, el personaje es lastimado.
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
             megaman.setState(Megaman.State.GETTINGHIT);
@@ -434,6 +440,8 @@ public abstract class MainGameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             hud.recuperarMana(30);
         }
+
+        */
 
     }
 

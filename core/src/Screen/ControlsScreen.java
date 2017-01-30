@@ -20,28 +20,30 @@ import com.mygdx.megamangame.MegamanMainClass;
  * Created by Leandro on 06/01/2017.
  */
 
+//Dejo la clase padre ControlsScreen por default para android, ya que asi la pantalla de android solo debe realizar super en su respectivo constructor.
+//En cambio, la clase ConstrolsDesktopScreen, debera cambiar el texto de cada Label.
 public class ControlsScreen implements Screen {
 
-    private Game game;
+    protected Game game;
 
-    private Viewport viewport;
-    private Stage stage;
-    private LevelSelect levelSelect;
+    protected Viewport viewport;
+    protected Stage stage;
+    protected LevelSelect levelSelect;
 
-    private Label backToMenuScreen;
-    private Label upArrowLabel;
-    private Label leftArrowLabel;
-    private Label downArrowLabel;
-    private Label rightArrowLabel;
+    protected Label backToMenuScreen;
+    protected Label upArrowLabel;
+    protected Label leftArrowLabel;
+    protected Label downArrowLabel;
+    protected Label rightArrowLabel;
 
-    private Label rightButtonLabel;
-    private Label leftButtonLabel;
-    private Label downButtonLabel;
-    private Label upButtonLabel;
+    protected Label rightButtonLabel;
+    protected Label leftButtonLabel;
+    protected Label downButtonLabel;
+    protected Label upButtonLabel;
 
-    private Label.LabelStyle labelStyle;
+    protected Label.LabelStyle labelStyle;
 
-    private Table table;
+    protected Table table;
 
     //Cuando tenga definidas las acciones de los controles, lleno esta clase.
     public ControlsScreen(final MegamanMainClass game){
@@ -60,10 +62,10 @@ public class ControlsScreen implements Screen {
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        upArrowLabel = new Label("Up arrow:        It does nothing",labelStyle);
-        leftArrowLabel = new Label("Left arrow:     You can move to the left",labelStyle);
-        downArrowLabel = new Label("Down arrow:     It does nothing",labelStyle);
-        rightArrowLabel = new Label("Right arrow:    You can move to the right",labelStyle);
+        upArrowLabel = new Label("Up analog stick:     It does nothing",labelStyle);
+        leftArrowLabel = new Label("Left analog stick: You can move to the left",labelStyle);
+        downArrowLabel = new Label("Down analog stick: It does nothing",labelStyle);
+        rightArrowLabel = new Label("Right analog stick: You can move to the right",labelStyle);
 
         rightButtonLabel = new Label("Right Button:  Slide",labelStyle);
         leftButtonLabel = new Label("Left Button: Throw punch fireball",labelStyle);
@@ -136,10 +138,10 @@ public class ControlsScreen implements Screen {
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        upArrowLabel = new Label("Up arrow:        It does nothing",labelStyle);
-        leftArrowLabel = new Label("Left arrow:     You can move to the left",labelStyle);
-        downArrowLabel = new Label("Down arrow:     It does nothing",labelStyle);
-        rightArrowLabel = new Label("Right arrow:    You can move to the right",labelStyle);
+        upArrowLabel = new Label("Up analog stick:     It does nothing",labelStyle);
+        leftArrowLabel = new Label("Left analog stick: You can move to the left",labelStyle);
+        downArrowLabel = new Label("Down analog stick: It does nothing",labelStyle);
+        rightArrowLabel = new Label("Right analog stick: You can move to the right",labelStyle);
 
         rightButtonLabel = new Label("Right Button:  Slide",labelStyle);
         leftButtonLabel = new Label("Left Button: Throw punch fireball",labelStyle);

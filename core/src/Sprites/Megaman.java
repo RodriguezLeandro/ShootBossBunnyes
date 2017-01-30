@@ -99,7 +99,7 @@ public class Megaman{
         megamanSlashing = new TextureRegion(sprite.getTexture(),354,68,32,64);
 
         //Creamos el textureregion de megamanSliding.
-        megamanSliding = new TextureRegion(sprite.getTexture(),354,193,32,64);
+        megamanSliding = new TextureRegion(sprite.getTexture(),354,196,32,64);
 
         //Definimos la posicion inicial de nuestro personaje.
         //En realidad, en update esto deberia de sobreescribirse siempre, no deberia ser necesario.

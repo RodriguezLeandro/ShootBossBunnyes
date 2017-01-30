@@ -20,8 +20,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.megamangame.MegamanMainClass;
 
-import Tools.InteractiveTileObject;
-
 /**
  * Created by Leandro on 04/01/2017.
  */

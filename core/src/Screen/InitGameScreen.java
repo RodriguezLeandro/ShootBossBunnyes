@@ -1,5 +1,6 @@
 package Screen;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -74,11 +75,19 @@ public class InitGameScreen implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //Hay que enviar al usuario a la pantalla de controles..
-                game.setScreen(new ControlsScreen((MegamanMainClass) game));
-                dispose();
 
-                return true;
+                if (Gdx.app.getType() == Application.ApplicationType.Android) {
+                    //Hay que enviar al usuario a la pantalla de controles..
+                    game.setScreen(new ControlsAndroidScreen((MegamanMainClass) game));
+                    dispose();
+
+                    return true;
+
+                }else {
+                    game.setScreen(new ControlsDesktopScreen((MegamanMainClass) game));
+                    dispose();
+                    return true;
+                }
             }
 
             @Override
@@ -164,11 +173,19 @@ public class InitGameScreen implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //Hay que enviar al usuario a la pantalla de controles..
-                game.setScreen(new ControlsScreen((MegamanMainClass) game,levelSelect));
-                dispose();
-
-                return true;
+                //Si el usuario esta utilizando un dispositivo android, lo llevamos a la pantalla de controles de android,
+                //de lo contrario, lo llevamos a la pantalla de controles de desktop.
+                if (Gdx.app.getType() == Application.ApplicationType.Android) {
+                    //Hay que enviar al usuario a la pantalla de controles..
+                    game.setScreen(new ControlsAndroidScreen((MegamanMainClass) game, levelSelect));
+                    dispose();
+                    return true;
+                }
+                else {
+                    game.setScreen(new ControlsDesktopScreen((MegamanMainClass) game,levelSelect));
+                    dispose();
+                    return true;
+                }
             }
 
             @Override
