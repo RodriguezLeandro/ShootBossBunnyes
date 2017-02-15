@@ -239,7 +239,6 @@ public class Level3Screen extends MainGameScreen {
     }
 
     public void dispose(){
-        music.dispose();
         tiledMap.dispose();
         mapRenderer.dispose();
         arrayListAsteroid.clear();

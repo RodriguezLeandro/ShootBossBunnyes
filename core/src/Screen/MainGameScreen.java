@@ -418,6 +418,7 @@ public abstract class MainGameScreen implements Screen {
                 }
             }
         }
+
         //Lo dejamos comentado tambien ,y lo de abajo tambien, son cheats.
         /*
         //Si presionamos Q, el personaje es lastimado.

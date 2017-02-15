@@ -392,7 +392,6 @@ public class Level4Screen extends MainGameScreen {
 
 
     public void dispose() {
-        music.dispose();
         tiledMap.dispose();
         mapRenderer.dispose();
         boss1.dispose();

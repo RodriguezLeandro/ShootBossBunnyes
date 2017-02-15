@@ -311,6 +311,4 @@ public class Level1Screen extends MainGameScreen{
         arrayListBunny.clear();
     }
 
-
-
 }

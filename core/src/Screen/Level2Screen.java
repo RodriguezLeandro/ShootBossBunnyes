@@ -98,6 +98,9 @@ public class Level2Screen extends MainGameScreen {
             }
         }
 
+        /*
+        //Ya no dejamos que esto pase:
+
         //Si tocamos B, que el enemigo ataque con el hair(haier?);
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)){
                boss1.createHairSpecialAttack();
@@ -106,6 +109,8 @@ public class Level2Screen extends MainGameScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.V)){
             boss1.createHairAttack();
         }
+
+        */
 
         //Si la pelea no se encuentra en la recta final.
         if (!stageInFinalBattle) {
@@ -259,7 +264,6 @@ public class Level2Screen extends MainGameScreen {
 
     @Override
     public void dispose() {
-        music.dispose();
         tiledMap.dispose();
         mapRenderer.dispose();
         arrayListBat.clear();
