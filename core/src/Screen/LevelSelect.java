@@ -2,6 +2,7 @@ package Screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,7 +48,6 @@ public class LevelSelect implements Screen {
     private Label level2Label;
     private Label level3Label;
     private Label level4Label;
-    private Label finalLabel;
     private Label.LabelStyle labelStyle;
 
     private InputListener inputListener;
@@ -62,6 +62,7 @@ public class LevelSelect implements Screen {
     private Boolean fourthLevelWon;
     private Boolean lastLevelWon;
 
+    private Preferences preferences;
 
     public LevelSelect(MegamanMainClass mainGameScreen){
 
@@ -77,13 +78,29 @@ public class LevelSelect implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
-        createHud();
-
         firstLevelWon = false;
         secondLevelWon= false;
         thirdLevelWon = false;
         fourthLevelWon= false;
         lastLevelWon = false;
+
+        preferences = Gdx.app.getPreferences("Score");
+
+        labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+
+
+        level1Label = new Label("High Score ="+preferences.getInteger("ScoreLevel1"),labelStyle);
+        level2Label = new Label("High Score ="+preferences.getInteger("ScoreLevel2"),labelStyle);
+        level3Label = new Label("High Score ="+preferences.getInteger("ScoreLevel3"),labelStyle);
+        level4Label = new Label("High Score ="+preferences.getInteger("ScoreLevel4"),labelStyle);
+
+        level1Label.setFontScale(1.5f);
+        level2Label.setFontScale(1.5f);
+        level3Label.setFontScale(1.5f);
+        level4Label.setFontScale(1.5f);
+
+        createHud();
+
     }
 
     public void createHud(){
@@ -103,7 +120,8 @@ public class LevelSelect implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //Si todavia no cruzo el primer nivel, entonces que lo juegue.
-                if (!firstLevelWon)
+             //   if (!firstLevelWon)
+                //Ahora lo puede jugar igual al nivel, aunque lo haya cruzado.
                 game.setScreen(new Level1Screen((MegamanMainClass) game , thisLevelSelect));
                 return true;
             }
@@ -114,7 +132,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!secondLevelWon)
+              //  if (!secondLevelWon)
                 game.setScreen(new Level2Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
@@ -125,7 +143,7 @@ public class LevelSelect implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!thirdLevelWon)
+              //  if (!thirdLevelWon)
                 game.setScreen(new Level3Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
@@ -137,14 +155,19 @@ public class LevelSelect implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //Solo se puede jugar el cuarto nivel si cruzamos los anteriores.
-                if (firstLevelWon && secondLevelWon && thirdLevelWon)
-                game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
+              //  if (firstLevelWon && secondLevelWon && thirdLevelWon)
+
+                //Si el jugador ha cruzado el nivel 1, el nivel 2, y el nivel 3, puede jugar el cuarto, de lo contrario no.
+                preferences = Gdx.app.getPreferences("LevelWon");
+
+                if ((preferences.getBoolean("FirstLevelWon"))&&(preferences.getBoolean("SecondLevelWon"))&&(preferences.getBoolean("ThirdLevelWon"))){
+                    game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
+                }
                 return true;
             }
         });
 
         imageMegaman.addListener(new InputListener(){
-
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -155,22 +178,34 @@ public class LevelSelect implements Screen {
               //  finalLabel.setText("ACA LA IMAGEN FINAL POR EJ");
           //    if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
               //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
-
                 return true;
             }
         });
+
+
+        table.add(level1Label);
+        table.add();
+        table.add(level2Label);
+        table.row();
 
         table.add(imageZero).pad(15,30,0,0);
         table.add();
         table.add(imageBoss1).pad(15,100,0,15);
         table.row();
+
         table.add();
-        table.add(imageMegaman).pad(105,250,0,150);
+        table.add(imageMegaman).pad(40,200,0,150);
         table.add();
         table.row();
-        table.add(imageBoss2).pad(100,30,50,0);
+
+        table.add(level3Label);
         table.add();
-        table.add(imageWho).pad(100,100,50,15);
+        table.add(level4Label);
+        table.row();
+
+        table.add(imageBoss2).pad(15,30,50,0);
+        table.add();
+        table.add(imageWho).pad(15,100,50,15);
 
         stage.addActor(table);
     }
@@ -180,6 +215,93 @@ public class LevelSelect implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
+    }
+
+    public void updateScore(){
+
+        level1Label.setText("High Score ="+preferences.getInteger("ScoreLevel1"));
+        level2Label.setText("High Score ="+preferences.getInteger("ScoreLevel2"));
+        level3Label.setText("High Score ="+preferences.getInteger("ScoreLevel3"));
+        level4Label.setText("High Score ="+preferences.getInteger("ScoreLevel4"));
+    }
+
+    public void setScore(Integer lastLevelPlayed,Integer score){
+
+        preferences = Gdx.app.getPreferences("Score");
+
+        //Si el ultimo nivel jugado es el 1.
+        if (lastLevelPlayed == 1) {
+            //Si no existe score anterior, ponemos el nuevo score.
+            if (preferences.getInteger("ScoreLevel1") == 0){
+                preferences.putInteger("ScoreLevel1",score);
+            }
+            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+            else{
+                if (preferences.getInteger("ScoreLevel1") < score){
+                    //Si lo es, entonces sobreescribimos el nuevo score.
+                    preferences.putInteger("ScoreLevel1",score);
+                }
+                else {
+                    //Si no lo es, entonces dejamos el score mas alto.
+                }
+            }
+
+            preferences.flush();
+        }
+        else if(lastLevelPlayed == 2){
+            //Si no existe score anterior, ponemos el nuevo score.
+            if (preferences.getInteger("ScoreLevel2") == 0){
+                preferences.putInteger("ScoreLevel2",score);
+            }
+            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+            else{
+                if (preferences.getInteger("ScoreLevel2") < score){
+                    //Si lo es, entonces sobreescribimos el nuevo score.
+                    preferences.putInteger("ScoreLevel2",score);
+                }
+                else {
+                    //Si no lo es, entonces dejamos el score mas alto.
+                }
+            }
+
+            preferences.flush();
+        }
+        else if(lastLevelPlayed == 3){
+            //Si no existe score anterior, ponemos el nuevo score.
+            if (preferences.getInteger("ScoreLevel3") == 0){
+                preferences.putInteger("ScoreLevel3",score);
+            }
+            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+            else{
+                if (preferences.getInteger("ScoreLevel3") < score){
+                    //Si lo es, entonces sobreescribimos el nuevo score.
+                    preferences.putInteger("ScoreLevel3",score);
+                }
+                else {
+                    //Si no lo es, entonces dejamos el score mas alto.
+                }
+            }
+
+            preferences.flush();
+        }
+        else if(lastLevelPlayed == 4){
+            //Si no existe score anterior, ponemos el nuevo score.
+            if (preferences.getInteger("ScoreLevel4") == 0){
+                preferences.putInteger("ScoreLevel4",score);
+            }
+            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+            else{
+                if (preferences.getInteger("ScoreLevel4") < score){
+                    //Si lo es, entonces sobreescribimos el nuevo score.
+                    preferences.putInteger("ScoreLevel4",score);
+                }
+                else {
+                    //Si no lo es, entonces dejamos el score mas alto.
+                }
+            }
+
+            preferences.flush();
+        }
     }
 
     public void setLastLevelPlayed(Integer integer){

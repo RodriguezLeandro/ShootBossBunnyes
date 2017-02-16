@@ -1,5 +1,6 @@
 package Screen;
 
+import com.badlogic.gdx.Preferences;
 import com.mygdx.megamangame.MegamanMainClass;
 
 /**
@@ -11,6 +12,5 @@ public class Level1WinScreen extends WinScreen {
 
     public Level1WinScreen(MegamanMainClass game,Integer scoreDataInteger, LevelSelect levelSelect){
         super(game,scoreDataInteger,levelSelect);
-
     }
 }

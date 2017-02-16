@@ -2,6 +2,7 @@ package Screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,9 +33,14 @@ public class GameWinScreen implements Screen{
     private Label youWinLabel;
     private Label playAgain;
     private Label exitGame;
-    private Label scoreLabel;
+    private Label scoreLabel1;
+    private Label scoreLabel2;
+    private Label scoreLabel3;
+    private Label scoreLabel4;
 
     private Integer scoreDataInteger;
+
+    Preferences preferences;
 
     private Table table;
 
@@ -45,6 +51,8 @@ public class GameWinScreen implements Screen{
         this.levelSelect = levelSelect;
 
         this.scoreDataInteger = scoreDataInteger;
+
+        levelSelect.setScore(levelSelect.getLastLevelPlayed(),scoreDataInteger);
 
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
@@ -62,12 +70,30 @@ public class GameWinScreen implements Screen{
         youWinLabel = new Label("You won the game, congratulations!!",labelStyle);
         playAgain = new Label("Play again",labelStyle);
         exitGame = new Label("EXIT",labelStyle);
-        scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
+
+
+        preferences = Gdx.app.getPreferences("LevelWon");
+
+        if(!preferences.getBoolean("FourthLevelWon")){
+            preferences.putBoolean("FourthLevelWon",true);
+        }
+
+        preferences.flush();
+
+        preferences = Gdx.app.getPreferences("Score");
+
+        scoreLabel1 = new Label("Score = "+preferences.getInteger("ScoreLevel1"),labelStyle);
+        scoreLabel2 = new Label("Score = "+preferences.getInteger("ScoreLevel2"),labelStyle);
+        scoreLabel3 = new Label("Score = "+preferences.getInteger("ScoreLevel3"),labelStyle);
+        scoreLabel4 = new Label("Score = "+preferences.getInteger("ScoreLevel4"),labelStyle);
 
         youWinLabel.setFontScale(1.5f);
         playAgain.setFontScale(1.5f);
         exitGame.setFontScale(1.5f);
-        scoreLabel.setFontScale(1.5f);
+        scoreLabel1.setFontScale(1.5f);
+        scoreLabel2.setFontScale(1.5f);
+        scoreLabel3.setFontScale(1.5f);
+        scoreLabel4.setFontScale(1.5f);
 
         playAgain.addListener(new InputListener(){
 
@@ -98,9 +124,20 @@ public class GameWinScreen implements Screen{
 
         table.row().padTop(80);
 
-        table.add(scoreLabel);
+        table.add(scoreLabel1);
 
-        table.row().padTop(120);
+        table.row().padTop(20);
+
+        table.add(scoreLabel2);
+
+        table.row().padTop(20);
+        table.add(scoreLabel3);
+
+        table.row().padTop(20);
+
+        table.add(scoreLabel4);
+
+        table.row().padTop(40);
 
         table.add(playAgain).expandX();
 

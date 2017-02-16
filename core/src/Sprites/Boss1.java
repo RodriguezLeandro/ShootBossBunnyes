@@ -409,6 +409,12 @@ public class Boss1 {
         arrayListHair.clear();
         arrayListSpecialHairAttack.clear();
         world.destroyBody(body);
+        if (isBoss1InLevel2){
+            level2Screen.setAddScore(300);
+        }
+        else {
+            level4Screen.setAddScore(300);
+        }
     }
 
 }

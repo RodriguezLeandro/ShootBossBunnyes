@@ -124,22 +124,22 @@
  </objectgroup>
  <objectgroup name="Bat">
   <object id="108" x="1345.33" y="337.333" width="62.8333" height="62.5"/>
-  <object id="110" x="1747.25" y="88.75" width="62.8333" height="62.5"/>
+  <object id="110" x="1789.67" y="512.992" width="62.8333" height="62.5"/>
   <object id="111" x="2365.92" y="272.75" width="62.8333" height="62.5"/>
-  <object id="112" x="2959.25" y="62.0833" width="62.8333" height="62.5"/>
+  <object id="112" x="3235.01" y="171.174" width="62.8333" height="62.5"/>
   <object id="113" x="4229.92" y="103.417" width="62.8333" height="62.5"/>
   <object id="114" x="4571.25" y="372.75" width="62.8333" height="62.5"/>
   <object id="115" x="6000.58" y="150.083" width="62.8333" height="62.5"/>
   <object id="116" x="6471.25" y="155.417" width="62.8333" height="62.5"/>
   <object id="117" x="7789.92" y="239.417" width="62.8333" height="62.5"/>
   <object id="118" x="8184.58" y="211.417" width="62.8333" height="62.5"/>
-  <object id="119" x="9080.58" y="79.4167" width="62.8333" height="62.5"/>
-  <object id="120" x="10381.9" y="110.083" width="62.8333" height="62.5"/>
+  <object id="119" x="8938.16" y="315.78" width="62.8333" height="62.5"/>
+  <object id="120" x="10336.4" y="185.841" width="62.8333" height="62.5"/>
   <object id="121" x="10393.9" y="482.083" width="62.8333" height="62.5"/>
-  <object id="122" x="11036.6" y="115.417" width="62.8333" height="62.5"/>
-  <object id="123" x="12165.9" y="118.083" width="62.8333" height="62.5"/>
+  <object id="122" x="11209.3" y="191.175" width="62.8333" height="62.5"/>
+  <object id="123" x="12090.1" y="130.204" width="62.8333" height="62.5"/>
   <object id="124" x="12428.6" y="378.083" width="62.8333" height="62.5"/>
-  <object id="125" x="12792.6" y="60.75" width="62.8333" height="62.5"/>
+  <object id="125" x="12741.1" y="106.205" width="62.8333" height="62.5"/>
  </objectgroup>
  <objectgroup name="RedCoin">
   <object id="126" x="3983" y="127" width="36" height="36">

@@ -36,6 +36,11 @@ public class ControlsScreen implements Screen {
     protected Label downArrowLabel;
     protected Label rightArrowLabel;
 
+    protected Label infoLabel;
+    protected Label infoLabelData;
+    protected Label infoLabelData2;
+    protected Label infoLabelData3;
+
     protected Label rightButtonLabel;
     protected Label leftButtonLabel;
     protected Label downButtonLabel;
@@ -45,7 +50,6 @@ public class ControlsScreen implements Screen {
 
     protected Table table;
 
-    //Cuando tenga definidas las acciones de los controles, lleno esta clase.
     public ControlsScreen(final MegamanMainClass game){
         this.game = game;
 
@@ -72,6 +76,14 @@ public class ControlsScreen implements Screen {
         downButtonLabel = new Label("Down Button: Jump",labelStyle);
         upButtonLabel = new Label("Up Button: Gravity power",labelStyle);
 
+        infoLabel = new Label("Instrucciones del Juego",labelStyle);
+
+        infoLabelData = new Label("Para ganar el juego hay que ir venciendo a los enemigos hasta llegar al final de cada nivel.",labelStyle);
+
+        infoLabelData2 = new Label("Para acceder a cada nivel, se debe hacer click sobre la imagen del respectivo enemigo.",labelStyle);
+
+        infoLabelData3 = new Label("Mientras mas enemigos elimines, mas puntaje obtendrás por ello.",labelStyle);
+
         backToMenuScreen = new Label("Back to Menu Screen",labelStyle);
 
         backToMenuScreen.addListener(new InputListener(){
@@ -89,6 +101,11 @@ public class ControlsScreen implements Screen {
         rightArrowLabel.setFontScale(1.5f);
         downArrowLabel.setFontScale(1.5f);
 
+        infoLabel.setFontScale(1.5f);
+        infoLabelData.setFontScale(1);
+        infoLabelData2.setFontScale(1);
+        infoLabelData3.setFontScale(1);
+
         upButtonLabel.setFontScale(1.5f);
         leftButtonLabel.setFontScale(1.5f);
         rightButtonLabel.setFontScale(1.5f);
@@ -97,25 +114,37 @@ public class ControlsScreen implements Screen {
         backToMenuScreen.setFontScale(2);
 
         table.row();
-        table.add(upArrowLabel).pad(40,0,0,100);
+        table.add(upArrowLabel).pad(10,0,0,450);
         table.row();
-        table.add(downArrowLabel).fill().padTop(20);
+        table.add(downArrowLabel).fill().padTop(10);
         table.row();
-        table.add(leftArrowLabel).fill().padTop(20);
+        table.add(leftArrowLabel).fill().padTop(10);
         table.row();
-        table.add(rightArrowLabel).fill().padTop(20);
-        table.row();
-
-        table.add(upButtonLabel).fill().padTop(40);
-        table.row();
-        table.add(downButtonLabel).fill().padTop(20);
-        table.row();
-        table.add(leftButtonLabel).fill().padTop(20);
-        table.row();
-        table.add(rightButtonLabel).fill().padTop(20);
+        table.add(rightArrowLabel).fill().padTop(10);
         table.row();
 
-        table.add(backToMenuScreen).fill().padTop(40);
+        table.add(upButtonLabel).fill().padTop(20);
+        table.row();
+        table.add(downButtonLabel).fill().padTop(10);
+        table.row();
+        table.add(leftButtonLabel).fill().padTop(10);
+        table.row();
+        table.add(rightButtonLabel).fill().padTop(10);
+        table.row();
+
+        table.add(infoLabel).fill().padTop(20);
+        table.row();
+
+        table.add(infoLabelData).fill().padTop(10);
+        table.row();
+
+        table.add(infoLabelData2).fill().padTop(5);
+        table.row();
+
+        table.add(infoLabelData3).fill().padTop(5);
+        table.row();
+
+        table.add(backToMenuScreen).fill().padTop(20);
 
         stage.addActor(table);
     }
@@ -143,6 +172,15 @@ public class ControlsScreen implements Screen {
         downArrowLabel = new Label("Down analog stick: It does nothing",labelStyle);
         rightArrowLabel = new Label("Right analog stick: You can move to the right",labelStyle);
 
+        infoLabel = new Label("Instrucciones del Juego",labelStyle);
+
+        infoLabelData = new Label("Para ganar el juego hay que ir venciendo a los enemigos hasta llegar al final de cada nivel.",labelStyle);
+
+        infoLabelData2 = new Label("Para acceder a cada nivel, se debe hacer click sobre la imagen del respectivo enemigo.",labelStyle);
+
+        infoLabelData3 = new Label("Mientras mas enemigos elimines, mas puntaje obtendrás por ello.",labelStyle);
+
+
         rightButtonLabel = new Label("Right Button:  Slide",labelStyle);
         leftButtonLabel = new Label("Left Button: Throw punch fireball",labelStyle);
         downButtonLabel = new Label("Down Button: Jump",labelStyle);
@@ -165,6 +203,11 @@ public class ControlsScreen implements Screen {
         rightArrowLabel.setFontScale(1.5f);
         downArrowLabel.setFontScale(1.5f);
 
+        infoLabel.setFontScale(1.5f);
+        infoLabelData.setFontScale(1);
+        infoLabelData2.setFontScale(1);
+        infoLabelData3.setFontScale(1);
+
         upButtonLabel.setFontScale(1.5f);
         leftButtonLabel.setFontScale(1.5f);
         rightButtonLabel.setFontScale(1.5f);
@@ -173,25 +216,37 @@ public class ControlsScreen implements Screen {
         backToMenuScreen.setFontScale(2);
 
         table.row();
-        table.add(upArrowLabel).pad(40,0,0,100);
+        table.add(upArrowLabel).pad(10,0,0,450);
         table.row();
-        table.add(downArrowLabel).fill().padTop(20);
+        table.add(downArrowLabel).fill().padTop(10);
         table.row();
-        table.add(leftArrowLabel).fill().padTop(20);
+        table.add(leftArrowLabel).fill().padTop(10);
         table.row();
-        table.add(rightArrowLabel).fill().padTop(20);
-        table.row();
-
-        table.add(upButtonLabel).fill().padTop(40);
-        table.row();
-        table.add(downButtonLabel).fill().padTop(20);
-        table.row();
-        table.add(leftButtonLabel).fill().padTop(20);
-        table.row();
-        table.add(rightButtonLabel).fill().padTop(20);
+        table.add(rightArrowLabel).fill().padTop(10);
         table.row();
 
-        table.add(backToMenuScreen).fill().padTop(40);
+        table.add(upButtonLabel).fill().padTop(20);
+        table.row();
+        table.add(downButtonLabel).fill().padTop(10);
+        table.row();
+        table.add(leftButtonLabel).fill().padTop(10);
+        table.row();
+        table.add(rightButtonLabel).fill().padTop(10);
+        table.row();
+
+        table.add(infoLabel).fill().padTop(20);
+        table.row();
+
+        table.add(infoLabelData).fill().padTop(10);
+        table.row();
+
+        table.add(infoLabelData2).fill().padTop(5);
+        table.row();
+
+        table.add(infoLabelData3).fill().padTop(5);
+        table.row();
+
+        table.add(backToMenuScreen).fill().padTop(20);
 
         stage.addActor(table);
     }

@@ -2,6 +2,7 @@ package Screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,6 +48,8 @@ public class WinScreen implements Screen {
 
         this.scoreDataInteger = scoreDataInteger;
 
+        levelSelect.setScore(levelSelect.getLastLevelPlayed(),scoreDataInteger);
+
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
         stage = new Stage(viewport,game.batch);
@@ -64,7 +67,50 @@ public class WinScreen implements Screen {
         youWinLabel = new Label("YOU WIN !!",labelStyle);
         goToLevelSelect = new Label("SELECT LEVEL",labelStyle);
         goToMainMenu = new Label("MAIN MENU",labelStyle);
-        scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
+
+        //Aca ponemos el score dependiendo del nivel desde el cual estamos jugando.
+        if (levelSelect.getLastLevelPlayed() == 1){
+            scoreLabel = new Label("Score level 1 = "+scoreDataInteger,labelStyle);
+
+            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+
+            if (!preferences.getBoolean("FirstLevelWon")){
+                preferences.putBoolean("FirstLevelWon",true);
+            }
+            preferences.flush();
+
+        }else if (levelSelect.getLastLevelPlayed() == 2){
+            scoreLabel = new Label("Score level 2 = "+scoreDataInteger,labelStyle);
+
+            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+
+            if (!preferences.getBoolean("SecondLevelWon")){
+                preferences.putBoolean("SecondLevelWon",true);
+            }
+            preferences.flush();
+        }else if (levelSelect.getLastLevelPlayed() == 3){
+            scoreLabel = new Label("Score level 3 = "+scoreDataInteger,labelStyle);
+            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+
+            if (!preferences.getBoolean("ThirdLevelWon")){
+                preferences.putBoolean("ThirdLevelWon",true);
+            }
+            preferences.flush();
+        }
+        else if (levelSelect.getLastLevelPlayed() == 4){
+            //Creo que a esta parte no se llega nunca.
+            scoreLabel = new Label("Score level 4 = "+scoreDataInteger,labelStyle);
+            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+
+            if (!preferences.getBoolean("FourthLevelWon")){
+                preferences.putBoolean("FourthLevelWon",true);
+            }
+
+            preferences.flush();
+        }
+
+        //Tengo que updatear el nuevo score del juego.
+        levelSelect.updateScore();
 
         youWinLabel.setFontScale(1.5f);
         goToLevelSelect.setFontScale(1.5f);

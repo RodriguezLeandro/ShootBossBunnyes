@@ -15,7 +15,7 @@ public class ControlsDesktopScreen extends ControlsScreen {
         downArrowLabel.setText("Press A: Move To Left");
         rightArrowLabel.setText("Press D: Move To Right");
         //Aca medio como que robo pero bueno, ya que upArrowLabel queda con la cantidad que necesito de letras.
-        upArrowLabel.setText("Press W: Do it and Jump");
+        upArrowLabel.setText("Press W: Jump");
 
         rightButtonLabel.setText("Right Arrow: Throw punch fireball");
         downButtonLabel.setText("Down Arrow: Slide");
@@ -30,7 +30,7 @@ public class ControlsDesktopScreen extends ControlsScreen {
         leftArrowLabel.setText("Press S: It does Nothing");
         downArrowLabel.setText("Press A: Move To Left");
         rightArrowLabel.setText("Press D: Move To Right");
-        upArrowLabel.setText("Press W: Do it and Jump");
+        upArrowLabel.setText("Press W: Jump");
 
         rightButtonLabel.setText("Right Arrow: Throw punch fireball");
         downButtonLabel.setText("Down Arrow: Slide");

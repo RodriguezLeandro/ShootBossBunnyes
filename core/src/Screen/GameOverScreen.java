@@ -45,6 +45,9 @@ public class GameOverScreen implements Screen {
 
         stage = new Stage(viewport,((MegamanMainClass) game).batch);
 
+        //Ponemos el score del juego alcanzado antes de morir.
+        levelSelectScreen.setScore(levelSelectScreen.getLastLevelPlayed(),scoreDataInteger);
+
         Gdx.input.setInputProcessor(stage);
 
         table = new Table();
@@ -55,7 +58,19 @@ public class GameOverScreen implements Screen {
 
         gameOverLabel = new Label("GAME OVER",labelStyle);
         playAgainLabel = new Label("PLAY AGAIN",labelStyle);
-        scoreLabel = new Label("Score = "+scoreDataInteger,labelStyle);
+
+        //Aca ponemos el score dependiendo del nivel desde el cual estamos jugando.
+        if (levelSelectScreen.getLastLevelPlayed() == 1){
+            scoreLabel = new Label("Score level 1 = "+scoreDataInteger,labelStyle);
+        }else if (levelSelectScreen.getLastLevelPlayed() == 2){
+            scoreLabel = new Label("Score level 2 = "+scoreDataInteger,labelStyle);
+        }else if (levelSelectScreen.getLastLevelPlayed() == 3){
+            scoreLabel = new Label("Score level 3 = "+scoreDataInteger,labelStyle);
+        }
+        else if (levelSelectScreen.getLastLevelPlayed() == 4){
+            scoreLabel = new Label("Score level 4 = "+scoreDataInteger,labelStyle);
+        }
+
         backToMainMenu = new Label("MAIN MENU",labelStyle);
         backToLevelSelect = new Label("SELECT LEVEL",labelStyle);
 
@@ -100,6 +115,9 @@ public class GameOverScreen implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //Tengo que updatear el nuevo score del juego.
+                levelSelectScreen.updateScore();
+
                 game.setScreen(new InitGameScreen(game,levelSelectScreen));
                 dispose();
                 return true;
@@ -110,6 +128,9 @@ public class GameOverScreen implements Screen {
         backToLevelSelect.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //Tengo que updatear el nuevo score del juego.
+                levelSelectScreen.updateScore();
+
                 game.setScreen(levelSelectScreen);
                 dispose();
                 return true;

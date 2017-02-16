@@ -319,6 +319,12 @@ public class Zero{
 
     public void dispose(){
         arrayListZeroFireball.clear();
+        if (isZeroInLevel1){
+            level1Screen.setAddScore(500);
+        }
+        else {
+            level4Screen.setAddScore(500);
+        }
     }
 
     public void makeZeroFight(){
