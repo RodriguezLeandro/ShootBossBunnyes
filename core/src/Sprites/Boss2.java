@@ -410,13 +410,13 @@ public class Boss2 {
     }
 
     public void dispose(){
-        world.destroyBody(body);
         if (isBoss2InLevel3){
             level3Screen.setAddScore(200);
         }
         else {
             level4Screen.setAddScore(200);
         }
+        world.destroyBody(body);
     }
 
 }

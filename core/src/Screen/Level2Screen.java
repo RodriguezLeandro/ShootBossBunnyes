@@ -248,6 +248,7 @@ public class Level2Screen extends MainGameScreen {
         }
 
         if (stateTimer > 3){
+            setAddScore(300);
             music.stop();
             levelSelectScreen.setLastLevelPlayed(2);
             levelSelectScreen.setWonLevel(2);
@@ -267,7 +268,6 @@ public class Level2Screen extends MainGameScreen {
         tiledMap.dispose();
         mapRenderer.dispose();
         arrayListBat.clear();
-        boss1.dispose();
         world.dispose();
     }
 

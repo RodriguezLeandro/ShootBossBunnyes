@@ -1,6 +1,7 @@
 package Screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -241,6 +242,7 @@ public class Level1Screen extends MainGameScreen{
         }
 
         if (zero.isZeroDeadBy3Seconds()){
+            zero.dispose();
             MegamanMainClass.assetManager.get("audio/topman.mp3", Music.class).stop();
             levelSelectScreen.setLastLevelPlayed(1);
             levelSelectScreen.setWonLevel(1);
@@ -307,7 +309,6 @@ public class Level1Screen extends MainGameScreen{
         tiledMap.dispose();
         mapRenderer.dispose();
         textureAtlasCharac.dispose();
-        zero.dispose();
         arrayListBunny.clear();
     }
 

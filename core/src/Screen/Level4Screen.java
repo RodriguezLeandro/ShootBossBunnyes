@@ -381,6 +381,7 @@ public class Level4Screen extends MainGameScreen {
         }
 
         if (stateTimer > 3){
+            setAddScore(1500);
             music.stop();
             levelSelectScreen.setLastLevelPlayed(4);
             levelSelectScreen.setWonLevel(4);
@@ -394,9 +395,6 @@ public class Level4Screen extends MainGameScreen {
     public void dispose() {
         tiledMap.dispose();
         mapRenderer.dispose();
-        boss1.dispose();
-        zero.dispose();
-        boss2.dispose();
         arrayListAsteroid.clear();
         arrayListBat.clear();
         arrayListBunny.clear();

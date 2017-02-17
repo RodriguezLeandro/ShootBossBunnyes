@@ -98,7 +98,7 @@ public class Level3Screen extends MainGameScreen {
 
     @Override
     public void setAddScore(Integer score) {
-
+        hud.addScore(score);
     }
 
     public void update(float delta){
@@ -230,6 +230,7 @@ public class Level3Screen extends MainGameScreen {
         }
 
         if (stateTimer > 3){
+            setAddScore(200);
             music.stop();
             levelSelectScreen.setLastLevelPlayed(3);
             levelSelectScreen.setWonLevel(3);
@@ -242,7 +243,6 @@ public class Level3Screen extends MainGameScreen {
         tiledMap.dispose();
         mapRenderer.dispose();
         arrayListAsteroid.clear();
-        boss2.dispose();
         world.dispose();
     }
 
