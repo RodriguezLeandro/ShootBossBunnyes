@@ -1,0 +1,21 @@
+He realizado las siguientes modificaciones:
+
+Cambié la imagen de fondo del nivel 4.
+
+Ahora el score queda guardado en una pantalla en memoria todo el tiempo.
+
+En el nivel 2 los murcielagos se encuentran mas abajo inicialmente de donde aparecían.
+
+En la pantalla final del juego, cuando lo ganamos, se muestran todos los puntajes obtenidos en cada nivel.
+
+En la pantalla de selección del juego, se muestra el maximo score obtenido en el nivel.
+
+En la seccion controles, he añadido un texto "instrucciones", en el cual se especifica lo que se debe hacer para ganar el juego.
+ 
+A partir de ahora, siempre se puede volver a jugar cualquier nivel, sin embargo, para jugar el nivel 4, hay que haber cruzado los anteriores niveles.
+
+He cambiado el signo de ? por el signo de + en la pantalla de seleccion de nivel.
+
+Ahora ya no queda en memoria volátil la información de nivel cruzado o no, sino que se guarda en memoria como una preferencia(simil a guardar archivo en base de datos pero utilizando libgdx).
+
+Implementé que cada vez que matan a un enemigo final, aumente el score considerablemente(jefe1 : 500, jefe 2 : 300, jefe 3: 200).
