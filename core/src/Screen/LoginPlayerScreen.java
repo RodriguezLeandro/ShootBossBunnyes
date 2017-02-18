@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,12 +30,15 @@ public class LoginPlayerScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
+    private LevelSelect levelSelect;
 
     private Label nombreJugadorActual;
+    private Label nombreNuevoJugadorLabel;
 
     private TextField nombreNuevoJugador;
 
     private Button actualizarJugador;
+    private boolean wasOnDataBase;
 
     private Label.LabelStyle labelStyle;
 
@@ -47,6 +52,7 @@ public class LoginPlayerScreen implements Screen {
 
     public LoginPlayerScreen(MegamanMainClass game,LevelSelect levelSelect) {
         this.game = game;
+        this.levelSelect = levelSelect;
         crearLoginPlayerScreen();
 
     }
@@ -75,12 +81,94 @@ public class LoginPlayerScreen implements Screen {
             nombreNuevoJugador = new TextField("",skin);
 
             actualizarJugador = new Button(skin);
+            actualizarJugador.add("Actualizar");
 
             table.top().padTop(100);
 
             table.setFillParent(true);
 
             nombreJugadorActual.setFontScale(1.5f);
+
+            actualizarJugador.addListener(new InputListener(){
+
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                    //Pregunto si tengo o no levelselect para crear el initgamescreen.
+                    if (levelSelect == null) {
+
+                        //Pregunto si el jugador ingreso o no un nombre.
+                        if (nombreNuevoJugador.getText().isEmpty()){
+                            //No hacemos nada ya que no ingreso nada el jugador.
+                        }
+                        else{
+                            //Guardamos el nombre del ultimo jugador que jugó.
+                            preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
+
+                            //Si el ultimo jugador, ya se encontraba en la base de datos,
+                            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                                    wasOnDataBase = true;
+                                }
+                            }
+
+                            if (wasOnDataBase){
+                                wasOnDataBase = false;
+                            }else {
+
+                                preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
+
+                                preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
+
+                                preferences.flush();
+                            }
+                        }
+
+                        game.setScreen(new InitGameScreen(game));
+                        dispose();
+                    }
+                    else {
+
+                        //Pregunto si el jugador ingreso o no un nombre.
+                        if (nombreNuevoJugador.getText().isEmpty()){
+                            //No hacemos nada ya que no ingreso nada el jugador.
+                        }
+                        else{
+                            //Guardamos el nombre del ultimo jugador que jugó.
+                            preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
+
+                            //Si el ultimo jugador, ya se encontraba en la base de datos,
+                            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                                    wasOnDataBase = true;
+                                }
+                            }
+
+                            if (wasOnDataBase){
+                                wasOnDataBase = false;
+                            }else {
+
+                                preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
+
+                                preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
+
+                                preferences.flush();
+                            }
+                        }
+
+                        game.setScreen(new InitGameScreen(game,levelSelect));
+                        dispose();
+                    }
+
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                }
+            });
 
 
             table.add(nombreJugadorActual).expandX();
@@ -89,17 +177,19 @@ public class LoginPlayerScreen implements Screen {
             table.add(nombreNuevoJugador).expandX();
             table.row().padTop(80);
 
-            table.add(actualizarJugador);
+            table.add(actualizarJugador).width(200).height(50);
 
         }
         //Si ya habia un jugador anteriormente.
         else{
 
             nombreJugadorActual = new Label("Nombre jugador actual : "+preferences.getString("LastPlayerThatPlayed"),labelStyle);
+            nombreNuevoJugadorLabel = new Label("Insert your name : ",labelStyle);
 
             nombreNuevoJugador = new TextField("",skin);
 
             actualizarJugador = new Button(skin);
+            actualizarJugador.add("Actualizar");
 
             table.top().padTop(100);
 
@@ -107,15 +197,102 @@ public class LoginPlayerScreen implements Screen {
 
 
             nombreJugadorActual.setFontScale(1.5f);
-            actualizarJugador.setSize(200,10);
+            nombreNuevoJugadorLabel.setFontScale(1.5f);
+
+            actualizarJugador.addListener(new InputListener(){
+
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+
+
+                    if (levelSelect == null){
+
+                        //Pregunto si el jugador ingreso o no un nombre.
+                        if (nombreNuevoJugador.getText().isEmpty()){
+                            //No hacemos nada ya que no ingreso nada el jugador.
+                        }
+                        else{
+                            //Guardamos el nombre del ultimo jugador que jugó.
+                            preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
+
+                            //Si el ultimo jugador, ya se encontraba en la base de datos,
+                            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                                    wasOnDataBase = true;
+                                }
+
+                            }
+
+                            if (wasOnDataBase){
+                                wasOnDataBase = false;
+                            }else {
+
+                                preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
+
+                                preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
+
+                                preferences.flush();
+                            }
+                        }
+
+                        game.setScreen(new InitGameScreen(game));
+                        dispose();
+                    }
+                    else {
+
+                        //Pregunto si el jugador ingreso o no un nombre.
+                        if (nombreNuevoJugador.getText().isEmpty()){
+                            //No hacemos nada ya que no ingreso nada el jugador.
+                        }
+                        else{
+                            //Guardamos el nombre del ultimo jugador que jugó.
+                            preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
+
+                            //Si el ultimo jugador, ya se encontraba en la base de datos,
+                            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                                    wasOnDataBase = true;
+                                }
+                            }
+
+                            if (wasOnDataBase){
+                                wasOnDataBase = false;
+                            }else {
+
+                                preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
+
+                                preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
+
+                                preferences.flush();
+                            }
+                        }
+
+                        game.setScreen(new InitGameScreen(game,levelSelect));
+                        dispose();
+                    }
+
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                }
+            });
+
 
             table.add(nombreJugadorActual).expandX();
+            table.row().padTop(20);
+
+            table.add(nombreNuevoJugadorLabel).expandX();
             table.row().padTop(20);
 
             table.add(nombreNuevoJugador).expandX();
             table.row().padTop(80);
 
-            table.add(actualizarJugador).expandX();
+            table.add(actualizarJugador).width(200).height(50);
 
         }
 

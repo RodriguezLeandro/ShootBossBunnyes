@@ -179,7 +179,7 @@ public class LevelSelect implements Screen {
           //    if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
               //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
                 //Dejamos comentado la parte del ultimo winscreen.
-              //  game.setScreen(new GameWinScreen((MegamanMainClass)game,100,thisLevelSelect));
+             //   game.setScreen(new GameWinScreen((MegamanMainClass)game,100,thisLevelSelect));
                 return true;
             }
         });

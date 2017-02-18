@@ -90,6 +90,19 @@ public class GameWinScreen implements Screen{
 
         Integer finalScore = preferences.getInteger("ScoreLevel1")+preferences.getInteger("ScoreLevel2")+preferences.getInteger("ScoreLevel3")+preferences.getInteger("ScoreLevel4");
 
+        preferences.putInteger("FinalScore",finalScore);
+
+        preferences.flush();
+
+        preferences = Gdx.app.getPreferences("Login");
+
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                preferences.putInteger("JugadorScore"+i,finalScore);
+            }
+        }
+        preferences.flush();
+
         finalScoreLabel = new Label("Final score = "+finalScore,labelStyle);
 
         youWinLabel.setFontScale(1.5f);
