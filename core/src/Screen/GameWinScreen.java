@@ -37,6 +37,7 @@ public class GameWinScreen implements Screen{
     private Label scoreLabel2;
     private Label scoreLabel3;
     private Label scoreLabel4;
+    private Label finalScoreLabel;
 
     private Integer scoreDataInteger;
 
@@ -87,6 +88,10 @@ public class GameWinScreen implements Screen{
         scoreLabel3 = new Label("Score = "+preferences.getInteger("ScoreLevel3"),labelStyle);
         scoreLabel4 = new Label("Score = "+preferences.getInteger("ScoreLevel4"),labelStyle);
 
+        Integer finalScore = preferences.getInteger("ScoreLevel1")+preferences.getInteger("ScoreLevel2")+preferences.getInteger("ScoreLevel3")+preferences.getInteger("ScoreLevel4");
+
+        finalScoreLabel = new Label("Final score = "+finalScore,labelStyle);
+
         youWinLabel.setFontScale(1.5f);
         playAgain.setFontScale(1.5f);
         exitGame.setFontScale(1.5f);
@@ -94,6 +99,7 @@ public class GameWinScreen implements Screen{
         scoreLabel2.setFontScale(1.5f);
         scoreLabel3.setFontScale(1.5f);
         scoreLabel4.setFontScale(1.5f);
+        finalScoreLabel.setFontScale(1.5f);
 
         playAgain.addListener(new InputListener(){
 
@@ -137,11 +143,15 @@ public class GameWinScreen implements Screen{
 
         table.add(scoreLabel4);
 
+        table.row().padTop(20);
+
+        table.add(finalScoreLabel);
+
         table.row().padTop(40);
 
         table.add(playAgain).expandX();
 
-        table.row().padTop(60);
+        table.row().padTop(20);
 
         table.add(exitGame).expandX();
 

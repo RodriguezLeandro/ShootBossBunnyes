@@ -178,6 +178,8 @@ public class LevelSelect implements Screen {
               //  finalLabel.setText("ACA LA IMAGEN FINAL POR EJ");
           //    if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
               //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
+                //Dejamos comentado la parte del ultimo winscreen.
+              //  game.setScreen(new GameWinScreen((MegamanMainClass)game,100,thisLevelSelect));
                 return true;
             }
         });
