@@ -119,9 +119,12 @@ public class LoginPlayerScreen implements Screen {
 
                                 preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
 
+                                preferences.flush();
+
                                 preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
 
                                 preferences.flush();
+
                             }
                         }
 
@@ -150,6 +153,8 @@ public class LoginPlayerScreen implements Screen {
                             }else {
 
                                 preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
+
+                                preferences.flush();
 
                                 preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
 
@@ -229,6 +234,8 @@ public class LoginPlayerScreen implements Screen {
 
                                 preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
 
+                                preferences.flush();
+
                                 preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
 
                                 preferences.flush();
@@ -260,6 +267,8 @@ public class LoginPlayerScreen implements Screen {
                             }else {
 
                                 preferences.putInteger("CantidadJugadores", (preferences.getInteger("CantidadJugadores") + 1));
+
+                                preferences.flush();
 
                                 preferences.putString("Jugador" + preferences.getInteger("CantidadJugadores"), preferences.getString("LastPlayerThatPlayed"));
 

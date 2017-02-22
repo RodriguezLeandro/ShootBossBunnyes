@@ -90,6 +90,7 @@ public class LevelSelect implements Screen {
 
 
         for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+
             if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
 
                 level1Label = new Label("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i),labelStyle);
@@ -98,7 +99,9 @@ public class LevelSelect implements Screen {
                 level4Label = new Label("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i),labelStyle);
 
             }
+
         }
+
 
         level1Label.setFontScale(1.5f);
         level2Label.setFontScale(1.5f);
