@@ -128,31 +128,31 @@ public class ScoreChartScreen implements Screen {
         for (int i = 1; i < (preferences.getInteger("CantidadJugadores")+1);i++){
             if (i == 1){
                 jugador1Label.setText(preferences.getString("Jugador1"));
-                scoreJugador1Label.setText(String.format("%06d",preferences.getInteger("JugadorScore1")));
+                scoreJugador1Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador1")));
             }else if (i == 2){
                 jugador2Label.setText(preferences.getString("Jugador2"));
-                scoreJugador2Label.setText(String.format("%06d",preferences.getInteger("JugadorScore3")));
+                scoreJugador2Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador2")));
             }else if (i == 3){
                 jugador3Label.setText(preferences.getString("Jugador3"));
-                scoreJugador3Label.setText(String.format("%06d",preferences.getInteger("JugadorScore3")));
+                scoreJugador3Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador3")));
             }else if (i == 4){
                 jugador4Label.setText(preferences.getString("Jugador4"));
-                scoreJugador4Label.setText(String.format("%06d",preferences.getInteger("JugadorScore4")));
+                scoreJugador4Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador4")));
             }else if (i == 5){
                 jugador5Label.setText(preferences.getString("Jugador5"));
-                scoreJugador5Label.setText(String.format("%06d",preferences.getInteger("JugadorScore5")));
+                scoreJugador5Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador5")));
             }else if (i == 6){
                 jugador6Label.setText(preferences.getString("Jugador6"));
-                scoreJugador6Label.setText(String.format("%06d",preferences.getInteger("JugadorScore6")));
+                scoreJugador6Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador6")));
             }else if (i == 7){
                 jugador7Label.setText(preferences.getString("Jugador7"));
-                scoreJugador7Label.setText(String.format("%06d",preferences.getInteger("JugadorScore7")));
+                scoreJugador7Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador7")));
             }else if (i == 8){
                 jugador8Label.setText(preferences.getString("Jugador8"));
-                scoreJugador8Label.setText(String.format("%06d",preferences.getInteger("JugadorScore8")));
+                scoreJugador8Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador8")));
             }else if (i == 9){
                 jugador9Label.setText(preferences.getString("Jugador9"));
-                scoreJugador9Label.setText(String.format("%06d",preferences.getInteger("JugadorScore9")));
+                scoreJugador9Label.setText(String.format("%06d",preferences.getInteger("FinalScoreJugador9")));
             }
 
         }
