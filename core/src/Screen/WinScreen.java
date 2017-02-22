@@ -72,41 +72,66 @@ public class WinScreen implements Screen {
         if (levelSelect.getLastLevelPlayed() == 1){
             scoreLabel = new Label("Score level 1 = "+scoreDataInteger,labelStyle);
 
-            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+            Preferences preferences = Gdx.app.getPreferences("Login");
 
-            if (!preferences.getBoolean("FirstLevelWon")){
-                preferences.putBoolean("FirstLevelWon",true);
+
+            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                    if (!preferences.getBoolean("FirstLevelWonJugador"+i)){
+                        preferences.putBoolean("FirstLevelWonJugador"+i,true);
+                    }
+                    preferences.flush();
+
+                }
             }
-            preferences.flush();
 
         }else if (levelSelect.getLastLevelPlayed() == 2){
             scoreLabel = new Label("Score level 2 = "+scoreDataInteger,labelStyle);
 
-            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+            Preferences preferences = Gdx.app.getPreferences("Login");
 
-            if (!preferences.getBoolean("SecondLevelWon")){
-                preferences.putBoolean("SecondLevelWon",true);
+            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                    if (!preferences.getBoolean("SecondLevelWonJugador"+i)){
+                        preferences.putBoolean("SecondLevelWonJugador"+i,true);
+                    }
+                    preferences.flush();
+
+                }
             }
-            preferences.flush();
+
         }else if (levelSelect.getLastLevelPlayed() == 3){
             scoreLabel = new Label("Score level 3 = "+scoreDataInteger,labelStyle);
-            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+            Preferences preferences = Gdx.app.getPreferences("Login");
 
-            if (!preferences.getBoolean("ThirdLevelWon")){
-                preferences.putBoolean("ThirdLevelWon",true);
+            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                    if (!preferences.getBoolean("ThirdLevelWonJugador"+i)){
+                        preferences.putBoolean("ThirdLevelWonJugador"+i,true);
+                    }
+                    preferences.flush();
+
+                }
             }
-            preferences.flush();
         }
         else if (levelSelect.getLastLevelPlayed() == 4){
             //Creo que a esta parte no se llega nunca.
             scoreLabel = new Label("Score level 4 = "+scoreDataInteger,labelStyle);
-            Preferences preferences = Gdx.app.getPreferences("LevelWon");
+            Preferences preferences = Gdx.app.getPreferences("Login");
 
-            if (!preferences.getBoolean("FourthLevelWon")){
-                preferences.putBoolean("FourthLevelWon",true);
+            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                    if (!preferences.getBoolean("FourthLevelWonJugador"+i)){
+                        preferences.putBoolean("FourthLevelWonJugador"+i,true);
+                    }
+                    preferences.flush();
+
+                }
             }
-
-            preferences.flush();
         }
 
         //Tengo que updatear el nuevo score del juego.

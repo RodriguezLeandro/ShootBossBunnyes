@@ -41,6 +41,8 @@ public class GameWinScreen implements Screen{
 
     private Integer scoreDataInteger;
 
+    private Integer finalScore;
+
     Preferences preferences;
 
     private Table table;
@@ -73,35 +75,50 @@ public class GameWinScreen implements Screen{
         exitGame = new Label("EXIT",labelStyle);
 
 
-        preferences = Gdx.app.getPreferences("LevelWon");
+        preferences = Gdx.app.getPreferences("Login");
 
-        if(!preferences.getBoolean("FourthLevelWon")){
-            preferences.putBoolean("FourthLevelWon",true);
+        //Inicializo el final score en 0 por las dudas.
+        finalScore = 0;
+
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                if (!preferences.getBoolean("FourthLevelWonJugador"+i)){
+                    preferences.putBoolean("FourthLevelWonJugador"+i,true);
+                }
+                preferences.flush();
+
+            }
         }
 
         preferences.flush();
 
-        preferences = Gdx.app.getPreferences("Score");
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
 
-        scoreLabel1 = new Label("Score = "+preferences.getInteger("ScoreLevel1"),labelStyle);
-        scoreLabel2 = new Label("Score = "+preferences.getInteger("ScoreLevel2"),labelStyle);
-        scoreLabel3 = new Label("Score = "+preferences.getInteger("ScoreLevel3"),labelStyle);
-        scoreLabel4 = new Label("Score = "+preferences.getInteger("ScoreLevel4"),labelStyle);
+                scoreLabel1 = new Label("Score = "+preferences.getInteger("ScoreLevel1Jugador"+i),labelStyle);
+                scoreLabel2 = new Label("Score = "+preferences.getInteger("ScoreLevel2Jugador"+i),labelStyle);
+                scoreLabel3 = new Label("Score = "+preferences.getInteger("ScoreLevel3Jugador"+i),labelStyle);
+                scoreLabel4 = new Label("Score = "+preferences.getInteger("ScoreLevel4Jugador"+i),labelStyle);
 
-        Integer finalScore = preferences.getInteger("ScoreLevel1")+preferences.getInteger("ScoreLevel2")+preferences.getInteger("ScoreLevel3")+preferences.getInteger("ScoreLevel4");
+                finalScore = preferences.getInteger("ScoreLevel1Jugador"+i)+preferences.getInteger("ScoreLevel2Jugador"+i)+preferences.getInteger("ScoreLevel3Jugador"+i)+preferences.getInteger("ScoreLevel4Jugador"+i);
 
-        preferences.putInteger("FinalScore",finalScore);
+                preferences.putInteger("FinalScoreJugador"+i,finalScore);
 
-        preferences.flush();
+                preferences.flush();
+            }
+        }
 
-        preferences = Gdx.app.getPreferences("Login");
-
+        //No le veo sentido a lo de abajo, lo borro por el momento, si veo que se rompe todo, vuelvo a ponerlo.
+        /*
         for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
             if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
                 preferences.putInteger("JugadorScore"+i,finalScore);
             }
         }
         preferences.flush();
+
+        */
 
         finalScoreLabel = new Label("Final score = "+finalScore,labelStyle);
 

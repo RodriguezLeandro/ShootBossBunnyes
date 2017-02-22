@@ -84,15 +84,21 @@ public class LevelSelect implements Screen {
         fourthLevelWon= false;
         lastLevelWon = false;
 
-        preferences = Gdx.app.getPreferences("Score");
+        preferences = Gdx.app.getPreferences("Login");
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
 
-        level1Label = new Label("High Score ="+preferences.getInteger("ScoreLevel1"),labelStyle);
-        level2Label = new Label("High Score ="+preferences.getInteger("ScoreLevel2"),labelStyle);
-        level3Label = new Label("High Score ="+preferences.getInteger("ScoreLevel3"),labelStyle);
-        level4Label = new Label("High Score ="+preferences.getInteger("ScoreLevel4"),labelStyle);
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                level1Label = new Label("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i),labelStyle);
+                level2Label = new Label("High Score ="+preferences.getInteger("ScoreLevel2Jugador"+i),labelStyle);
+                level3Label = new Label("High Score ="+preferences.getInteger("ScoreLevel3Jugador"+i),labelStyle);
+                level4Label = new Label("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i),labelStyle);
+
+            }
+        }
 
         level1Label.setFontScale(1.5f);
         level2Label.setFontScale(1.5f);
@@ -158,11 +164,17 @@ public class LevelSelect implements Screen {
               //  if (firstLevelWon && secondLevelWon && thirdLevelWon)
 
                 //Si el jugador ha cruzado el nivel 1, el nivel 2, y el nivel 3, puede jugar el cuarto, de lo contrario no.
-                preferences = Gdx.app.getPreferences("LevelWon");
+                preferences = Gdx.app.getPreferences("Login");
 
-                if ((preferences.getBoolean("FirstLevelWon"))&&(preferences.getBoolean("SecondLevelWon"))&&(preferences.getBoolean("ThirdLevelWon"))){
-                    game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
+                for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+                    if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                        if ((preferences.getBoolean("FirstLevelWonJugador"+i))&&(preferences.getBoolean("SecondLevelWonJugador"+i))&&(preferences.getBoolean("ThirdLevelWonJugador"+i))){
+                            game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
+                        }
+                    }
                 }
+
+
                 return true;
             }
         });
@@ -179,7 +191,7 @@ public class LevelSelect implements Screen {
           //    if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
               //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
                 //Dejamos comentado la parte del ultimo winscreen.
-             //   game.setScreen(new GameWinScreen((MegamanMainClass)game,100,thisLevelSelect));
+               // game.setScreen(new GameWinScreen((MegamanMainClass)game,100,thisLevelSelect));
                 return true;
             }
         });
@@ -217,90 +229,117 @@ public class LevelSelect implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
+        preferences = Gdx.app.getPreferences("Login");
+
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+
+                level1Label.setText("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i));
+                level2Label.setText("High Score ="+preferences.getInteger("ScoreLevel2Jugador"+i));
+                level3Label.setText("High Score ="+preferences.getInteger("ScoreLevel3Jugador"+i));
+                level4Label.setText("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i));
+
+            }
+        }
+
     }
 
     public void updateScore(){
 
-        level1Label.setText("High Score ="+preferences.getInteger("ScoreLevel1"));
-        level2Label.setText("High Score ="+preferences.getInteger("ScoreLevel2"));
-        level3Label.setText("High Score ="+preferences.getInteger("ScoreLevel3"));
-        level4Label.setText("High Score ="+preferences.getInteger("ScoreLevel4"));
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                level1Label.setText("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i));
+                level2Label.setText("High Score ="+preferences.getInteger("ScoreLevel2Jugador"+i));
+                level3Label.setText("High Score ="+preferences.getInteger("ScoreLevel3Jugador"+i));
+                level4Label.setText("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i));
+
+            }
+        }
+
     }
 
     public void setScore(Integer lastLevelPlayed,Integer score){
 
-        preferences = Gdx.app.getPreferences("Score");
+        preferences = Gdx.app.getPreferences("Login");
 
-        //Si el ultimo nivel jugado es el 1.
-        if (lastLevelPlayed == 1) {
-            //Si no existe score anterior, ponemos el nuevo score.
-            if (preferences.getInteger("ScoreLevel1") == 0){
-                preferences.putInteger("ScoreLevel1",score);
-            }
-            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
-            else{
-                if (preferences.getInteger("ScoreLevel1") < score){
-                    //Si lo es, entonces sobreescribimos el nuevo score.
-                    preferences.putInteger("ScoreLevel1",score);
-                }
-                else {
-                    //Si no lo es, entonces dejamos el score mas alto.
-                }
-            }
+        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
+            //Si el jugador es el que se encuentra logeado.
+            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
+                //Si el ultimo nivel jugado es el 1.
+                if (lastLevelPlayed == 1) {
+                    //Si no existe score anterior, ponemos el nuevo score.
+                    if (preferences.getInteger("ScoreLevel1Jugador"+i) == 0){
+                        preferences.putInteger("ScoreLevel1Jugador"+i,score);
+                    }
+                    //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+                    else{
+                        if (preferences.getInteger("ScoreLevel1Jugador"+i) < score){
+                            //Si lo es, entonces sobreescribimos el nuevo score.
+                            preferences.putInteger("ScoreLevel1Jugador"+i,score);
+                        }
+                        else {
+                            //Si no lo es, entonces dejamos el score mas alto.
+                        }
+                    }
 
-            preferences.flush();
+                    preferences.flush();
+                }
+                else if(lastLevelPlayed == 2){
+                    //Si no existe score anterior, ponemos el nuevo score.
+                    if (preferences.getInteger("ScoreLevel2Jugador"+i) == 0){
+                        preferences.putInteger("ScoreLevel2Jugador"+i,score);
+                    }
+                    //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+                    else{
+                        if (preferences.getInteger("ScoreLevel2Jugador"+i) < score){
+                            //Si lo es, entonces sobreescribimos el nuevo score.
+                            preferences.putInteger("ScoreLevel2Jugador"+i,score);
+                        }
+                        else {
+                            //Si no lo es, entonces dejamos el score mas alto.
+                        }
+                    }
+
+                    preferences.flush();
+                }
+                else if(lastLevelPlayed == 3){
+                    //Si no existe score anterior, ponemos el nuevo score.
+                    if (preferences.getInteger("ScoreLevel3Jugador"+i) == 0){
+                        preferences.putInteger("ScoreLevel3Jugador"+i,score);
+                    }
+                    //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+                    else{
+                        if (preferences.getInteger("ScoreLevel3Jugador"+i) < score){
+                            //Si lo es, entonces sobreescribimos el nuevo score.
+                            preferences.putInteger("ScoreLevel3Jugador"+i,score);
+                        }
+                        else {
+                            //Si no lo es, entonces dejamos el score mas alto.
+                        }
+                    }
+
+                    preferences.flush();
+                }
+                else if(lastLevelPlayed == 4){
+                    //Si no existe score anterior, ponemos el nuevo score.
+                    if (preferences.getInteger("ScoreLevel4Jugador"+i) == 0){
+                        preferences.putInteger("ScoreLevel4Jugador"+i,score);
+                    }
+                    //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
+                    else{
+                        if (preferences.getInteger("ScoreLevel4Jugador"+i) < score){
+                            //Si lo es, entonces sobreescribimos el nuevo score.
+                            preferences.putInteger("ScoreLevel4Jugador"+i,score);
+                        }
+                        else {
+                            //Si no lo es, entonces dejamos el score mas alto.
+                        }
+                    }
+
+
+            }
         }
-        else if(lastLevelPlayed == 2){
-            //Si no existe score anterior, ponemos el nuevo score.
-            if (preferences.getInteger("ScoreLevel2") == 0){
-                preferences.putInteger("ScoreLevel2",score);
-            }
-            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
-            else{
-                if (preferences.getInteger("ScoreLevel2") < score){
-                    //Si lo es, entonces sobreescribimos el nuevo score.
-                    preferences.putInteger("ScoreLevel2",score);
-                }
-                else {
-                    //Si no lo es, entonces dejamos el score mas alto.
-                }
-            }
 
-            preferences.flush();
-        }
-        else if(lastLevelPlayed == 3){
-            //Si no existe score anterior, ponemos el nuevo score.
-            if (preferences.getInteger("ScoreLevel3") == 0){
-                preferences.putInteger("ScoreLevel3",score);
-            }
-            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
-            else{
-                if (preferences.getInteger("ScoreLevel3") < score){
-                    //Si lo es, entonces sobreescribimos el nuevo score.
-                    preferences.putInteger("ScoreLevel3",score);
-                }
-                else {
-                    //Si no lo es, entonces dejamos el score mas alto.
-                }
-            }
-
-            preferences.flush();
-        }
-        else if(lastLevelPlayed == 4){
-            //Si no existe score anterior, ponemos el nuevo score.
-            if (preferences.getInteger("ScoreLevel4") == 0){
-                preferences.putInteger("ScoreLevel4",score);
-            }
-            //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
-            else{
-                if (preferences.getInteger("ScoreLevel4") < score){
-                    //Si lo es, entonces sobreescribimos el nuevo score.
-                    preferences.putInteger("ScoreLevel4",score);
-                }
-                else {
-                    //Si no lo es, entonces dejamos el score mas alto.
-                }
-            }
 
             preferences.flush();
         }
