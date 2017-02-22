@@ -273,66 +273,71 @@ public class LevelSelect implements Screen {
                     //Si no existe score anterior, ponemos el nuevo score.
                     if (preferences.getInteger("ScoreLevel1Jugador"+i) == 0){
                         preferences.putInteger("ScoreLevel1Jugador"+i,score);
+                        preferences.flush();
                     }
                     //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
                     else{
                         if (preferences.getInteger("ScoreLevel1Jugador"+i) < score){
                             //Si lo es, entonces sobreescribimos el nuevo score.
                             preferences.putInteger("ScoreLevel1Jugador"+i,score);
+                            preferences.flush();
                         }
                         else {
                             //Si no lo es, entonces dejamos el score mas alto.
                         }
                     }
 
-                    preferences.flush();
                 }
                 else if(lastLevelPlayed == 2){
                     //Si no existe score anterior, ponemos el nuevo score.
                     if (preferences.getInteger("ScoreLevel2Jugador"+i) == 0){
                         preferences.putInteger("ScoreLevel2Jugador"+i,score);
+                        preferences.flush();
                     }
                     //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
                     else{
                         if (preferences.getInteger("ScoreLevel2Jugador"+i) < score){
                             //Si lo es, entonces sobreescribimos el nuevo score.
                             preferences.putInteger("ScoreLevel2Jugador"+i,score);
+                            preferences.flush();
                         }
                         else {
                             //Si no lo es, entonces dejamos el score mas alto.
                         }
                     }
 
-                    preferences.flush();
                 }
                 else if(lastLevelPlayed == 3){
                     //Si no existe score anterior, ponemos el nuevo score.
                     if (preferences.getInteger("ScoreLevel3Jugador"+i) == 0){
                         preferences.putInteger("ScoreLevel3Jugador"+i,score);
+                        preferences.flush();
                     }
                     //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
                     else{
                         if (preferences.getInteger("ScoreLevel3Jugador"+i) < score){
                             //Si lo es, entonces sobreescribimos el nuevo score.
                             preferences.putInteger("ScoreLevel3Jugador"+i,score);
+                            preferences.flush();
                         }
                         else {
                             //Si no lo es, entonces dejamos el score mas alto.
                         }
                     }
 
-                    preferences.flush();
                 }
                 else if(lastLevelPlayed == 4){
                     //Si no existe score anterior, ponemos el nuevo score.
                     if (preferences.getInteger("ScoreLevel4Jugador"+i) == 0){
                         preferences.putInteger("ScoreLevel4Jugador"+i,score);
+                        preferences.flush();
                     }
                     //Si ya hay un score anterior, entonces vemos si es menor que el nuevo
                     else{
                         if (preferences.getInteger("ScoreLevel4Jugador"+i) < score){
                             //Si lo es, entonces sobreescribimos el nuevo score.
                             preferences.putInteger("ScoreLevel4Jugador"+i,score);
+                            preferences.flush();
                         }
                         else {
                             //Si no lo es, entonces dejamos el score mas alto.
@@ -343,8 +348,6 @@ public class LevelSelect implements Screen {
             }
         }
 
-
-            preferences.flush();
         }
     }
 

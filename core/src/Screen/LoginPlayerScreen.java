@@ -106,6 +106,8 @@ public class LoginPlayerScreen implements Screen {
                             //Guardamos el nombre del ultimo jugador que jugó.
                             preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
 
+                            preferences.flush();
+
                             //Si el ultimo jugador, ya se encontraba en la base de datos,
                             for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
                                 if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
@@ -140,6 +142,8 @@ public class LoginPlayerScreen implements Screen {
                         else{
                             //Guardamos el nombre del ultimo jugador que jugó.
                             preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
+
+                            preferences.flush();
 
                             //Si el ultimo jugador, ya se encontraba en la base de datos,
                             for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
@@ -220,6 +224,8 @@ public class LoginPlayerScreen implements Screen {
                             //Guardamos el nombre del ultimo jugador que jugó.
                             preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
 
+                            preferences.flush();
+
                             //Si el ultimo jugador, ya se encontraba en la base de datos,
                             for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
                                 if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
@@ -254,6 +260,8 @@ public class LoginPlayerScreen implements Screen {
                         else{
                             //Guardamos el nombre del ultimo jugador que jugó.
                             preferences.putString("LastPlayerThatPlayed",nombreNuevoJugador.getText());
+
+                            preferences.flush();
 
                             //Si el ultimo jugador, ya se encontraba en la base de datos,
                             for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
