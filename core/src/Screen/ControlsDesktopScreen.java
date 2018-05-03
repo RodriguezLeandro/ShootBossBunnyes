@@ -20,7 +20,7 @@ public class ControlsDesktopScreen extends ControlsScreen {
         rightButtonLabel.setText("Right Arrow: Throw punch fireball");
         downButtonLabel.setText("Down Arrow: Slide");
         leftButtonLabel.setText("Left Arrow: Crouch");
-        upButtonLabel.setText("Up Arrou: Gravity power");
+        upButtonLabel.setText("Up Arrow: Gravity power");
 
     }
 

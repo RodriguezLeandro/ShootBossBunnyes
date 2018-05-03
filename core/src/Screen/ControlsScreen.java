@@ -39,7 +39,6 @@ public class ControlsScreen implements Screen {
     protected Label infoLabel;
     protected Label infoLabelData;
     protected Label infoLabelData2;
-    protected Label infoLabelData3;
 
     protected Label rightButtonLabel;
     protected Label leftButtonLabel;
@@ -61,7 +60,6 @@ public class ControlsScreen implements Screen {
 
         table = new Table();
 
-        table.top();
         table.setFillParent(true);
 
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
@@ -76,13 +74,11 @@ public class ControlsScreen implements Screen {
         downButtonLabel = new Label("Down Button: Jump",labelStyle);
         upButtonLabel = new Label("Up Button: Gravity power",labelStyle);
 
-        infoLabel = new Label("Instrucciones del Juego",labelStyle);
+        infoLabel = new Label("Game Instructions",labelStyle);
 
-        infoLabelData = new Label("Para ganar el juego hay que ir venciendo a los enemigos hasta llegar al final de cada nivel.",labelStyle);
+        infoLabelData = new Label("For winning the game you have to defeat all bosses, in each level you should fight",labelStyle);
 
-        infoLabelData2 = new Label("Para acceder a cada nivel, se debe hacer click sobre la imagen del respectivo enemigo.",labelStyle);
-
-        infoLabelData3 = new Label("Mientras mas enemigos elimines, mas puntaje obtendrás por ello.",labelStyle);
+        infoLabelData2 = new Label("Touching a boss image in the level select screen, you access the level.",labelStyle);
 
         backToMenuScreen = new Label("Back to Menu Screen",labelStyle);
 
@@ -104,7 +100,6 @@ public class ControlsScreen implements Screen {
         infoLabel.setFontScale(1.5f);
         infoLabelData.setFontScale(1);
         infoLabelData2.setFontScale(1);
-        infoLabelData3.setFontScale(1);
 
         upButtonLabel.setFontScale(1.5f);
         leftButtonLabel.setFontScale(1.5f);
@@ -114,7 +109,7 @@ public class ControlsScreen implements Screen {
         backToMenuScreen.setFontScale(2);
 
         table.row();
-        table.add(upArrowLabel).pad(10,0,0,450);
+        table.add(upArrowLabel).pad(-40,0,0,450);
         table.row();
         table.add(downArrowLabel).fill().padTop(10);
         table.row();
@@ -141,10 +136,7 @@ public class ControlsScreen implements Screen {
         table.add(infoLabelData2).fill().padTop(5);
         table.row();
 
-        table.add(infoLabelData3).fill().padTop(5);
-        table.row();
-
-        table.add(backToMenuScreen).fill().padTop(20);
+        table.add(backToMenuScreen).fill().pad(20,140,0,0);
 
         stage.addActor(table);
     }
@@ -172,14 +164,11 @@ public class ControlsScreen implements Screen {
         downArrowLabel = new Label("Down analog stick: It does nothing",labelStyle);
         rightArrowLabel = new Label("Right analog stick: You can move to the right",labelStyle);
 
-        infoLabel = new Label("Instrucciones del Juego",labelStyle);
+        infoLabel = new Label("Game Instructions",labelStyle);
 
-        infoLabelData = new Label("Para ganar el juego hay que ir venciendo a los enemigos hasta llegar al final de cada nivel.",labelStyle);
+        infoLabelData = new Label("For winning the game you have to defeat all bosses, in each level you should fight.",labelStyle);
 
-        infoLabelData2 = new Label("Para acceder a cada nivel, se debe hacer click sobre la imagen del respectivo enemigo.",labelStyle);
-
-        infoLabelData3 = new Label("Mientras mas enemigos elimines, mas puntaje obtendrás por ello.",labelStyle);
-
+        infoLabelData2 = new Label("Touching a boss image in the level select screen, you access the level.",labelStyle);
 
         rightButtonLabel = new Label("Right Button:  Slide",labelStyle);
         leftButtonLabel = new Label("Left Button: Throw punch fireball",labelStyle);
@@ -206,7 +195,6 @@ public class ControlsScreen implements Screen {
         infoLabel.setFontScale(1.5f);
         infoLabelData.setFontScale(1);
         infoLabelData2.setFontScale(1);
-        infoLabelData3.setFontScale(1);
 
         upButtonLabel.setFontScale(1.5f);
         leftButtonLabel.setFontScale(1.5f);
@@ -241,9 +229,6 @@ public class ControlsScreen implements Screen {
         table.row();
 
         table.add(infoLabelData2).fill().padTop(5);
-        table.row();
-
-        table.add(infoLabelData3).fill().padTop(5);
         table.row();
 
         table.add(backToMenuScreen).fill().padTop(20);
