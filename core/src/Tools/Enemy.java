@@ -72,7 +72,7 @@ public abstract class Enemy {
 
         PolygonShape polygonShape = new PolygonShape();
 
-        polygonShape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        polygonShape.setAsBox(sprite.getWidth() / 4, sprite.getHeight() / 2);
 
         fixtureDef.shape = polygonShape;
 

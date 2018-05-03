@@ -28,25 +28,18 @@ public class GameOverScreen implements Screen {
 
     private Label gameOverLabel;
     private Label playAgainLabel;
-    private Label scoreLabel;
     private Label backToMainMenu;
     private Label backToLevelSelect;
     private Label.LabelStyle labelStyle;
     private Table table;
-    private Integer scoreDataInteger;
 
     public GameOverScreen(final Game game, Integer scoreDataInteger, final LevelSelect levelSelectScreen){
 
         this.game = game;
 
-        this.scoreDataInteger = scoreDataInteger;
-
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
         stage = new Stage(viewport,((MegamanMainClass) game).batch);
-
-        //Ponemos el score del juego alcanzado antes de morir.
-        levelSelectScreen.setScore(levelSelectScreen.getLastLevelPlayed(),scoreDataInteger);
 
         Gdx.input.setInputProcessor(stage);
 
@@ -59,22 +52,9 @@ public class GameOverScreen implements Screen {
         gameOverLabel = new Label("GAME OVER",labelStyle);
         playAgainLabel = new Label("PLAY AGAIN",labelStyle);
 
-        //Aca ponemos el score dependiendo del nivel desde el cual estamos jugando.
-        if (levelSelectScreen.getLastLevelPlayed() == 1){
-            scoreLabel = new Label("Score level 1 = "+scoreDataInteger,labelStyle);
-        }else if (levelSelectScreen.getLastLevelPlayed() == 2){
-            scoreLabel = new Label("Score level 2 = "+scoreDataInteger,labelStyle);
-        }else if (levelSelectScreen.getLastLevelPlayed() == 3){
-            scoreLabel = new Label("Score level 3 = "+scoreDataInteger,labelStyle);
-        }
-        else if (levelSelectScreen.getLastLevelPlayed() == 4){
-            scoreLabel = new Label("Score level 4 = "+scoreDataInteger,labelStyle);
-        }
-
         backToMainMenu = new Label("MAIN MENU",labelStyle);
         backToLevelSelect = new Label("SELECT LEVEL",labelStyle);
 
-        scoreLabel.setFontScale(1.5f);
         gameOverLabel.setFontScale(2f);
         playAgainLabel.setFontScale(1.5f);
         backToMainMenu.setFontScale(1.5f);
@@ -128,8 +108,6 @@ public class GameOverScreen implements Screen {
         backToLevelSelect.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //Tengo que updatear el nuevo score del juego.
-                levelSelectScreen.updateScore();
 
                 game.setScreen(levelSelectScreen);
                 dispose();
@@ -141,8 +119,6 @@ public class GameOverScreen implements Screen {
 
         table.row().padTop(80);
         table.add(gameOverLabel).expandX();
-        table.row().padTop(80);
-        table.add(scoreLabel);
 
         table.row().padTop(120);
 

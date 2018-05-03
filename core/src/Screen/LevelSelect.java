@@ -44,10 +44,6 @@ public class LevelSelect implements Screen {
 
     private Table table;
 
-    private Label level1Label;
-    private Label level2Label;
-    private Label level3Label;
-    private Label level4Label;
     private Label.LabelStyle labelStyle;
 
     private InputListener inputListener;
@@ -61,8 +57,6 @@ public class LevelSelect implements Screen {
     private Boolean thirdLevelWon;
     private Boolean fourthLevelWon;
     private Boolean lastLevelWon;
-
-    private Preferences preferences;
 
     public LevelSelect(MegamanMainClass mainGameScreen){
 
@@ -84,29 +78,7 @@ public class LevelSelect implements Screen {
         fourthLevelWon= false;
         lastLevelWon = false;
 
-        preferences = Gdx.app.getPreferences("Login");
-
         labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-
-
-        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-
-            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                level1Label = new Label("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i),labelStyle);
-                level2Label = new Label("High Score ="+preferences.getInteger("ScoreLevel2Jugador"+i),labelStyle);
-                level3Label = new Label("High Score ="+preferences.getInteger("ScoreLevel3Jugador"+i),labelStyle);
-                level4Label = new Label("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i),labelStyle);
-
-            }
-
-        }
-
-
-        level1Label.setFontScale(1.5f);
-        level2Label.setFontScale(1.5f);
-        level3Label.setFontScale(1.5f);
-        level4Label.setFontScale(1.5f);
 
         createHud();
 
@@ -117,20 +89,55 @@ public class LevelSelect implements Screen {
         table.top().left();
         table.setFillParent(true);
 
-        Image imageMegaman = new Image(new TextureRegion(new Texture("LevelSelectImages/Megaman.png")));
+        labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+
+        Label instructionToPlay = new Label("Touch the level you want to play",labelStyle);
+        Label level1 = new Label("Level 1",labelStyle);
+        Label level2 = new Label("Level 2",labelStyle);
+        Label level3 = new Label("Level 3",labelStyle);
+        Label level4 = new Label("Level 4(final level, very hard)",labelStyle);
+
         Image imageZero = new Image(new TextureRegion(new Texture("LevelSelectImages/Zero.png")));
         Image imageBoss1 = new Image(new TextureRegion(new Texture("LevelSelectImages/Boss1.png")));
         Image imageBoss2 = new Image(new TextureRegion(new Texture("LevelSelectImages/Boss2.png")));
         Image imageWho = new Image(new TextureRegion(new Texture("LevelSelectImages/Who.png")));
 
-        imageZero.addListener(new InputListener(){
+        level1.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new Level1Screen((MegamanMainClass) game , thisLevelSelect));
+                return true;
+            }
+        });
 
+        level2.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new Level2Screen((MegamanMainClass) game,thisLevelSelect));
+                return true;
+            }
+        });
+
+        level3.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new Level3Screen((MegamanMainClass) game,thisLevelSelect));
+                return true;
+            }
+        });
+
+        level4.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
+                return true;
+            }
+        });
+
+        imageZero.addListener(new InputListener(){
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //Si todavia no cruzo el primer nivel, entonces que lo juegue.
-             //   if (!firstLevelWon)
-                //Ahora lo puede jugar igual al nivel, aunque lo haya cruzado.
                 game.setScreen(new Level1Screen((MegamanMainClass) game , thisLevelSelect));
                 return true;
             }
@@ -138,10 +145,8 @@ public class LevelSelect implements Screen {
 
         imageBoss1.addListener(new InputListener(){
 
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-              //  if (!secondLevelWon)
                 game.setScreen(new Level2Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
@@ -149,10 +154,8 @@ public class LevelSelect implements Screen {
 
         imageBoss2.addListener(new InputListener(){
 
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-              //  if (!thirdLevelWon)
                 game.setScreen(new Level3Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
@@ -160,107 +163,115 @@ public class LevelSelect implements Screen {
 
         imageWho.addListener(new InputListener(){
 
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //Solo se puede jugar el cuarto nivel si cruzamos los anteriores.
-              //  if (firstLevelWon && secondLevelWon && thirdLevelWon)
-
-                //Si el jugador ha cruzado el nivel 1, el nivel 2, y el nivel 3, puede jugar el cuarto, de lo contrario no.
-                preferences = Gdx.app.getPreferences("Login");
-
-                for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-                    if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-                        if ((preferences.getBoolean("FirstLevelWonJugador"+i))&&(preferences.getBoolean("SecondLevelWonJugador"+i))&&(preferences.getBoolean("ThirdLevelWonJugador"+i))){
-                            game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
-                        }
-                    }
-                }
-
-
+                game.setScreen(new Level4Screen((MegamanMainClass) game,thisLevelSelect));
                 return true;
             }
         });
 
-        imageMegaman.addListener(new InputListener(){
+        table.top().padTop(100);
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //Al final no, ya que no tuve ganas de hacer el ultimo y quinto nivel.
-                //Si ya gano todo.
-                //ENtonces hacemos magia y cambiamos la imagen del medio o algo asi.
-                //Por ej.
-              //  finalLabel.setText("ACA LA IMAGEN FINAL POR EJ");
-          //    if (firstLevelWon && secondLevelWon && thirdLevelWon && fourthLevelWon){}
-              //  game.setScreen(new finalLevelScreen((MegamanMainClass) game));
-                //Dejamos comentado la parte del ultimo winscreen.
-               // game.setScreen(new GameWinScreen((MegamanMainClass)game,100,thisLevelSelect));
-                return true;
-            }
-        });
+        table.setFillParent(true);
 
+        instructionToPlay.setFontScale(3);
+        level1.setFontScale(1.5f);
+        level2.setFontScale(1.5f);
+        level3.setFontScale(1.5f);
+        level4.setFontScale(1.5f);
 
-        table.add(level1Label);
-        table.add();
-        table.add(level2Label);
+        table.add(instructionToPlay).expandX();
+        table.row();
+        table.padTop(40);
+
+        table.add(level1);
+        table.add(imageZero);
         table.row();
 
-        table.add(imageZero).pad(15,30,0,0);
-        table.add();
-        table.add(imageBoss1).pad(15,100,0,15);
+        table.add(level2);
+        table.add(imageBoss1);
         table.row();
 
-        table.add();
-        table.add(imageMegaman).pad(40,200,0,150);
-        table.add();
+        table.add(level3);
+        table.add(imageBoss2);
         table.row();
 
-        table.add(level3Label);
-        table.add();
-        table.add(level4Label);
-        table.row();
-
-        table.add(imageBoss2).pad(15,30,50,0);
-        table.add();
-        table.add(imageWho).pad(15,100,50,15);
-
+        table.add(level4);
+        table.add(imageWho);
         stage.addActor(table);
     }
 
     @Override
     public void show() {
-
         Gdx.input.setInputProcessor(stage);
-
-        preferences = Gdx.app.getPreferences("Login");
-
-        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                level1Label.setText("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i));
-                level2Label.setText("High Score ="+preferences.getInteger("ScoreLevel2Jugador"+i));
-                level3Label.setText("High Score ="+preferences.getInteger("ScoreLevel3Jugador"+i));
-                level4Label.setText("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i));
-
-            }
-        }
-
     }
 
     public void updateScore(){
 
-        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-                level1Label.setText("High Score ="+preferences.getInteger("ScoreLevel1Jugador"+i));
-                level2Label.setText("High Score ="+preferences.getInteger("ScoreLevel2Jugador"+i));
-                level3Label.setText("High Score ="+preferences.getInteger("ScoreLevel3Jugador"+i));
-                level4Label.setText("High Score ="+preferences.getInteger("ScoreLevel4Jugador"+i));
+    }
 
-            }
+    public void setLastLevelPlayed(Integer integer){
+        lastLevelPlayed = integer;
+    }
+
+    public Integer getLastLevelPlayed(){
+        return lastLevelPlayed;
+    }
+
+    public void setWonLevel(Integer levelWon){
+
+        if (levelWon == 1){
+            firstLevelWon = true;
+        }
+        else if(levelWon == 2){
+            secondLevelWon = true;
+        }
+        else if(levelWon == 3){
+            thirdLevelWon = true;
+        }
+        else if(levelWon == 4){
+            fourthLevelWon = true;
         }
 
     }
 
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0.51f, 0.51f, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
+}
+
+
+
+    /* Esta funcion servía para la version del juego que tenía puntaje.
     public void setScore(Integer lastLevelPlayed,Integer score){
 
         preferences = Gdx.app.getPreferences("Login");
@@ -351,63 +362,4 @@ public class LevelSelect implements Screen {
         }
     }
 
-    public void setLastLevelPlayed(Integer integer){
-        lastLevelPlayed = integer;
-    }
-
-    public Integer getLastLevelPlayed(){
-        return lastLevelPlayed;
-    }
-
-    public void setWonLevel(Integer levelWon){
-
-        if (levelWon == 1){
-            firstLevelWon = true;
-        }
-        else if(levelWon == 2){
-            secondLevelWon = true;
-        }
-        else if(levelWon == 3){
-            thirdLevelWon = true;
-        }
-        else if(levelWon == 4){
-            fourthLevelWon = true;
-        }
-        else if (levelWon == 5){
-            //final level won. Last screen?
-        }
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0.51f, 0.51f, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
-}
+*/

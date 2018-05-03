@@ -37,13 +37,6 @@ public class GameWinScreen implements Screen{
     private Label scoreLabel2;
     private Label scoreLabel3;
     private Label scoreLabel4;
-    private Label finalScoreLabel;
-
-    private Integer scoreDataInteger;
-
-    private Integer finalScore;
-
-    Preferences preferences;
 
     private Table table;
 
@@ -52,10 +45,6 @@ public class GameWinScreen implements Screen{
         this.game = game;
 
         this.levelSelect = levelSelect;
-
-        this.scoreDataInteger = scoreDataInteger;
-
-        levelSelect.setScore(levelSelect.getLastLevelPlayed(),scoreDataInteger);
 
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
@@ -74,53 +63,7 @@ public class GameWinScreen implements Screen{
         playAgain = new Label("Play again",labelStyle);
         exitGame = new Label("EXIT",labelStyle);
 
-
-        preferences = Gdx.app.getPreferences("Login");
-
-        //Inicializo el final score en 0 por las dudas.
-        finalScore = 0;
-
-        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                if (!preferences.getBoolean("FourthLevelWonJugador"+i)){
-                    preferences.putBoolean("FourthLevelWonJugador"+i,true);
-                }
-                preferences.flush();
-
-            }
-        }
-
-        preferences.flush();
-
-        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                scoreLabel1 = new Label("Score = "+preferences.getInteger("ScoreLevel1Jugador"+i),labelStyle);
-                scoreLabel2 = new Label("Score = "+preferences.getInteger("ScoreLevel2Jugador"+i),labelStyle);
-                scoreLabel3 = new Label("Score = "+preferences.getInteger("ScoreLevel3Jugador"+i),labelStyle);
-                scoreLabel4 = new Label("Score = "+preferences.getInteger("ScoreLevel4Jugador"+i),labelStyle);
-
-                finalScore = preferences.getInteger("ScoreLevel1Jugador"+i)+preferences.getInteger("ScoreLevel2Jugador"+i)+preferences.getInteger("ScoreLevel3Jugador"+i)+preferences.getInteger("ScoreLevel4Jugador"+i);
-
-                preferences.putInteger("FinalScoreJugador"+i,finalScore);
-
-                preferences.flush();
-            }
-        }
-
-        //No le veo sentido a lo de abajo, lo borro por el momento, si veo que se rompe todo, vuelvo a ponerlo.
-        /*
-        for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-            if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-                preferences.putInteger("JugadorScore"+i,finalScore);
-            }
-        }
-        preferences.flush();
-
-        */
-
-        finalScoreLabel = new Label("Final score = "+finalScore,labelStyle);
+        levelSelect.setWonLevel(4);
 
         youWinLabel.setFontScale(1.5f);
         playAgain.setFontScale(1.5f);
@@ -129,7 +72,6 @@ public class GameWinScreen implements Screen{
         scoreLabel2.setFontScale(1.5f);
         scoreLabel3.setFontScale(1.5f);
         scoreLabel4.setFontScale(1.5f);
-        finalScoreLabel.setFontScale(1.5f);
 
         playAgain.addListener(new InputListener(){
 
@@ -174,10 +116,6 @@ public class GameWinScreen implements Screen{
         table.add(scoreLabel4);
 
         table.row().padTop(20);
-
-        table.add(finalScoreLabel);
-
-        table.row().padTop(40);
 
         table.add(playAgain).expandX();
 

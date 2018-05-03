@@ -31,8 +31,6 @@ public class InitGameScreen implements Screen {
     private Label newGameLabel;
     private Label controlsLabel;
     private Label exitLabel;
-    private Label loginLabel;
-    private Label viewScoreLabel;
 
     private Label.LabelStyle labelStyle;
 
@@ -54,8 +52,6 @@ public class InitGameScreen implements Screen {
         newGameLabel = new Label("New Game",labelStyle);
         controlsLabel = new Label("Controls",labelStyle);
         exitLabel = new Label("Exit",labelStyle);
-        loginLabel = new Label("Login",labelStyle);
-        viewScoreLabel = new Label("View Score Chart",labelStyle);
 
         newGameLabel.addListener(new InputListener(){
 
@@ -116,36 +112,6 @@ public class InitGameScreen implements Screen {
             }
         });
 
-        loginLabel.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new LoginPlayerScreen((MegamanMainClass)game));
-                dispose();
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-            }
-
-        });
-
-        viewScoreLabel.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new ScoreChartScreen((MegamanMainClass)game));
-                dispose();
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-            }
-
-        });
-
         table.top().padTop(100);
 
         table.setFillParent(true);
@@ -155,16 +121,10 @@ public class InitGameScreen implements Screen {
         newGameLabel.setFontScale(2);
         controlsLabel.setFontScale(2);
         exitLabel.setFontScale(2);
-        loginLabel.setFontScale(2);
-        viewScoreLabel.setFontScale(2);
 
         table.add(nameGameLabel).expandX();
         table.row().padTop(150);
         table.add(newGameLabel).expandX();
-        table.row().padTop(20);
-        table.add(loginLabel).expandX();
-        table.row().padTop(20);
-        table.add(viewScoreLabel).expandX();
         table.row().padTop(20);
         table.add(controlsLabel).expandX();
         table.row().padTop(20);
@@ -190,8 +150,6 @@ public class InitGameScreen implements Screen {
         newGameLabel = new Label("New Game",labelStyle);
         controlsLabel = new Label("Controls",labelStyle);
         exitLabel = new Label("Exit",labelStyle);
-        loginLabel = new Label("Login",labelStyle);
-        viewScoreLabel = new Label("View Score Chart",labelStyle);
 
         newGameLabel.addListener(new InputListener(){
 
@@ -252,36 +210,6 @@ public class InitGameScreen implements Screen {
             }
         });
 
-        loginLabel.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new LoginPlayerScreen((MegamanMainClass)game,levelSelect));
-                dispose();
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-            }
-
-        });
-
-        viewScoreLabel.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new ScoreChartScreen((MegamanMainClass)game,levelSelect));
-                dispose();
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-            }
-
-        });
-
         table.top().padTop(100);
 
         table.setFillParent(true);
@@ -291,16 +219,10 @@ public class InitGameScreen implements Screen {
         newGameLabel.setFontScale(2);
         controlsLabel.setFontScale(2);
         exitLabel.setFontScale(2);
-        loginLabel.setFontScale(2);
-        viewScoreLabel.setFontScale(2);
 
         table.add(nameGameLabel).expandX();
         table.row().padTop(150);
         table.add(newGameLabel).expandX();
-        table.row().padTop(20);
-        table.add(loginLabel).expandX();
-        table.row().padTop(20);
-        table.add(viewScoreLabel).expandX();
         table.row().padTop(20);
         table.add(controlsLabel).expandX();
         table.row().padTop(20);

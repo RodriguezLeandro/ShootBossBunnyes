@@ -35,20 +35,12 @@ public class WinScreen implements Screen {
     protected Label youWinLabel;
     protected Label goToLevelSelect;
     protected Label goToMainMenu;
-    protected Label scoreLabel;
-
-    protected Integer scoreDataInteger;
-
 
     public WinScreen(final MegamanMainClass game,Integer scoreDataInteger, final LevelSelect levelSelect){
 
         this.game = game;
 
         this.levelSelect = levelSelect;
-
-        this.scoreDataInteger = scoreDataInteger;
-
-        levelSelect.setScore(levelSelect.getLastLevelPlayed(),scoreDataInteger);
 
         viewport = new FitViewport(MegamanMainClass.Virtual_Width,MegamanMainClass.Virtual_Height,new OrthographicCamera());
 
@@ -70,78 +62,22 @@ public class WinScreen implements Screen {
 
         //Aca ponemos el score dependiendo del nivel desde el cual estamos jugando.
         if (levelSelect.getLastLevelPlayed() == 1){
-            scoreLabel = new Label("Score level 1 = "+scoreDataInteger,labelStyle);
 
-            Preferences preferences = Gdx.app.getPreferences("Login");
-
-
-            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                    if (!preferences.getBoolean("FirstLevelWonJugador"+i)){
-                        preferences.putBoolean("FirstLevelWonJugador"+i,true);
-                    }
-                    preferences.flush();
-
-                }
-            }
+           levelSelect.setWonLevel(1);
 
         }else if (levelSelect.getLastLevelPlayed() == 2){
-            scoreLabel = new Label("Score level 2 = "+scoreDataInteger,labelStyle);
-
-            Preferences preferences = Gdx.app.getPreferences("Login");
-
-            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                    if (!preferences.getBoolean("SecondLevelWonJugador"+i)){
-                        preferences.putBoolean("SecondLevelWonJugador"+i,true);
-                    }
-                    preferences.flush();
-
-                }
-            }
+            levelSelect.setWonLevel(2);
 
         }else if (levelSelect.getLastLevelPlayed() == 3){
-            scoreLabel = new Label("Score level 3 = "+scoreDataInteger,labelStyle);
-            Preferences preferences = Gdx.app.getPreferences("Login");
-
-            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                    if (!preferences.getBoolean("ThirdLevelWonJugador"+i)){
-                        preferences.putBoolean("ThirdLevelWonJugador"+i,true);
-                    }
-                    preferences.flush();
-
-                }
-            }
+            levelSelect.setWonLevel(3);
         }
         else if (levelSelect.getLastLevelPlayed() == 4){
-            //Creo que a esta parte no se llega nunca.
-            scoreLabel = new Label("Score level 4 = "+scoreDataInteger,labelStyle);
-            Preferences preferences = Gdx.app.getPreferences("Login");
-
-            for (int i = 1; i < preferences.getInteger("CantidadJugadores")+1;i++){
-                if ((preferences.getString("LastPlayerThatPlayed")).equals(preferences.getString("Jugador"+i))){
-
-                    if (!preferences.getBoolean("FourthLevelWonJugador"+i)){
-                        preferences.putBoolean("FourthLevelWonJugador"+i,true);
-                    }
-                    preferences.flush();
-
-                }
-            }
+            levelSelect.setWonLevel(4);
         }
-
-        //Tengo que updatear el nuevo score del juego.
-        levelSelect.updateScore();
 
         youWinLabel.setFontScale(1.5f);
         goToLevelSelect.setFontScale(1.5f);
         goToMainMenu.setFontScale(1.5f);
-        scoreLabel.setFontScale(1.5f);
-
 
         goToLevelSelect.addListener(new InputListener(){
 
@@ -169,10 +105,6 @@ public class WinScreen implements Screen {
         table.add(youWinLabel).expandX();
 
         table.row().padTop(80);
-
-        table.add(scoreLabel);
-
-        table.row().padTop(120);
 
         table.add(goToLevelSelect).expandX();
 
